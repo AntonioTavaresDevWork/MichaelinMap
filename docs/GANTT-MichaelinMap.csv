@@ -1,0 +1,11 @@
+﻿Ã‰pico;Bloco;Feature;Sub-feature;DescriÃ§Ã£o;Status;Owner;SessÃ£o inÃ­cio;SessÃ£o fim;SessÃµes CLI estimadas;SessÃµes CLI consumidas;% ConcluÃ­do;DependÃªncias;Prioridade;DPs bloqueantes;Notas
+Setup;Setup tÃ©cnico + fundaÃ§Ã£o;â€”;â€”;RepositÃ³rio + Supabase + schema inicial + RLS multi-tenant;ConcluÃ­do;Orquestrador CLI;S01;S01;1;1;100%;-;CrÃ­tica;-;[nota curta â€” ex: migration initial_schema aplicada DD/MM]
+Setup;Setup tÃ©cnico + fundaÃ§Ã£o;â€”;â€”;Boilerplate Vite + Tailwind + shadcn/ui + layout base + auth-guard;ConcluÃ­do;Orquestrador CLI;S01;S02;1;1;100%;-;CrÃ­tica;-;Layout dashboard + login configurados
+Ã‰pico 1 â€” [Nome do Ã‰pico];[Bloco];F-01;â€”;[DescriÃ§Ã£o da feature em 1 linha];ConcluÃ­do;Orquestrador CLI + Subagents;S02;S03;1-2;2;100%;Setup;CrÃ­tica;-;FECHADA S03. Spec docs/specs/F-01-[slug]-spec.md
+Ã‰pico 1 â€” [Nome do Ã‰pico];[Bloco];F-02;â€”;[DescriÃ§Ã£o da feature em 1 linha];Em andamento;Frontend Engineer;S04;â€”;2;1;50%;F-01;Alta;-;[nota curta]
+Ã‰pico 1 â€” [Nome do Ã‰pico];[Bloco];F-08;e1;[DescriÃ§Ã£o da SUB-feature â€” granularidade alta: cada sub-feature Ã© uma linha];ConcluÃ­do;Orquestrador CLI + Subagents;S05;S05;1;1;100%;F-02;Alta;-;FECHADA S05
+Ã‰pico 1 â€” [Nome do Ã‰pico];[Bloco];F-08;e2;[DescriÃ§Ã£o da sub-feature];Em andamento;Data Architect;S06;â€”;1-2;1;40%;F-08e1;Alta;DP-07;[nota curta]
+Ã‰pico 2 â€” [Nome do Ã‰pico];[Bloco];F-12;â€”;[DescriÃ§Ã£o da feature planejada];Backlog;TBD;TBD;TBD;2;0;0%;Ã‰pico 1;MÃ©dia;-;-
+QA & SeguranÃ§a;Auditoria por Ã‰pico;â€”;Ã‰pico 1;QA Ã‰pico 1 â€” RLS + multi-tenant + edge cases;Backlog;QA & Security;TBD;TBD;1-2;0;0%;Ã‰pico 1 fechado;Alta;-;-
+Refino Visual;Design system completo;â€”;â€”;Aplicar design system + kit do produto (pÃ³s-MVP funcional);Backlog;Frontend Engineer + Edu;TBD;TBD;2-3;0;0%;MVP funcional;MÃ©dia;-;Conversa de design no inÃ­cio desta fase
+Deploy + HomologaÃ§Ã£o;Setup deploy;â€”;â€”;Setup Vercel + CI/CD + domÃ­nio;Backlog;Edu + Orquestrador CLI;TBD;TBD;1;0;0%;MVP frontend pronto;CrÃ­tica;-;-
