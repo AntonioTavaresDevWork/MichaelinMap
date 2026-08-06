@@ -1,5 +1,5 @@
-﻿---
-name: wise-migration
+---
+name: michaelinmap-migration
 description: ConvenÃ§Ãµes de migration SQL nos projetos Wise*. BEGIN/COMMIT explÃ­cito, blocos numerados, comentÃ¡rios WHY, hot-patch forward-declaration, saneamento manual de schema_migrations apÃ³s apply via Supabase MCP, GATEs internos de validaÃ§Ã£o. Use ao escrever ou aplicar qualquer migration Supabase no projeto.
 ---
 

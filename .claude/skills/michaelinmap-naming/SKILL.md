@@ -1,5 +1,5 @@
-﻿---
-name: wise-naming
+---
+name: michaelinmap-naming
 description: ConvenÃ§Ãµes de nomes nos projetos Wise*. DB snake_case, frontend camelCase, componentes PascalCase, arquivos kebab-case, formato BR de nÃºmero/data/moeda. Use ao nomear tabela, coluna, RPC, componente, hook, arquivo, ou ao formatar valores numÃ©ricos/datas/moeda na UI.
 ---
 

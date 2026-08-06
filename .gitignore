@@ -6,3 +6,24 @@ dist/
 *.log
 .DS_Store
 Thumbs.db
+
+# MCP config contem access token do Supabase
+.mcp.json
+.claude/settings.local.json
+
+# Vite / Node
+node_modules
+dist
+dist-ssr
+*.local
+.vite
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

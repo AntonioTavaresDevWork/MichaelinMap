@@ -1,5 +1,5 @@
-﻿---
-name: wise-rls-policy
+---
+name: michaelinmap-rls-policy
 description: PadrÃµes de RLS policy nos projetos Wise*. Modelo de autorizaÃ§Ã£o declarado na BÃ­blia (tenant-scoped OU capability-RBAC), is_superadmin sempre no topo, exceÃ§Ãµes documentadas. Use ao escrever, revisar ou refatorar Row Level Security policies em qualquer tabela do projeto.
 ---
 

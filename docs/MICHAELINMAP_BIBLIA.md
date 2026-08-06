@@ -1,433 +1,463 @@
-﻿# MICHAELINMAP â€” BÃ­blia do Projeto
-**VersÃ£o:** 1.0 | **Data:** YYYY-MM-DD | **Autor:** Edu Mello  
-**Status do projeto:** ðŸ”´ PrÃ©-desenvolvimento
+# Michaelin Map — Bíblia do Projeto
 
-> Este documento Ã© a fonte da verdade do MICHAELINMAP.  
-> CLI: leia este arquivo no inÃ­cio de cada sessÃ£o via `init.md`.  
-> Claude Web/Desktop: Edu compartilha o `STATUS.md` atualizado a cada sessÃ£o.
+**Versão:** 2.0 | **Data:** 2026-08-06 | **Autor:** Edu Mello
+**Status do projeto:** 🟡 Fundação — escopo fechado, build não iniciado
 
----
+> Fonte da verdade do Michaelin Map. O CLI lê este arquivo no boot de toda sessão.
+> Deriva do PRD v1.0 produzido no Claude Web (`docs/files/2026-08-05-michaelin-map-prd.md`),
+> com o escopo reduzido e as correções técnicas acordadas na Sessão 02.
+>
+> **Idioma:** este documento e toda a documentação interna estão em PT-BR.
+> **O produto — UI, conteúdo, tags, mensagens — é integralmente em inglês.**
 
-## 1. VisÃ£o Geral
+## Changelog
 
-**O que Ã©:** [Uma frase descrevendo o produto]  
-**Cliente / Contexto:** [Cliente final ou "produto SaaS prÃ³prio"]  
-**Problema que resolve:** [Uma frase â€” o pain point central]  
-**Foco do MVP:** [O que o MVP entrega â€” o que NÃƒO Ã©]  
-**VisÃ£o de longo prazo:** [SaaS multi-tenant? ExpansÃ£o de mÃ³dulos? IntegraÃ§Ã£o futura?]
-
----
-
-## 2. Stack Completo
-
-```
-Frontend:    React + Vite + TypeScript (SPA, sem SSR) [exceÃ§Ã£o: Next.js sÃ³ com justificativa SSR/SEO]
-UI:          Tailwind CSS + shadcn/ui + [TanStack Table se aplicÃ¡vel]
-Forms:       Estado controlado manual via useState (sem react-hook-form/zod) â€” validaÃ§Ã£o inline no onSubmit
-NotificaÃ§Ãµes: sonner (Toaster richColors) â€” toast no onSuccess/onError dos hooks
-State:       React Query (server state) + [Zustand se necessÃ¡rio p/ UI state]
-Routing:     React Router DOM
-PDF:         [react-pdf | N/A]
-Backend/DB:  Supabase (PostgreSQL 17 + Auth + Storage + Edge Functions)
-Server-side: Supabase Edge Functions (Deno) â€” sem API routes no frontend
-Auth:        Supabase Auth
-Storage:     Supabase Storage [especificar buckets se jÃ¡ definidos]
-Email:       [Resend | N/A â€” especificar se hÃ¡ alertas]
-PWA:         [Sim | NÃ£o]
-AutomaÃ§Ãµes:  [Make.com / N8N â€” Fase X | N/A]
-Deploy:      Vercel
-Dev:         Cursor + Claude Code CLI (multi-terminal: orquestrador + executores)
-Design System: skill `feedback-comunicacao-design` (global) Â· tema [dark | light] Â·
-             [herda dark+lime da Feedback | identidade prÃ³pria â€” descrever] Â·
-             refino visual = fase pÃ³s-MVP funcional (nÃ£o por feature)
-```
-
----
-
-## 3. RepositÃ³rio e Infraestrutura
-
-```
-GitHub org:      AdminFeedpro
-Repo:            AdminFeedpro/MICHAELINMAP
-Pasta local:     C:\Users\EMello\SaaS\SaaS_MICHAELINMAP
-Supabase URL:    [PENDENTE â€” apÃ³s criar projeto no Supabase]
-Supabase ID:     [PENDENTE]
-Deploy:          Vercel [PENDENTE â€” configurar apÃ³s MVP]
-```
-
----
-
-## 4. Modelo de DomÃ­nio
-
-> Diagrama textual das entidades principais e seus relacionamentos.  
-> Use â†’ para 1:N e â†â†’ para N:N.
-
-```
-[Entidade A] â†â†’ [Entidade B] (N:N via tabela_pivot)
-[Entidade A] â†’ [Entidade C] (1:N)
-
-[Entidade principal do sistema]
-  â””â”€â”€ [Entidade filha 1]
-  â””â”€â”€ [Entidade filha 2]
-        â””â”€â”€ [Sub-entidade]
-```
-
----
-
-## 5. Regras de NegÃ³cio
-
-> Esta seÃ§Ã£o Ã© a referÃªncia que o CLI consulta quando hÃ¡ dÃºvida de comportamento.  
-> Numere as regras. Seja explÃ­cito â€” "o sistema deve X quando Y acontecer".
-
-### 5.1 [Ãrea de regras â€” ex: PrecificaÃ§Ã£o]
-- **RN-01:** [Regra completa, sem ambiguidade]
-- **RN-02:** [Regra completa, sem ambiguidade]
-- **RN-03 [PENDENTE]:** [Regra que ainda precisa ser definida com o cliente]
-
-### 5.2 [Ãrea de regras â€” ex: Status / Fluxo de trabalho]
-- **RN-10:** [Regra completa]
-
-### 5.3 [Ãrea de regras â€” ex: Acesso e permissÃµes]
-- **RN-20:** [Regra completa]
-
-> âš ï¸ Adicionar seÃ§Ãµes conforme o domÃ­nio do projeto. NÃ£o deixar regras implÃ­citas.
-
----
-
-## 6. Fluxo de Status Principal
-
-> Se o sistema tem uma entidade central com ciclo de vida (orÃ§amento, pedido, tarefa, etc.),
-> descrever o fluxo aqui. Caso contrÃ¡rio, remover esta seÃ§Ã£o.
-
-```
-[status_inicial] â†’ [status_2] â†’ [status_3] â†’ [status_final]
-
-Terminais (de qualquer ponto): [cancelado] | [recusado]
-```
-
-### Regras de transiÃ§Ã£o
-| De | Para | CondiÃ§Ã£o | Quem pode |
-|---|---|---|---|
-| [status A] | [status B] | [condiÃ§Ã£o ou "livre"] | [admin / rep / sistema] |
-
-### Regras de ediÃ§Ã£o por status
-| Status | EdiÃ§Ã£o permitida? | Comportamento |
+| Versão | Data | O que mudou |
 |---|---|---|
-| [status inicial] | âœ… Livre | Sem log |
-| [status intermediÃ¡rio] | âœ… Com log | Registra diff em `[tabela_log]` |
-| [status avanÃ§ado] | ðŸ”’ Bloqueada | Exige novo registro (clone/versÃ£o) |
+| 2.0 | 2026-08-06 | Bíblia preenchida a partir do PRD. Escopo do MVP fechado (7 features). Cortes: Google Places API, My Maps sync, Trip Builder, novelty interactions exceto Roulette, SEO/indexação. Schema corrigido (8 tabelas). Modelo de autorização definido (curator allowlist). |
+| 1.0 | — | Template Wise* vazio |
 
 ---
 
-## 7. Schema do Banco de Dados
+## 1. Visão geral
 
-> Listar todas as tabelas com colunas principais. NÃ£o precisa ser SQL completo aqui â€”
-> o SQL detalhado fica em `supabase/migrations/`. Esta seÃ§Ã£o Ã© para referÃªncia rÃ¡pida.
+**O que é:** um guia de lugares — restaurantes, bares, food trucks, lojas, hotéis, parques e atrações — curado por uma única pessoa. Cada entrada carrega um selo de qualidade explícito e um conjunto de tags que descreve não só o que o lugar *é*, mas para que ele *serve*.
 
-### Tabelas principais
+**Contexto:** projeto pessoal, sem fins comerciais. O Michael é um amigo do Edu que frequenta muitos lugares e é constantemente procurado por conhecidos pedindo sugestão. O Michaelin Map é o ambiente onde ele compartilha essas experiências com o círculo próximo.
 
-#### `[nome_tabela]`
-| Coluna | Tipo | ObrigatÃ³rio | DescriÃ§Ã£o |
+**Problema que resolve:** o Michael acumulou 511 lugares salvos em 19 guias do Apple Maps. Compartilhar isso é quase inútil — um mapa de pins transmite coordenadas e nada mais. O valor não está nos pins, está no julgamento: qual lugar vale a viagem, qual é famoso e decepcionante, qual prato único justifica um restaurante mediano. Nada disso sobrevive ao compartilhamento de um link.
+
+**Foco do MVP:** tornar o julgamento transmissível. Um visitante abre o link, escolhe uma cidade, filtra pelo que precisa e chega a uma decisão.
+
+**O que NÃO é:** não é SaaS, não é multi-tenant, não será monetizado, não terá clientes. Não é Yelp — não há avaliação de terceiros, nota média, comentários ou conta de visitante.
+
+**Visão de longo prazo:** nenhuma. O projeto termina quando o Michael estiver usando e os amigos dele também.
+
+### 1.1 O contexto de demonstração
+
+Uma condição de sucesso declarada no PRD: mostrar o guia para uma pessoa específica deve fazer essa pessoa se sentir mais próxima do Michael. Isso reposiciona o produto — ele é um **artefato de personalidade** cujo conteúdo é julgamento e voz, com a utilidade servindo de veículo. Não é um utilitário que por acaso tem graça.
+
+Consequência para priorização: os **Codes**, o campo **story** e a voz escrita do curador importam mais do que sofisticação incremental de filtro.
+
+---
+
+## 2. Stack
+
+```
+Frontend:     React + Vite + TypeScript (SPA, sem SSR)
+UI:           Tailwind CSS + shadcn/ui
+Mapa:         MapLibre GL  ← ver ADR-05
+Forms:        useState controlado, validação inline no onSubmit (sem react-hook-form/zod)
+Notificações: sonner — <Toaster richColors position="top-right" /> no App.tsx
+State:        React Query (server state) · Zustand se necessário para UI state
+Routing:      React Router DOM
+Ícones:       lucide-react
+Backend/DB:   Supabase (PostgreSQL 17 + Auth)
+Server-side:  Supabase Edge Functions (Deno) — apenas se necessário
+Geocoding:    Nominatim / OpenStreetMap (grátis, sem chave)  ← ver ADR-06
+Deploy:       Vercel
+```
+
+**Fora da stack, por decisão:** Google Places API (ADR-06), TanStack Table (lista simples resolve), SSR/pré-render (ADR-07).
+
+---
+
+## 3. Repositório e infraestrutura
+
+```
+GitHub:        AdminFeedpro/MichaelinMap (privado)
+Pasta local:   C:\Users\EMello\SaaS\MichaelinMap
+Supabase ID:   woapimgpmlgqqvauckdy
+Supabase URL:  https://woapimgpmlgqqvauckdy.supabase.co
+Deploy:        Vercel — a configurar após a F-03
+Indexação:     noindex (não-listado) — ver ADR-07
+```
+
+---
+
+## 4. Usuários
+
+| Papel | Quem | Acesso |
+|---|---|---|
+| **Visitante** | Amigos e conhecidos do Michael | Somente leitura, sem conta, sem login. Recebe o link (e frequentemente um Code) diretamente do Michael |
+| **Curador** | Michael (dono do julgamento) e Edu (apoio na curadoria e no dev) | Login no admin. Duas contas, allowlist explícita. Não há signup |
+
+Não existe terceiro papel. Sem contribuidores, sem moderadores, sem submissões públicas — com a exceção estrita e não-avaliativa dos field reports (§10).
+
+---
+
+## 5. Modelo de domínio
+
+```
+tiers ──< places >── place_tags >── tags
+                │
+                └──< field_reports >── questions
+
+curators (allowlist de escrita)
+codes (transformações de interface, independentes de places, com destaques opcionais)
+```
+
+- `places` é a entidade central. Tudo orbita nela.
+- `tiers` é vocabulário editável, não constante de código (RN-12).
+- `codes` referencia places apenas por um array de destaques — sem FK rígida.
+
+---
+
+## 6. O modelo de julgamento
+
+O coração do produto. Não foi desenhado — foi **engenharia reversa dos 19 guias do Michael**, que já codificavam um sistema consistente.
+
+### 6.1 A evidência
+
+Entre 511 lugares, os três guias de restaurante — Designation (43), Experience Spots (36), Fair Restaurants (156) — têm sobreposição **exatamente zero**. Exclusividade mútua perfeita em 235 lugares não é acidente: é uma escala.
+
+Michael's Top Faves (22) cruza os três tiers (8/9/2) e tem sobreposição zero com a Try List. Logo, não é um quarto tier — é uma honraria aplicada *por cima* de um tier, nunca concedida a um lugar não visitado.
+
+Cool Bars (31) e Fair Bars (46) compartilham exatamente um lugar: uma segunda escala, paralela, de dois níveis, para bares.
+
+### 6.2 O modelo
+
+| Camada | Campo | Valores | Regra |
 |---|---|---|---|
-| `id` | uuid | âœ… | PK, default gen_random_uuid() |
-| `[coluna]` | [tipo] | âœ…/âŒ | [descriÃ§Ã£o] |
-| `created_at` | timestamptz | âœ… | default now() |
-| `updated_at` | timestamptz | âœ… | atualizado por trigger |
-| `deleted_at` | timestamptz | âŒ | soft delete â€” NULL = ativo |
+| **Tier** | `places.tier` | Restaurantes: `destination`, `experience`, `fair` · Bares: `cool`, `fair` | No máximo um. Null para tipos não avaliados e não visitados |
+| **Estrela** | `places.starred` | boolean | Cruza os tiers. 22 de 511 (4%). A honraria escassa do topo |
+| **Status de visita** | `places.visited` | boolean | `false` = Try List. Não pode ter tier nem estrela |
 
-> Repetir para cada tabela. Agrupar por mÃ³dulo.
+`destination` e `experience` **não são 1º e 2º lugar** — são dois topos paralelos acima de `fair` (DP-01 resolvida: "não faz diferença"). A interface os exibe em ordem fixa, mas a copy nunca afirma superioridade de um sobre o outro.
 
-### Views
+Ambas as restrições são garantidas por constraint de banco, não por lógica de aplicação. A disciplina do curador vira garantia do schema.
 
-| View | PropÃ³sito |
-|---|---|
-| `v_[nome]` | [o que ela calcula/agrega] |
+### 6.3 Escassez
 
-### Enums
+`destination` e `starred` precisam permanecer escassos, ou a escala não significa nada. O admin exibe a distribuição ao vivo para que a inflação seja visível. Meta: estrela abaixo de 5% dos lugares publicados.
 
-| Enum | Valores |
-|---|---|
-| `[nome_enum]` | `valor_1`, `valor_2`, `valor_3` |
+### 6.4 Veredito negativo
 
-### Ãndices obrigatÃ³rios
+A taxonomia mantém **Hype trap** para lugares famosos, lotados e decepcionantes. Veredito negativo é o que torna o positivo crível. Por decisão do curador, é **admin-only** — visível na curadoria, invisível ao público (RN-14).
+
+---
+
+## 7. Tipos de lugar
+
+O guia não é só restaurante. Cerca de noventa entradas não-gastronômicas convivem com as demais.
+
+| Tipo | `place_type` | n | Tem tier |
+|---|---|---|---|
+| Restaurant | `restaurant` | 273 | Sim — 3 tiers |
+| Bar | `bar` | 91 | Sim — 2 tiers |
+| Outdoors & attraction | `outdoors` | 65 | Não |
+| Food truck | `food_truck` | 23 | Não |
+| Dessert | `dessert` | 16 | Não |
+| Grocery | `grocery` | 14 | Não |
+| Hotel | `hotel` | 6 | Não |
+| Winery | `winery` | 5 | Não |
+| Shop | `shop` | 3 | Não |
+| Unclassified | `unclassified` | 15 | — |
+
+**O tipo de lugar é o segundo portão**, junto com a cidade. "Onde eu como" e "o que eu faço" são sessões diferentes; misturar um parque estadual no resultado de um filtro de restaurante é ruído. Tipos sem tier ainda carregam a estrela, que passa a ser o sinal de qualidade deles.
+
+---
+
+## 8. Geografia
+
+Três níveis, todos derivados de coordenada com possibilidade de override manual.
+
+| Nível | Campo | Cardinalidade | Papel |
+|---|---|---|---|
+| País | `country` | Exatamente 1 | Agrupamento apenas |
+| Cidade / metrô | `city` | Exatamente 1 | **O portão primário** |
+| Bairro / área | `area` | 0 ou 1 | Null abaixo do limiar de densidade |
+
+**Cidade é portão, não filtro.** Ninguém navega todos os lugares do planeta. O visitante escolhe a cidade primeiro e todas as outras facetas operam dentro dela.
+
+**Áreas só existem onde a densidade justifica** — cerca de 15 entradas. Austin ganha bairros; Oxfordshire, com 3 lugares, não exibe controle de área nenhum. A hierarquia degrada em silêncio em vez de renderizar controle vazio.
+
+**Cidades atuais:** Austin 466, St. Augustine 15, Jacksonville 8, Los Angeles 4, Oxfordshire 3, Dallas–Fort Worth 3, Fernando de Noronha 2, Waco 2, mais oito singletons (London, Belton, Essex Junction, Mountain Home, Rochester, San Diego, Schertz, Seattle).
+
+**Singletons aparecem como pares** (DP-02 resolvida), com a contagem visível. Nenhuma cidade é privilegiada na interface.
+
+---
+
+## 9. Schema do banco
+
+Oito tabelas. O SQL detalhado vive em `supabase/migrations/`; esta seção é a referência rápida e **documenta as correções feitas sobre o schema original** do PRD.
+
+### 9.1 `places`
+
+| Coluna | Tipo | Obs |
+|---|---|---|
+| `id` | uuid PK | default `gen_random_uuid()` |
+| `name` | text NOT NULL | |
+| `slug` | text UNIQUE | gerado; desambiguado com sufixo quando há homônimo |
+| `place_type` | text NOT NULL | default `unclassified`; CHECK na lista da §7 |
+| `tier` | text | **FK → `tiers(slug)`** |
+| `starred` | boolean NOT NULL | default false |
+| `visited` | boolean NOT NULL | default true; `false` = Try List |
+| `status` | text NOT NULL | default `unreviewed`; CHECK `unreviewed \| published \| closed \| hidden` |
+| `country` / `city` / `area` | text | §8 |
+| `lat` / `lng` | numeric(10,7) | |
+| `address` | text | |
+| `website` | text | manual, opcional |
+| `price_band` | text | `$` a `$$$$` — **julgamento do curador**, não derivado |
+| `the_dish` | text | ⚠️ camada de julgamento |
+| `curator_note` | text | ⚠️ camada de julgamento |
+| `story` | text | ⚠️ camada de julgamento — "por que isso importa pra mim" |
+| `last_visited` | date | ⚠️ camada de julgamento |
+| `apple_id` | text **UNIQUE** | correção: era sem UNIQUE e o import quebrava |
+| `source_guides` | text[] | nomes dos guias Apple originais, auditoria |
+| `source` | text | `apple_csv \| manual` |
+| `created_at` / `updated_at` | timestamptz | `updated_at` via trigger |
+| `updated_by` | uuid | FK → `auth.users`; quem editou por último |
+
+**Constraints:**
+- `tier_requires_visit` — lugar não visitado não pode ter tier
+- `star_requires_visit` — lugar não visitado não pode ter estrela
+- `published_needs_city` — lugar publicado precisa de cidade
+
+**Removidos do schema original** (sem fonte de dados após o corte do Google Places): `google_place_id`, `phone`, `hours`, `geo_source`, `price_band_source`, `mymaps_feature_id`, `first_synced_at`, `last_seen_in_sync`.
+
+### 9.2 `tiers` — nova
+
+Tier vira dado editável para atender DP-03 ("permitir renomear os tiers").
+
+| Coluna | Tipo | Obs |
+|---|---|---|
+| `slug` | text PK | estável; o código só depende disto |
+| `label` | text NOT NULL | rótulo público, editável no admin |
+| `applies_to` | text[] NOT NULL | tipos de lugar que o admin sugere para este tier |
+| `sort_order` | int NOT NULL | ordem de exibição |
+| `active` | boolean NOT NULL | |
+
+Seed: `destination`, `experience`, `fair` (restaurant) · `cool`, `fair` (bar).
+
+`applies_to` **orienta o admin, não restringe o banco** — o curador é a autoridade. Isso acomoda os 4 lugares fora do padrão nos dados atuais (§12).
+
+### 9.3 `tags` / `place_tags`
+
+Vocabulário facetado e controlado. Criação de tag por texto livre é desabilitada por design.
+
+`tags`: `id`, `facet` (`cuisine | format | occasion | vibe | logistics | dietary | character`), `label`, `slug`, `is_derived`, **`admin_only`** (novo — RN-14), `sort_order`, `active`. UNIQUE `(facet, slug)`.
+
+`place_tags`: `place_id`, `tag_id` (PK composta), **`source`** (novo — `curator | suggested`), `created_at`.
+
+`source = 'suggested'` marca as tags de `cuisine` e `price_band` que o CLI pré-classifica no import (ADR-06). O curador vê o que veio da máquina e o que veio dele.
+
+Seed: 93 tags (37 cuisine, 14 occasion, 11 vibe, 11 logistics, 9 character, 7 format, 4 dietary) + `Hype trap` em `character` com `admin_only = true`.
+
+### 9.4 `curators`
+
+`user_id` uuid PK → `auth.users` · `name` text · `created_at`.
+
+Duas linhas: Michael e Edu. Signup desabilitado no projeto Supabase.
+
+### 9.5 `codes`
+
+Sem alteração estrutural: `id`, `code` (UNIQUE, maiúsculo), `label`, `message`, `theme` jsonb, `pin_style` jsonb, `preset_filter` jsonb, `highlighted_places` uuid[], `starts_at`, `ends_at`, `active`, `created_at`.
+
+**Correção de RLS:** a tabela perde o SELECT público. Ver §11 e RN-20.
+
+### 9.6 `questions` / `field_reports`
+
+`questions`: `id`, `prompt`, `input_type` (`number | color | slider | single_choice | yes_no | compound | text_short`), `unit_label`, `options` jsonb, `slider_labels` jsonb, `judgment_prompt`, `requires_review`, `weight`, `active`. Seed: 38 perguntas.
+
+`field_reports`: `id`, `place_id`, `question_id`, `answer` jsonb, `judgment`, `status` (`published | pending | rejected`), `session_hash`, `submitted_at`.
+
+**Correção de RLS:** INSERT direto pelo público é revogado; entra só pela RPC `rpc_submit_field_report` (RN-21).
+
+View `field_report_aggregates` — agrega respostas publicadas, oculta abaixo de n=5. **Correção:** criada com `security_invoker = on`, senão a view contorna o RLS.
+
+### 9.7 Índices
 
 ```sql
--- Descrever Ã­ndices alÃ©m dos PKs â€” campos de busca frequente, filtros, JOINs
-CREATE INDEX idx_[tabela]_[campo] ON [tabela]([campo]);
+places(city) where status = 'published'
+places(place_type) · places(tier) · places(status) · places(lat, lng)
+field_reports(place_id) where status = 'published'
+field_reports(session_hash, submitted_at)   -- rate limit
+place_tags(tag_id)                          -- filtro reverso
 ```
 
-### Modelo de AutorizaÃ§Ã£o *(declaraÃ§Ã£o obrigatÃ³ria â€” as skills RLS/RPC se adaptam a ela)*
+---
+
+## 10. Field reports
+
+Visitantes que estiveram em um lugar respondem 2 ou 3 perguntas sorteadas que **não carregam nenhuma informação sobre qualidade** — temperatura da comida em Fahrenheit, cor da cadeira, distância até o corpo d'água mais próximo, pé-direito medido em mãos.
+
+**O absurdo é estrutural, não decorativo.** Comentário convencional achataria o tier do curador em "mais uma opinião". Perguntas em um eixo ortogonal não competem com o julgamento dele. Participação sem diluição.
+
+- Entradas são **restritas** — número, cor, slider, escolha, sim/não, composta. Isso também elimina a carga de moderação.
+- **4 das 38 perguntas** aceitam texto livre porque o espaço de resposta é ilimitado. Limitadas a 40 caracteres, entram como `pending` e só vão ao ar com aprovação do curador.
+- **O agregado é a feature**, renderizado com seriedade científica impassível e oculto abaixo de 5 respostas. O curador semeia as próprias respostas para nada nascer em zero.
+- Uma pergunta — *the dish you would order again* — é o único ponto em que a resposta do visitante informa o julgamento do curador, e aparece destacada no admin.
+
+---
+
+## 11. Modelo de autorização
 
 | Campo | Valor |
 |---|---|
-| **Modelo** | [ **A â€” Tenant-scoped** (`company_id = <fn_company>()` + `is_superadmin()`) \| **B â€” Capability-RBAC** (substrato cargo Ã— capacidade, `has_capacidade()`) ] |
-| **FunÃ§Ã£o que resolve a empresa do caller** | [ `get_user_company_id()` \| `auth_company_id()` \| outra ] |
-| **Tabela de auditoria** | [ `audit_log` (padrÃ£o framework) \| `sync_log` \| outra â€” descrever schema ] |
-| **Acesso anon (pÃºblico)** | [ Negado em tudo \| ExceÃ§Ã£o via ADR-XXX: portal pÃºblico por token em RPC `SECURITY DEFINER` ] |
+| **Modelo** | **Curator allowlist** — nem tenant-scoped nem RBAC. Ver ADR-01 |
+| **Função que resolve o caller** | `is_curator()` — `exists (select 1 from curators where user_id = auth.uid())`, STABLE SECURITY DEFINER |
+| **Auditoria** | Sem tabela de audit. `places.updated_by` + `updated_at` cobrem a necessidade real |
+| **Acesso anônimo** | Leitura de conteúdo publicado + escrita de field report **exclusivamente via RPC** |
 
-> Comece no **Modelo A**, salvo necessidade clara de permissÃµes finas por papel. Migrar Aâ†’B Ã© aditivo; o inverso Ã© caro. Default do framework para auditoria Ã© `audit_log`, mas o projeto pode usar tabela prÃ³pria. Qualquer acesso anon intencional exige um ADR registrado aqui.
+### RLS por tabela
 
-### RLS â€” checklist por tabela
+| Tabela | SELECT público | Escrita |
+|---|---|---|
+| `places` | `status = 'published'` | curador |
+| `tiers` | `active = true` | curador |
+| `tags` | `active AND NOT admin_only` | curador |
+| `place_tags` | só de place publicado e tag não-admin (via EXISTS) | curador |
+| `codes` | **nenhum** — só via `rpc_redeem_code()` | curador |
+| `questions` | `active = true` | curador |
+| `field_reports` | `status = 'published'` | INSERT só via `rpc_submit_field_report()`; resto curador |
+| `curators` | nenhum | curador |
 
-| Tabela | RLS on | SELECT | INSERT | UPDATE | DELETE/Soft |
-|---|---|---|---|---|---|
-| `[tabela]` | âœ… | [escopo] | [escopo] | [escopo] | soft delete |
+### RPCs expostas ao client
 
----
-
-## 8. Hierarquia / FÃ³rmulas de CÃ¡lculo
-
-> Preencher apenas se o sistema tem cÃ¡lculos complexos (preÃ§os, scores, mÃ©tricas).  
-> Caso contrÃ¡rio, remover esta seÃ§Ã£o.
-
-```
-[FÃ³rmula principal em pseudocÃ³digo]
-
-PrecedÃªncia de regras (mais especÃ­fica â†’ mais genÃ©rica):
-  1. [regra mais especÃ­fica]
-  2. [...]
-  N. [fallback]
-```
+| RPC | O que faz |
+|---|---|
+| `rpc_redeem_code(p_code text)` | Recebe um código, devolve o efeito se existir, estiver ativo e dentro da janela de datas. Retorna vazio caso contrário. Impede a enumeração de códigos |
+| `rpc_submit_field_report(...)` | Valida que o lugar está publicado e a pergunta ativa; **deriva o status a partir de `questions.requires_review`** (o visitante não escolhe); trunca texto em 40 caracteres; aplica rate limit por `session_hash` |
 
 ---
 
-## 9. NumeraÃ§Ã£o de Documentos
+## 12. Estado atual dos dados
 
-> Preencher apenas se o sistema gera documentos numerados (orÃ§amentos, pedidos, etc.).
+511 lugares únicos, extraídos de 19 guias do Apple Maps. Números validados linha a linha contra o CSV master.
 
-```
-[Tipo]:  [PREFIXO]-{CAMPO}-{DDMMAA}-{SEQ4}
-         Ex: [PREFIXO]-CLIENTE-250325-0001
-```
+Tiers: destination 43, experience 36, fair 198, cool 30. Estrela 22. Não visitados 42. Apple IDs duplicados: zero. Coordenadas faltando: zero. Nomes homônimos: 9 (desambiguados por slug).
 
-RestriÃ§Ãµes:
-- `[entidade].short_name` tem constraint `UNIQUE` â€” evita colisÃ£o na numeraÃ§Ã£o
-- FunÃ§Ã£o `generate_[tipo]_number()` trata caracteres especiais e espaÃ§os
+**Três questões que exigem decisão do curador, não conserto silencioso do dev:**
+
+1. **28 conflitos** — lugares com tier *e* Try List, ou seja, avaliados sem terem sido visitados. O import derruba o tier e sinaliza; cada um precisa que o Michael confirme que esteve lá ou concorde que o tier era aspiracional.
+2. **15 sem classificação** — treze são exclusivos da Try List, salvos sem categoria; dois são de Fernando de Noronha, um deles um aeroporto e provavelmente não uma recomendação.
+3. **4 fora do cruzamento tier × tipo** — Grocery com `fair` (2) e `destination` (1), Bar com `experience` (1), Outdoors com `fair` (1). Não são bloqueados pelo banco (§9.2), mas o admin sinaliza.
+
+**As 93 tags nascem vazias.** A coluna `Tags` do CSV traz apenas 5 valores distintos (Breakfast & brunch 54, Rooftop 14, Night out 3, Vacation 2, Food truck 1), derivados dos nomes dos guias. Taggear 511 lugares é o gargalo real do projeto — ver §13.1.
 
 ---
 
-## 10. IntegraÃ§Ãµes Externas
+## 13. Escopo do MVP
 
-| ServiÃ§o | Finalidade | Fase | Status |
+Sete features. Ordem de dependência estrita: cada uma só começa com a anterior em build limpo.
+
+| # | Feature | Entrega | Sessões |
 |---|---|---|---|
-| [ServiÃ§o] | [Para que serve] | [1/2/3] | [PENDENTE / configurado] |
-| Resend | Alertas por email | 1 | [PENDENTE] |
-| Make.com | [AutomaÃ§Ã£o X] | 2 | Fase futura |
+| **F-00** | Fundação | Vite + TS + Tailwind + shadcn/ui, client Supabase, tipos, roteamento, layout | ~0,5 |
+| **F-01** | Schema + dados | Migration do schema corrigido, seed (93 tags, 38 perguntas, 5 tiers), import dos 511 com `cuisine` e `price_band` pré-sugeridos | ~1 |
+| **F-02** | Admin | Login (2 curadores), lista com filtros, editor de lugar, atribuição de tags, quick-add mobile, fila de revisão, distribuição de tiers, lista de desatualizados | ~2 |
+| **F-03** | Público | Portão de cidade, mapa MapLibre, lista sincronizada, detalhe do lugar | ~2 |
+| **F-04** | Filtros | Painel facetado, OR dentro / AND entre facetas, contagem ao vivo, opção zerada desabilitada, estado na URL, empty state autoral | ~1 |
+| **F-05** | Codes + Roulette | Codes completo (tema, estilo de mapa, pins, filtro pré-aplicado, destaques, type-anywhere no desktop, long-press no mobile) + Roulette | ~2 |
+| **F-06** | Field reports | 7 tipos de input, sorteio de 2-3 perguntas, agregado com n≥5, texto livre em fila, rate limit | ~1,5 |
+
+Total estimado: **~10 sessões de CLI.**
+
+### 13.1 A curadoria roda em paralelo
+
+A partir da F-02, o Michael começa a taggear. Isso não é fase de dev — é trabalho humano contínuo, e é o caminho crítico do projeto.
+
+**Estratégia de lançamento:** não esperar os 511. Os 22 com estrela mais os 43 `destination` já formam um guia excelente — são justamente os que os amigos perguntam. Publicar esses ~65 primeiro; o resto entra conforme for taggeado.
+
+### 13.2 Fora do MVP
+
+Registrados em `docs/BACKLOG.md`, com o motivo de cada corte: Google Places API e hidratação, My Maps KML sync, Trip Builder, Settle It, I'm Hungry Now, Bad Idea, shortlist local, SEO e indexação, área por polígono geográfico.
 
 ---
 
-## 11. VariÃ¡veis de Ambiente
+## 14. Regras de negócio
 
-```env
-# Client (Vite expÃµe apenas VITE_)
-VITE_SUPABASE_URL=
-VITE_SUPABASE_ANON_KEY=
+### 14.1 Julgamento
 
-# Server-side APENAS (Edge Functions secrets â€” nunca no client)
-SUPABASE_SERVICE_ROLE_KEY=
-RESEND_API_KEY=
-ANTHROPIC_API_KEY=
-[OUTRA_VAR]=
-```
+- **RN-01** — Um lugar não visitado (`visited = false`) não pode ter tier. Garantido por constraint.
+- **RN-02** — Um lugar não visitado não pode ter estrela. Garantido por constraint.
+- **RN-03** — A estrela cruza os tiers; não é um tier a mais.
+- **RN-04** — `destination` e `experience` são topos paralelos, não posições 1 e 2. Nenhum texto do produto afirma superioridade entre eles.
+- **RN-05** — Tipos sem tier (outdoors, food truck, dessert, grocery, hotel, winery, shop) usam a estrela como único sinal de qualidade.
+- **RN-06** — O admin exibe a distribuição de tiers e estrelas ao vivo. Meta: estrela abaixo de 5% dos publicados.
 
-> âš ï¸ Nunca commitar valores reais. Usar `.env.local` (no .gitignore).
+### 14.2 Publicação e descoberta
 
----
+- **RN-07** — Todo lugar importado ou criado nasce `unreviewed`. Só `published` é visível ao público.
+- **RN-08** — Validação se aplica na promoção a `published`, nunca na inserção. Importar exigindo validação completa é impossível.
+- **RN-09** — Um lugar publicado precisa de cidade. Garantido por constraint.
+- **RN-10** — Todo lugar publicado precisa ser alcançável por ao menos uma faceta literal — cuisine, city, place type ou price. Lugar acessível apenas por tag de `character` é bug.
+- **RN-11** — Interações de novidade (Roulette) são atalhos aditivos. Nada é alcançável exclusivamente por elas.
 
-## 12. Estrutura de Pastas
+### 14.3 Vocabulário
 
-```
-[nome-projeto]/
-â”œâ”€â”€ src/
-â”‚   â”œâ”€â”€ components/
-â”‚   â”‚   â”œâ”€â”€ [modulo]/                 # arquivos kebab-case
-â”‚   â”‚   â”‚   â”œâ”€â”€ [modulo]-table.tsx
-â”‚   â”‚   â”‚   â”œâ”€â”€ [modulo]-form.tsx
-â”‚   â”‚   â”‚   â””â”€â”€ [modulo]-modal.tsx
-â”‚   â”‚   â”œâ”€â”€ shared/                   # reutilizados entre features
-â”‚   â”‚   â””â”€â”€ ui/                       # shadcn/ui
-â”‚   â”œâ”€â”€ hooks/
-â”‚   â”‚   â””â”€â”€ use-[modulo].ts           # centralizados, nÃ£o colocalizados
-â”‚   â”œâ”€â”€ pages/                        # rotas (React Router DOM)
-â”‚   â”‚   â””â”€â”€ [modulo]/
-â”‚   â”‚       â”œâ”€â”€ index.tsx
-â”‚   â”‚       â”œâ”€â”€ novo.tsx
-â”‚   â”‚       â””â”€â”€ [id].tsx
-â”‚   â”œâ”€â”€ lib/
-â”‚   â”‚   â”œâ”€â”€ supabase/
-â”‚   â”‚   â”‚   â””â”€â”€ client.ts             # singleton, valida env no import
-â”‚   â”‚   â””â”€â”€ utils.ts                  # cn() + mapRpcError + formatadores BR
-â”‚   â””â”€â”€ types/
-â”‚       â””â”€â”€ index.ts                  # TODAS as interfaces centralizadas
-â”œâ”€â”€ supabase/
-â”‚   â”œâ”€â”€ migrations/
-â”‚   â”œâ”€â”€ rollbacks/                    # rollback manual por migration crÃ­tica
-â”‚   â””â”€â”€ functions/                    # Edge Functions (Deno)
-â”œâ”€â”€ docs/
-â”‚   â”œâ”€â”€ MICHAELINMAP_BIBLIA.md      â† este arquivo
-â”‚   â”œâ”€â”€ DOMAIN_QUESTIONS.md          â† Mapa de Perguntas de DomÃ­nio
-â”‚   â”œâ”€â”€ STATUS.md
-â”‚   â”œâ”€â”€ BACKLOG.md                   # fonte Ãºnica de pendÃªncias
-â”‚   â”œâ”€â”€ PATTERNS.md                  # padrÃµes por feature (criado durante o dev)
-â”‚   â”œâ”€â”€ prompts/
-â”‚   â”‚   â”œâ”€â”€ 01-orquestrador-cli.md
-â”‚   â”‚   â””â”€â”€ 02-executor-cli.md
-â”‚   â”œâ”€â”€ specs/                       # F-XX-{investigation|spec}.md
-â”‚   â””â”€â”€ qa/                          # F-XX-{audit|smoke}-report.md
-â”œâ”€â”€ .claude/
-â”‚   â”œâ”€â”€ CLAUDE.md
-â”‚   â”œâ”€â”€ init.md
-â”‚   â”œâ”€â”€ agents/
-â”‚   â”‚   â”œâ”€â”€ 01-business-architect.md
-â”‚   â”‚   â”œâ”€â”€ 02-data-architect.md
-â”‚   â”‚   â”œâ”€â”€ 03-frontend-engineer.md
-â”‚   â”‚   â”œâ”€â”€ 04-qa-security-auditor.md
-â”‚   â”‚   â””â”€â”€ 05-technical-writer.md
-â”‚   â””â”€â”€ skills/                      # MICHAELINMAP-{migration,rls-policy,rpc,naming,spec-format}
-â””â”€â”€ public/
-```
+- **RN-12** — Tiers são dados, não constantes. O código depende de `tiers.slug`; o rótulo público (`label`) é editável no admin sem deploy.
+- **RN-13** — Tags têm vocabulário controlado. Criação por texto livre é desabilitada.
+- **RN-14** — Tag com `admin_only = true` nunca aparece ao público, em nenhuma superfície: nem no filtro, nem no detalhe, nem no resultado de busca. `Hype trap` é o caso atual.
+- **RN-15** — Tag com `source = 'suggested'` é sugestão da máquina pendente de revisão. O admin as distingue visualmente das atribuídas pelo curador.
+
+### 14.4 Filtro
+
+- **RN-16** — OR dentro de uma faceta, AND entre facetas. Tacos + BBQ mostra os dois; somar East Austin restringe a tacos e BBQ em East Austin.
+- **RN-17** — Toda opção de filtro exibe contagem de resultado ao vivo. Opção que retornaria zero fica **desabilitada, não escondida**.
+- **RN-18** — O filtro de área só aparece em cidades com ~15 lugares ou mais.
+- **RN-19** — O estado do filtro serializa na URL. Qualquer visão é compartilhável.
+
+### 14.5 Codes
+
+- **RN-20** — Códigos nunca são listáveis. O público não tem SELECT em `codes`; a validação passa pela RPC, que responde por código específico.
+- **RN-21** — Codes nunca removem conteúdo. Eles reestilizam, reordenam, destacam e adicionam mensagem. Nunca escondem um lugar de quem não tem o código.
+
+### 14.6 Field reports
+
+- **RN-22** — Nenhuma pergunta pode indagar se o lugar era bom, nem permitir que uma nota seja derivada. Esse eixo pertence só ao curador.
+- **RN-23** — O status da resposta é derivado de `questions.requires_review` pelo servidor. O visitante não escolhe se sua resposta vai ao ar.
+- **RN-24** — Texto livre é limitado a 40 caracteres, entra como `pending` e só publica com aprovação. Nenhum outro input de texto ilimitado existe no produto.
+- **RN-25** — Agregados ficam ocultos abaixo de 5 respostas.
 
 ---
 
-## 13. Roteiro de Build â€” Fase 1
+## 15. Decisões de arquitetura (ADR)
 
-> SequÃªncia exata de features a implementar. O CLI segue esta ordem.  
-> Cada feature sÃ³ comeÃ§a apÃ³s a anterior estar com build OK + lint limpo.
+Registro das exceções deliberadas ao framework Wise* e das escolhas que não devem ser reabertas sem motivo novo.
 
-### ðŸ—ï¸ Setup (prÃ©-features)
-- [ ] Schema PostgreSQL aplicado (migration via MCP + saneamento `schema_migrations`)
-- [ ] RLS habilitado em todas as tabelas
-- [ ] Seed inicial (dados de configuraÃ§Ã£o base)
-- [ ] Repo GitHub criado: `AdminFeedpro/MICHAELINMAP`
-- [ ] Vite + React + TypeScript + Tailwind + shadcn/ui inicializados
-- [ ] DependÃªncias instaladas: `@supabase/supabase-js @tanstack/react-table @tanstack/react-query zustand react-router-dom sonner lucide-react`
-- [ ] `src/types/index.ts` criado (espelhando todas as tabelas)
-- [ ] Guard de autenticaÃ§Ã£o nas rotas (React Router)
-- [ ] Layout do dashboard (sidebar + header)
-- [ ] `.claude/CLAUDE.md` configurado
-- [ ] `init.md` configurado
-- [ ] Agentes em `.claude/agents/` + skills em `.claude/skills/`
-- [ ] Prompts orquestrador/executor em `docs/prompts/`
-- [ ] `docs/MICHAELINMAP_BIBLIA.md` salvo no repo
-- [ ] `docs/STATUS.md` criado (vazio)
-- [ ] `docs/BACKLOG.md` criado (vazio)
+**ADR-01 — Sem multi-tenant.** O framework exige `company_id` e RLS por empresa em toda tabela. Aqui há um único guia, dois curadores e nenhum cliente. Autorização é allowlist de curador. *Motivo: forçar tenancy seria cerimônia sem função.*
 
-### [ðŸ·ï¸ MÃ“DULO 1 â€” NOME DO MÃ“DULO]
+**ADR-02 — Produto em inglês, formato en-US.** O framework exige UI em PT-BR e formato brasileiro. O guia é de Austin, os usuários são anglófonos, e as 93 tags e 38 perguntas já estão escritas em inglês. Documentação interna e conversas seguem em PT-BR. *Motivo: o produto não é brasileiro.*
 
-#### F-01 â€” [Nome da feature]
-- [ ] [Checklist item 1]
-- [ ] [Checklist item 2]
-- [ ] Build OK + Lint limpo
+**ADR-03 — `status` no lugar de `deleted_at`.** O framework exige soft delete por `deleted_at`. Aqui `status` (`unreviewed | published | closed | hidden`) é mais expressivo e já cobre o caso. *Motivo: um lugar que fechou é diferente de um lugar escondido, e nenhum dos dois é "deletado".*
 
-#### F-02 â€” [Nome da feature]
-- [ ] [Checklist item 1]
-- [ ] Build OK + Lint limpo
+**ADR-04 — Sem GANTT, sem DOMAIN_QUESTIONS, sem spec por feature, sem pipeline de agentes.** O framework Wise* pressupõe SaaS com cliente e prestação de contas. Este projeto é pessoal, o PRD já cumpre o papel de spec, e o custo do processo superaria o do código. Mantidos: migrations versionadas, `STATUS.md`, `BACKLOG.md` e esta Bíblia. *Motivo: proporcionalidade.*
 
-> Continuar numerando features em sequÃªncia lÃ³gica de dependÃªncia.
-> Regra: feature X sÃ³ comeÃ§a se feature X-1 estÃ¡ completa.
+**ADR-05 — MapLibre GL, não Google Maps.** Escolhido originalmente porque troca estilo de mapa em runtime, do que os Codes dependem. Mantido também por não cobrar por render. *Não substituir por embed do Google.*
+
+**ADR-06 — Sem Google Places API.** O original hidratava os 511 lugares contra o Places para obter horário, telefone e faixa de preço. Cortado: horário resolve com o botão de direções, e **faixa de preço é julgamento do Michael, não do Google**. A pré-classificação de `cuisine` e `price_band` é feita pelo CLI na geração do seed, marcada como `suggested`. Geocoding do quick-add usa Nominatim/OSM. *Motivo: elimina uma API paga, uma chave, um script de hidratação e um NFR inteiro, sem perda relevante.*
+
+**ADR-07 — Não-listado (`noindex`).** O guia é público e sem senha, mas não é indexado por buscador. *Motivo: os field reports dependem de quem responde ter estado no lugar; os Codes pressupõem distribuição pessoal; e a decisão é reversível em minutos numa direção e lenta e incompleta na outra.* Reavaliar só se o Michael pedir. Consequência: nenhum trabalho de SEO no MVP.
+
+**ADR-08 — Sem My Maps sync.** O original sincronizava um mapa do Google via KML. O quick-add mobile já é caminho completo de captura — o próprio PRD admite isso. *Motivo: era a feature de maior complexidade e menor valor marginal.* Some junto a tabela `sync_runs` e o gate de teste de sabotagem.
 
 ---
 
-## 14. Fases Futuras (referÃªncia â€” nÃ£o buildar agora)
+## 16. Decisões pendentes
 
-### Refino Visual *(apÃ³s o MVP funcional)*
-- Aplicar o design system completo (skill `feedback-comunicacao-design`): UI funcional â†’ kit polido, estÃ©tica da marca (tema da seÃ§Ã£o 2), refino de layout/microinteraÃ§Ãµes.
-- Derivar o kit do produto `MICHAELINMAP-saas`. A conversa profunda de design rola no inÃ­cio desta fase (telas reais na frente). Funcional-primeiro: sÃ³ depois do nÃºcleo do MVP rodar.
-
-### Fase 2
-- [Feature / mÃ³dulo planejado]
-- [Feature / mÃ³dulo planejado]
-
-### Fase 3
-- [Feature / mÃ³dulo planejado]
-- [EvoluÃ§Ã£o para SaaS multi-tenant â€” se aplicÃ¡vel]
-
----
-
-## 15. DecisÃµes Pendentes
-
-> Itens que precisam de resposta do cliente ou decisÃ£o antes de avanÃ§ar.
-
-- [ ] [DecisÃ£o pendente 1 â€” ex: markups reais por tier]
-- [ ] [DecisÃ£o pendente 2 â€” ex: validade padrÃ£o de documentos em dias]
-- [ ] [DecisÃ£o pendente 3]
+| # | Decisão | Status | Bloqueia |
+|---|---|---|---|
+| DP-01 | `destination` acima de `experience`? | ✅ Resolvida — não faz diferença, topos paralelos (RN-04) | — |
+| DP-02 | Cidades singleton: pares, agrupadas ou suprimidas? | ✅ Resolvida — exibir como pares | — |
+| DP-03 | Nomes públicos dos tiers | ✅ Resolvida — editáveis no admin (RN-12) | — |
+| DP-04 | `Hype trap` público ou admin? | ✅ Resolvida — admin-only (RN-14) | — |
+| DP-05 | Link indexável? | ✅ Resolvida — não-listado (ADR-07) | — |
+| DP-06 | O Michael quer aparecer — rosto, perfil de gosto, página "about"? | 🔴 Aberta | Copy e tom. Não bloqueia build |
+| DP-07 | Notas de voz por lugar | 🔴 Aberta | Fora do MVP; candidata a fase futura |
+| DP-08 | Os 28 conflitos, 15 sem classificação e 4 fora do cruzamento | 🔴 Aberta — depende do Michael | Publicação desses lugares específicos |
 
 ---
 
-## 16. Camada de InteligÃªncia (IA)
+## 17. Como o CLI usa este documento
 
-> Esta seÃ§Ã£o define COMO a IA participa do produto. ReferÃªncia principal: `docs/DOMAIN_QUESTIONS.md`.
-> Se o projeto nÃ£o tem camada de IA, remover esta seÃ§Ã£o.
+1. **Boot da sessão:** ler `.claude/CLAUDE.md` → esta Bíblia → `docs/STATUS.md` → `docs/BACKLOG.md`.
+2. **Antes de codar:** confirmar com o Edu qual feature está em foco. Nunca começar sem confirmação.
+3. **Dúvida de comportamento:** §14 (regras de negócio).
+4. **Dúvida de schema:** §9 — e confirmar contra o banco vivo via MCP antes de escrever SQL.
+5. **Dúvida sobre por que algo não está no projeto:** §15 (ADRs) antes de propor de novo.
+6. **Ao fechar feature:** atualizar `STATUS.md`; pendência nova vai para `BACKLOG.md`.
+7. **O PRD original** (`docs/files/`) é material de origem, não fonte da verdade. Onde divergir desta Bíblia, esta Bíblia vence.
 
-### 16.1 Resumo da camada
-
-**Tipo de IA no produto:** [query inteligente | agentes | LLM conversacional | alertas | combinaÃ§Ã£o]
-**Canais de interaÃ§Ã£o:** [dashboard widgets | chat in-app | WhatsApp/Telegram | alertas push | relatÃ³rios agendados]
-**Custo estimado de inferÃªncia (mensal por cliente):** [baixo < R$50 | mÃ©dio R$50-200 | alto > R$200]
-
-### 16.2 Perguntas de DomÃ­nio atendidas pelo MVP
-
-> Listar apenas as perguntas que o MVP responde. ReferÃªncia cruzada com `docs/DOMAIN_QUESTIONS.md`.
-
-| # | Pergunta | Tipo de IA | Interface | Dados necessÃ¡rios |
-|---|---|---|---|---|
-| DQ-01 | [pergunta] | [query/cÃ¡lculo/LLM/agente] | [widget/chat/alerta] | [tabelas e campos] |
-| DQ-02 | [pergunta] | [tipo] | [interface] | [dados] |
-
-### 16.3 Fluxos agÃªnticos
-
-> Descrever cada fluxo onde um agente executa tarefas no lugar do usuÃ¡rio.
-> Se o MVP nÃ£o tem fluxos agÃªnticos (apenas queries/cÃ¡lculos), marcar "Fase futura" e listar candidatos.
-
-#### AG-01 â€” [Nome do fluxo agÃªntico]
-- **Trigger:** [O que dispara â€” mensagem do usuÃ¡rio, evento do sistema, agendamento]
-- **Steps:** [SequÃªncia de aÃ§Ãµes que o agente executa]
-- **Output:** [O que o usuÃ¡rio recebe â€” resposta, aÃ§Ã£o executada, relatÃ³rio]
-- **Autonomia:** [Executa sozinho | Pede confirmaÃ§Ã£o antes de agir]
-- **Fallback:** [O que acontece se a IA nÃ£o tem confianÃ§a â€” escala para humano? mostra incerteza?]
-- **Dados acessados:** [Tabelas, APIs, fontes externas]
-
-### 16.4 Limites e governanÃ§a da IA
-
-- **AÃ§Ãµes que a IA NUNCA faz sozinha:** [ex: deletar registros, alterar preÃ§os, enviar comunicaÃ§Ãµes externas]
-- **NÃ­vel de confianÃ§a mÃ­nimo para aÃ§Ã£o autÃ´noma:** [ex: 90% para classificaÃ§Ã£o, 95% para aÃ§Ã£o financeira]
-- **Logging:** toda interaÃ§Ã£o com a IA Ã© logada em `[tabela_ai_logs]` com: prompt, resposta, confianÃ§a, aÃ§Ã£o tomada
-- **LGPD:** dados pessoais nunca sÃ£o enviados para APIs externas sem consentimento. [detalhar tratamento]
-
-### 16.5 Infraestrutura de IA
-
-```
-Provider LLM:       [Anthropic Claude | OpenAI | ambos com fallback]
-Modelo padrÃ£o:      [claude-sonnet-4-5-20250514 | gpt-4o-mini | outro]
-Modelo complexo:    [claude-opus-4-5-20250402 | gpt-4o | outro â€” para tarefas de alta complexidade]
-OrquestraÃ§Ã£o:       [Supabase Edge Functions (padrÃ£o) | Make.com | n8n]
-Mensageria:         [WhatsApp Business API | Telegram Bot | N/A â€” especificar fase]
-MemÃ³ria/Contexto:   [Supabase (tabela ai_context) | Redis | outro]
-Limite de tokens:   [budget mensal por cliente | por interaÃ§Ã£o | ilimitado no tier X]
-```
-
----
-
-## 17. Como o CLI deve usar este documento
-
-1. **InÃ­cio de sessÃ£o:** ler `MICHAELINMAP_BIBLIA.md` + `STATUS.md` + `DOMAIN_QUESTIONS.md`
-2. **Antes de codar:** verificar qual feature estÃ¡ em andamento no `STATUS.md`
-3. **Durante o build:** seguir a sequÃªncia do Roteiro (seÃ§Ã£o 13)
-4. **Ao implementar camada de IA:** consultar seÃ§Ã£o 16 + `DOMAIN_QUESTIONS.md`
-5. **Ao finalizar uma feature:** atualizar `STATUS.md` (seÃ§Ã£o concluÃ­da + prÃ³xima aÃ§Ã£o)
-6. **DÃºvida de regra de negÃ³cio:** consultar seÃ§Ã£o 5 deste arquivo
-7. **DÃºvida de schema:** consultar seÃ§Ã£o 7 deste arquivo
-8. **DÃºvida sobre IA/agentes do produto:** consultar seÃ§Ã£o 16 deste arquivo
-9. **Ao invocar agente de dev:** especificar o arquivo explicitamente (ex: `Use o agente em .claude/agents/02-data-architect.md`)
-10. **NUNCA** pular para uma feature de mÃ³dulo posterior sem completar as anteriores
-
----
-
-## 18. Como o Claude Web/Desktop usa este documento
-
-Edu compartilha o `STATUS.md` atualizado no inÃ­cio de cada conversa no Claude Web/Desktop.
-O Claude Web/Desktop usa este arquivo + o STATUS para:
-- Entender o estado atual do projeto
-- Planejar as prÃ³ximas features (incluindo features de IA â€” seÃ§Ã£o 16)
-- Produzir specs, schemas e documentos para o CLI executar
-- Resolver dÃºvidas de arquitetura, regras de negÃ³cio e design da camada de IA
+> **A camada de julgamento — `tier`, `starred`, `the_dish`, `curator_note`, `story`, `last_visited` e as atribuições de tag — é o único dado insubstituível do sistema.** Qualquer rotina automática que escreva nesses campos precisa de autorização explícita.

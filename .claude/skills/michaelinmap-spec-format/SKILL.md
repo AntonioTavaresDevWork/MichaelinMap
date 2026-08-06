@@ -1,5 +1,5 @@
-﻿---
-name: wise-spec-format
+---
+name: michaelinmap-spec-format
 description: Formato de spec tÃ©cnica de feature nos projetos Wise*. 12 entregÃ¡veis padrÃ£o (schema, RLS, RPCs, smoke tests, mudanÃ§as de comportamento, migration plan). Use ao escrever spec de qualquer feature (F-XX-spec.md), antes do handoff pro Data Architect.
 ---
 

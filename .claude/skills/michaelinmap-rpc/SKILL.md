@@ -1,5 +1,5 @@
-﻿---
-name: wise-rpc
+---
+name: michaelinmap-rpc
 description: PadrÃ£o de funÃ§Ã£o RPC SECURITY DEFINER nos projetos Wise*. SET search_path obrigatÃ³rio, validaÃ§Ãµes server-side, auditoria na tabela declarada pelo projeto, REVOKE pÃºblico + GRANT seletivo (com exceÃ§Ã£o de portal pÃºblico via ADR), retorno padronizado JSON. AutorizaÃ§Ã£o e auditoria adaptam ao modelo declarado na BÃ­blia. Use ao criar ou modificar funÃ§Ãµes RPC chamadas pelo frontend via supabase-js.
 ---
 
