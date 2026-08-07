@@ -238,17 +238,18 @@ Nada em execução.
 
 ## 🚫 Blockers
 
-**Nenhum blocker de código.** O MVP fechou e nada impede o produto de ir ao ar.
+**Nenhum blocker.** O MVP fechou e nada impede o produto de ir ao ar.
 
-⚠️ **`BL-29` — o mapa é intermitente, e essa é a informação nova.** Ele parou de reproduzir na S07
-(geometria completa nos dois estilos, rodovias com rótulo, parques e água) e **voltou a reproduzir
-na S08**, na verificação da remoção da faceta de rating: pins posicionados certo, zero geometria,
-fundo liso. Entre uma coisa e outra o nosso código do mapa não mudou.
+🔽 **`BL-29` deixou de ser bug e virou limitação da minha inspeção visual.** O Edu relatou na S08
+que **vê o mapa normalmente no Firefox e no celular** — ou seja, o guia funciona para quem o usa, e
+o mapa mudo é do Chrome automatizado desta máquina. O produto nunca esteve quebrado.
 
-**Continua sendo sintoma sem causa explicada, e continua não valendo a pena refazer a investigação.**
-O que a intermitência acrescenta é que a hipótese ambiental do `BL-29` ficou mais forte: causa no
-código não vai e volta sozinha entre duas sessões sem deploy. O histórico do que já foi descartado
-com evidência está no `BL-29` e não deve ser repetido.
+Isso **contradiz o registro da S05**, que dizia ter reproduzido em Chrome, Firefox e Edge com um
+MapLibre puro de CDN: ou o ambiente mudou nesses meses, ou aquele teste não isolava o que se
+pensava. Não refiz nenhum dos dois, e o que está acima é relato do Edu, não verificação minha.
+
+**O que fica na prática:** quando uma sessão precisar conferir o mapa de verdade, quem olha é o Edu
+— eu não tenho como. Só reabrir se alguém relatar mapa mudo num navegador de uso real.
 
 **Um detalhe adjacente, da mesma sessão e possivelmente da mesma família:** o Chrome recusou
 `localhost:5173` e `127.0.0.1:5173` com a porta comprovadamente escutando, e só respondeu pelo IP
@@ -397,11 +398,15 @@ sempre funcionaram (RN-05), agora valendo também para restaurante e bar.
 
 **Gate:** build e lint limpos. Bundle 762 → 761 kB.
 
-⚠️ **O `BL-29` voltou a reproduzir.** Nas duas telas do guia de Austin desta verificação o mapa
-desenhou os pins posicionados certo e **nenhuma geometria** — sem ruas, sem água, fundo liso. Não
-fui atrás: a investigação técnica está esgotada desde a S05 e o próximo passo registrado é do Edu.
-Registro aqui só para desfazer o "deixou de reproduzir" da S07 — o sintoma é intermitente, o que é
-informação nova e reforça a hipótese ambiental.
+**E o `BL-29` fechou como pergunta, ao fim da sessão.** Eu havia registrado que o mapa voltara a não
+desenhar geometria nas duas telas de Austin desta verificação. O Edu respondeu que **vê o mapa no
+Firefox e no celular** — o que encerra o assunto na direção que mais importava: o produto está
+certo, e o mapa mudo é do Chrome que eu dirijo. Rebaixado de bug a limitação da inspeção pelo CLI.
+Vale registrar que isso contradiz o teste da S05, que dizia ter reproduzido nos três navegadores;
+não refiz nenhum dos dois, e o relato é do Edu, não verificação minha.
+
+**A consequência operacional é para as próximas sessões:** eu não consigo conferir o mapa. Quando
+uma verificação depender dele, quem olha é o Edu.
 
 ### 2026-08-07 — S07: F-05 — Codes e Roulette
 
