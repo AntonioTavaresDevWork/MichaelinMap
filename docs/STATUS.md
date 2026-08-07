@@ -63,6 +63,7 @@ Objetivo imediato: F-00 (scaffold) e F-01 (schema + dados).
 - [x] **Gate reexecutado nesta máquina:** `npm run build` e `npm run lint` limpos
 - [x] Token do Supabase validado: projeto `ACTIVE_HEALTHY`, PostgreSQL 17.6.1, região us-west-2
 - [x] Caminho da pasta corrigido na Bíblia §3 e no `.claude/CLAUDE.md`
+- [x] `env.example` duplicado removido (`BL-24` fechado) — `.env.example` é o único canônico
 
 ---
 
