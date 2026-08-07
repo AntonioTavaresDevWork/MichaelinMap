@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   LngLatBounds,
   Map as MapLibreMap,
@@ -49,6 +49,7 @@ export function GuideMap({ places, selectedId, onSelect }: Props) {
   const map = useRef<MapLibreMap | null>(null)
   const markers = useRef(new globalThis.Map<string, Marker>())
   const ready = useRef(false)
+  const [failure, setFailure] = useState<string | null>(null)
 
   // One map per mount. StrictMode runs effects twice in development, so the
   // cleanup has to fully dispose or the second run leaves an orphan canvas.
@@ -68,13 +69,32 @@ export function GuideMap({ places, selectedId, onSelect }: Props) {
     })
 
     instance.addControl(new NavigationControl({ showCompass: false }), 'top-right')
+
     instance.on('load', () => {
       ready.current = true
+      // The container is often laid out after the map is constructed — inside a
+      // lazy boundary especially. Without this the canvas keeps whatever size it
+      // had at construction, which is how a map ends up grey and empty.
+      instance.resize()
     })
+
+    // A failing style or tile source is otherwise silent: the map just sits
+    // there grey. Surface it instead of making someone open devtools.
+    instance.on('error', (event) => {
+      const message = event?.error?.message ?? 'Unknown map error'
+      console.error('[GuideMap]', message, event)
+      setFailure(message)
+    })
+
+    // Height comes from a vh unit and a sticky wrapper, both of which settle
+    // after the first paint and change again on rotate or resize.
+    const observer = new ResizeObserver(() => instance.resize())
+    observer.observe(container.current)
 
     map.current = instance
 
     return () => {
+      observer.disconnect()
       ready.current = false
       markerStore.forEach((marker) => marker.remove())
       markerStore.clear()
@@ -147,5 +167,15 @@ export function GuideMap({ places, selectedId, onSelect }: Props) {
     })
   }, [selectedId, places])
 
-  return <div ref={container} className="size-full" />
+  return (
+    <div className="relative size-full">
+      <div ref={container} className="size-full" />
+
+      {failure && (
+        <div className="absolute inset-x-0 bottom-0 bg-background/95 px-3 py-2 text-xs text-destructive">
+          Map failed to load: {failure}
+        </div>
+      )}
+    </div>
+  )
 }
