@@ -1,12 +1,34 @@
 import { useEffect, useRef, useState } from 'react'
 import {
+  config as maplibreConfig,
   LngLatBounds,
   Map as MapLibreMap,
   Marker,
   NavigationControl,
 } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+// `?worker&url` bundles the worker — resolving its own imports — and returns
+// the URL. Plain `?url` copies the file verbatim, and it would arrive still
+// importing `./maplibre-gl-shared.mjs`, which nothing emits next to it.
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import type { Place } from '@/types'
+
+/**
+ * Point MapLibre at its own worker, explicitly.
+ *
+ * MapLibre v6 builds the worker path at runtime by concatenating a string and
+ * resolving it against `import.meta.url`:
+ *
+ *   new URL(`./maplibre-gl-worker.mjs`, import.meta.url)
+ *
+ * No bundler can see through that, so Rollup never emits the file and the URL
+ * ends up pointing at `/assets/maplibre-gl-worker.mjs`, which does not exist.
+ * The worker request then hangs, and since the worker is what fetches and
+ * decodes vector tiles, the map renders its background colour and nothing else
+ * — no error, no failed request, just a blank canvas with the markers floating
+ * on top. `config.WORKER_URL` is the supported way out.
+ */
+maplibreConfig.WORKER_URL = maplibreWorkerUrl
 
 /**
  * OpenFreeMap: free, no key, no quota (ADR-06 logic — the guide should not
