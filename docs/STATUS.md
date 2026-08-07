@@ -103,7 +103,9 @@ Depois disso, a F-02 entrega: login dos 2 curadores, lista com filtros, editor d
 
 Nenhum bloqueante para código. `OP-02` bloqueia o *teste* da F-02, não a escrita dela.
 
-**`OP-03` — o repositório remoto não existe.** A S01 registrou "repositório GitHub criado"; a S03 descobriu que não havia `.git` local e criou um, mas sem remote. Agora ficou claro que o remote também nunca existiu: `git push` falha com `'origin' does not appear to be a git repository`. `gh` não está instalado, então o CLI não consegue verificar se `AdminFeedpro/MichaelinMap` existe nem criá-lo. **Dois commits de F-01 estão só nesta máquina.** É a terceira afirmação da S01 que não se sustentou — vale tratar o resto daquele registro com desconfiança.
+**`OP-03` — push pendente de autenticação.** O repositório `AdminFeedpro/MichaelinMap` **existe e a S01 estava certa**: tem os commits `038d040` e `d98f07c`, com os 68 arquivos da fundação. O que a S03 fez foi `git init` numa pasta que havia perdido o `.git`, criando um histórico órfão em paralelo — daí a ausência de ancestral comum. Reconciliado nesta sessão por rebase (ver log).
+
+Falta só o push, e ele **não roda a partir do CLI**: a leitura do remote funciona com credencial em cache, mas a escrita abre prompt do Git Credential Manager, que trava num shell não-interativo. O Edu executa com `! git push -u origin main`. Até lá, os commits da F-01 existem só nesta máquina.
 
 ---
 
@@ -167,7 +169,8 @@ Total estimado: ~10 sessões. A curadoria do Michael roda em paralelo a partir d
 
 **Duas decisões tomadas no fim da sessão:**
 - **Uma conta de curador, não duas.** O Edu acessa pela conta do Michael. Fecha `BL-11` — o PRD, que dizia "single-user authentication", estava certo desde o começo. Não muda schema: `curators` só passa a ter uma linha. Custo aceito: `updated_by` deixa de dizer *quem* editou (`BL-17` atualizado)
-- **Push impossível:** não há remote. Ver Blockers e `OP-03`
+- **História reconciliada com o GitHub.** O repo remoto existia desde a S01, com dois commits de fundação; o `git init` da S03 tinha criado um histórico órfão em paralelo, sem ancestral comum. Resolvido por `git rebase --onto origin/main b6fef0c main`: o "commit inicial" local, que só replicava o que já estava no GitHub, foi descartado e os quatro seguintes replicados sobre a história real. Resultado linear, árvore final byte-idêntica à de antes do rebase, push vira fast-forward — nada de `--force`, nenhum commit da fundação perdido. Branch `backup-pre-rebase` guardada por segurança
+- **Correção de registro:** eu havia escrito neste arquivo que "o remote nunca existiu" e que era "a terceira afirmação da S01 que não se sustenta". Errado nas duas contas — a S01 estava certa. O que falhou foi o diagnóstico da S03, que tratou a ausência de `.git` local como ausência de repositório
 
 **Próxima sessão:** F-02 — Admin. Primeiro `OP-01` a `OP-03`, senão não há como testar escrita nem como versionar fora desta máquina.
 
