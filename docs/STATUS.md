@@ -102,9 +102,7 @@ Depois disso, a F-02 entrega: login dos 2 curadores, lista com filtros, editor d
 
 Nenhum. A conta de curador existe e a autorização foi verificada — a F-02 pode começar e ser testada.
 
-**`OP-03` — push pendente de autenticação.** O repositório `AdminFeedpro/MichaelinMap` **existe e a S01 estava certa**: tem os commits `038d040` e `d98f07c`, com os 68 arquivos da fundação. O que a S03 fez foi `git init` numa pasta que havia perdido o `.git`, criando um histórico órfão em paralelo — daí a ausência de ancestral comum. Reconciliado nesta sessão por rebase (ver log).
-
-Falta só o push, e ele **não roda a partir do CLI**: a leitura do remote funciona com credencial em cache, mas a escrita abre prompt do Git Credential Manager, que trava num shell não-interativo. O Edu executa com `! git push -u origin main`. Até lá, os commits da F-01 existem só nesta máquina.
+Nenhum. O `OP-03` fechou no fim da sessão — ver log.
 
 ---
 
@@ -170,6 +168,7 @@ Total estimado: ~10 sessões. A curadoria do Michael roda em paralelo a partir d
 - **Uma conta de curador, não duas.** O Edu acessa pela conta do Michael. Fecha `BL-11` — o PRD, que dizia "single-user authentication", estava certo desde o começo. Não muda schema: `curators` só passa a ter uma linha. Custo aceito: `updated_by` deixa de dizer *quem* editou (`BL-17` atualizado)
 - **História reconciliada com o GitHub.** O repo remoto existia desde a S01, com dois commits de fundação; o `git init` da S03 tinha criado um histórico órfão em paralelo, sem ancestral comum. Resolvido por `git rebase --onto origin/main b6fef0c main`: o "commit inicial" local, que só replicava o que já estava no GitHub, foi descartado e os quatro seguintes replicados sobre a história real. Resultado linear, árvore final byte-idêntica à de antes do rebase, push vira fast-forward — nada de `--force`, nenhum commit da fundação perdido. Branch `backup-pre-rebase` guardada por segurança
 - **Correção de registro:** eu havia escrito neste arquivo que "o remote nunca existiu" e que era "a terceira afirmação da S01 que não se sustenta". Errado nas duas contas — a S01 estava certa. O que falhou foi o diagnóstico da S03, que tratou a ausência de `.git` local como ausência de repositório
+- **O projeto mudou de casa no GitHub.** O push para `AdminFeedpro/MichaelinMap` respondia "Repository not found" mesmo com a leitura funcionando. Causa: a credencial armazenada no Git Credential Manager desta máquina é da conta **`AntonioTavaresDevWork`**, que não tem acesso àquele repositório — o GitHub devolve 404 em vez de 403 para não confirmar a existência de repo privado. Por decisão do Edu, criei `AntonioTavaresDevWork/MichaelinMap` (privado) e apontei o remote para lá. Subiram os 9 commits, com os dois da fundação (`038d040`, `d98f07c`) preservados. O repositório antigo continua existindo, parado naqueles dois commits
 
 - **Curador semeado no fim da sessão.** Conta `mikemyday@mikecofone.com` criada no painel pelo Edu, linha inserida por migration versionada. O teste com JWT simulado provou os dois lados do modelo: curador escreve, autenticado-fora-da-allowlist não vê nem escreve nada além do que um visitante anônimo veria
 
