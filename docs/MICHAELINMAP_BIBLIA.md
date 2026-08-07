@@ -16,6 +16,7 @@ crítico agora é inteiramente humano: a voz do curador e a taggeação (§13.1)
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 2.8 | 2026-08-07 | **RN-31 nova** (§14.3): tag `suggested` não aparece em superfície pública nenhuma até o curador confirmar. §12 registra o fato que motivou — as 145 atribuições são todas da máquina e nenhuma é do Michael |
 | 2.7 | 2026-08-07 | **A faceta de rating saiu do filtro público** por decisão do Edu (S08). **RN-30 nova** (§14.4). O tier continua existindo inteiro — rotula o lugar na lista e no detalhe, ordena a lista, colore o pin e é do curador; o que saiu é o eixo de navegação e o parâmetro `tier` da URL. §6 ganha a distinção entre julgamento e eixo de navegação |
 | 2.6 | 2026-08-07 | F-06 aplicada (S08), sem tocar o schema — **o MVP fechou**. **RN-29 nova** (§14.6): a pergunta de acompanhamento (`judgment_prompt`) é escolha fechada, nunca texto livre. §10 ganha como a semeadura do curador funciona na prática |
 | 2.5 | 2026-08-07 | F-05 aplicada (S07), sem tocar o schema. **RN-27 e RN-28 novas** (§14.5): o preset de um code semeia o painel uma vez e nunca sobrescreve a URL; o resgate é revalidado no servidor a cada carga. §13 ganha a nota de que a F-01 já entregara a tabela inteira |
@@ -385,6 +386,17 @@ Tiers: destination 43, experience 36, fair 198, cool 30. Estrela 22. Não visita
 
 **As 93 tags nascem vazias.** A coluna `Tags` do CSV traz apenas 5 valores distintos (Breakfast & brunch 54, Rooftop 14, Night out 3, Vacation 2, Food truck 1), derivados dos nomes dos guias. Taggear 511 lugares é o gargalo real do projeto — ver §13.1.
 
+> **Medido na S08, e é pior do que "gargalo".** Das 145 atribuições existentes, **zero** são do
+> curador — todas são `suggested`, produzidas pelo import. Dos 58 publicados, 11 têm alguma tag e
+> **nenhum** tem `the_dish`. Só 21 das 94 tags foram usadas alguma vez. Ou seja: a curadoria que a
+> §13.1 descreve como "rodando em paralelo desde a F-02" **não começou**. O Edu não pode substituí-la
+> — ele nunca esteve em nenhum desses lugares; a lista é do Michael, e o julgamento também.
+>
+> Isso não invalida o guia: `tier` e `starred` **são** julgamento do Michael, vieram dos 19 guias
+> dele, cobrem os 58 publicados e sustentam a lista, a ordem e o mapa. O que falta é a voz —
+> `the_dish` e `curator_note` —, e a §1.1 diz que é ela que separa o artefato de personalidade de uma
+> lista organizada. É trabalho humano de dez frases, não de quinhentas tags.
+
 ---
 
 ## 13. Escopo do MVP
@@ -456,6 +468,15 @@ Registrados em `docs/BACKLOG.md`, com o motivo de cada corte: Google Places API 
 - **RN-13** — Tags têm vocabulário controlado. Criação por texto livre é desabilitada.
 - **RN-14** — Tag com `admin_only = true` nunca aparece ao público, em nenhuma superfície: nem no filtro, nem no detalhe, nem no resultado de busca. `Hype trap` é o caso atual.
 - **RN-15** — Tag com `source = 'suggested'` é sugestão da máquina pendente de revisão. O admin as distingue visualmente das atribuídas pelo curador.
+- **RN-31** — **Tag `suggested` não aparece em nenhuma superfície pública.** Nem como selo no lugar,
+  nem como faceta, nem como contagem — até o curador confirmá-la, virando `curator`. A RN-15 mandava
+  distinguir as duas **no admin**, e isso sempre valeu; o que faltava era a outra ponta: o visitante
+  não tinha como distinguir, então um palpite do import (casamento de palavra no nome do lugar)
+  chegava até ele com a mesma autoridade de uma decisão do Michael. Num produto cujo valor inteiro é
+  o julgamento de uma pessoa (§1.1), isso não é detalhe de exibição — é a diferença entre o guia
+  afirmar e o guia chutar. **Consequência aceita:** enquanto a curadoria não começar, o painel
+  público mostra menos facetas. Preferível a mostrar mais do que se sabe. Registrada na S08, quando
+  se constatou que as 145 atribuições existentes eram **todas** `suggested` e todas visíveis.
 
 ### 14.4 Filtro
 

@@ -221,11 +221,14 @@ Nada em execução.
 
 **Não há próxima feature.** O MVP acabou. O que o produto precisa agora não é código:
 
-1. **A voz.** Nenhum dos 58 publicados tem `the_dish` ou `curator_note`. Escrever essas frases em
-   8-10 dos mais fortes é o que separa a demo de uma lista organizada — e com os Codes prontos, é
-   exatamente essa voz que um code entrega a uma pessoa.
-2. **Taggear.** As 145 atribuições continuam todas `suggested`, e seis das sete facetas de tag estão
-   dormentes (`BL-30`). O filtro está pronto e esperando o dado.
+1. **A voz, e só o Michael pode dar.** Nenhum dos 58 publicados tem `the_dish` ou `curator_note`.
+   São duas perguntas de memória por lugar — "o que eu peço aqui?", "por que este importa?" — em 8 a
+   10 dos mais fortes. Não precisa abrir o admin nem ter nada na mão. É a menor tarefa do projeto
+   com o maior retorno, e com os Codes prontos é exatamente isso que um code entrega a uma pessoa.
+2. **Taggear — também só ele.** O Edu não pode substituir (S08): nunca esteve nos lugares. Das 145
+   atribuições, zero são do curador. Com a RN-31, nenhuma delas aparece mais ao visitante, então o
+   painel tem três facetas até a curadoria começar (`BL-30`). **O que dá para adiantar sem ele** é
+   sugerir `cuisine` em massa como fila de aprovação — `BL-34`.
 3. **Duas filas com dado esperando o Michael:** os 28 conflitos de tier (`DP-08`) e as 145 tags
    sugeridas (`DP-09`). Ambas já têm superfície no Overview.
 4. **Semear field reports** (`BL-20`): a superfície existe em `/admin/reports`; os valores são
@@ -407,6 +410,29 @@ não refiz nenhum dos dois, e o relato é do Edu, não verificação minha.
 
 **A consequência operacional é para as próximas sessões:** eu não consigo conferir o mapa. Quando
 uma verificação depender dele, quem olha é o Edu.
+
+**Por último, o achado que mais muda o projeto — e não é técnico.** O Edu perguntou quais tags
+existiam para atribuir e, ao ver a lista, disse que **não tem como taggear: ele nunca esteve em
+nenhum desses lugares, a lista é do Michael.** Medi o estado real na sequência: das 145 atribuições,
+**zero** são do curador; dos 58 publicados, 11 têm alguma tag e **nenhum** tem `the_dish`; 21 das 94
+tags foram usadas alguma vez. A curadoria que este arquivo vinha descrevendo como "rodando em
+paralelo desde a F-02" **nunca começou**, e não é falta de ferramenta — é que depende de uma pessoa
+específica que ainda não sentou para fazer.
+
+**Fui checar e achei uma coisa pior que o volume:** o lado público **não distinguia** tag sugerida
+de tag do curador. `usePlaceTagLabels` e `buildGuideIndex` liam `place_tags` sem olhar `source`, e
+as 5 cuisines que apareciam no painel de Austin eram 100% palpite do import — `Breakfast & Diner`,
+com 56 usos, veio do **nome de um guia do Apple Maps**, não de alguém decidindo. Estava assim desde
+a F-01; ninguém tinha olhado por esse ângulo.
+
+Corrigido nesta sessão: **RN-31** — tag `suggested` não aparece em superfície pública nenhuma até
+ser confirmada. O custo é visível e foi aceito de olho aberto: o painel de Austin caiu de cinco
+facetas para três (estrela, tipo, área) e os selos de cuisine sumiram das páginas de lugar. Mostrar
+menos do que se sabe é melhor que apresentar chute com a autoridade de veredito, num produto cujo
+valor inteiro é o julgamento de uma pessoa (§1.1).
+
+**O efeito colateral bom:** agora que sugestão é invisível ao visitante, sugerir em massa virou
+seguro — vira fila de aprovação no admin, não afirmação pública. É o `BL-34`.
 
 ### 2026-08-07 — S07: F-05 — Codes e Roulette
 

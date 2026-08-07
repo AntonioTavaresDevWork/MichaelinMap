@@ -212,6 +212,14 @@ export function buildGuideIndex(
     // a filter that leaks `Hype trap` would leak it as a *count*, silently.
     if (!tag || !tag.active || tag.admin_only) continue
 
+    // A machine guess is not a verdict (RN-31). Every assignment in the guide
+    // today came from the import matching words in a name, and the visitor has
+    // no way to tell that from a call the curator made — so it stays out until
+    // he confirms it. Filtering here rather than in the query is deliberate:
+    // the code editor builds its preset from this same index, so a curator
+    // cannot pin a code to a facet the visitor is unable to see.
+    if (assignment.source !== 'curator') continue
+
     let set = tokens.get(assignment.place_id)
     if (!set) {
       set = new Set<string>()

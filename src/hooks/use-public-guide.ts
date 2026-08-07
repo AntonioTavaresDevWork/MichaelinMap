@@ -91,7 +91,15 @@ export function useCities(places: Place[] | undefined): CityEntry[] {
   }, [places])
 }
 
-/** Tags a visitor may see on a place, in facet order, admin-only already excluded by RLS. */
+/**
+ * Tags a visitor may see on a place, in facet order.
+ *
+ * Admin-only tags are already excluded by RLS. What this drops on top is every
+ * assignment the curator has not confirmed (RN-31): a `suggested` row is the
+ * import having matched a word in a place's name, and on this page it would sit
+ * in the same grey pill as a tag Michael chose, saying the same thing with the
+ * same authority. The guide only shows what he stands behind.
+ */
 export function usePlaceTagLabels(
   placeId: string | undefined,
   tags: Tag[] | undefined,
@@ -102,7 +110,7 @@ export function usePlaceTagLabels(
     const byId = new Map(tags.map((tag) => [tag.id, tag]))
 
     return placeTags
-      .filter((pt) => pt.place_id === placeId)
+      .filter((pt) => pt.place_id === placeId && pt.source === 'curator')
       .map((pt) => byId.get(pt.tag_id))
       .filter((tag): tag is Tag => Boolean(tag))
       .sort((a, b) => a.facet.localeCompare(b.facet) || a.sort_order - b.sort_order)
