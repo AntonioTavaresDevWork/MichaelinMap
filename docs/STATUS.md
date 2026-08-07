@@ -72,6 +72,8 @@ Objetivo imediato: F-02 (admin) — bloqueada pelas duas pendências de painel (
 - [x] Import verificado por **checksum contra o CSV**: nome, slug, tipo, tier, estrela, visitado, país, cidade, área, coordenadas, endereço e `source_guides` — os 511 registros do banco são idênticos ao gerado da fonte
 - [x] Smoke de segurança com `SET ROLE anon`: vê 0 lugares, 93 tags (`Hype trap` oculto), 0 `place_tags`, zero acesso a `codes` e `curators`
 - [x] Smoke funcional das RPCs: code válido/minúsculo/inexistente, field report numérico → `published`, texto livre → `pending` truncado em 40 chars, duplicata bloqueada, resposta sem `value` rejeitada
+- [x] `20260806130000_f01_seed_curator.sql` — a linha do `Michael` em `curators`, resolvida por subquery em `auth.users` (sem UUID hardcoded). 2 GATEs
+- [x] **Autorização verificada ponta a ponta com JWT simulado.** Curador: vê os 511 lugares, as 94 tags, `codes` e `curators`, e escreve. Conta autenticada **fora** da allowlist: 0 lugares, 93 tags, 0 codes, 0 curators, `UPDATE` afeta 0 linhas. É exatamente o caso que o modelo original (`auth.role() = 'authenticated'`) errava — `BL-03` fechado com evidência
 - [x] `schema_migrations` saneado — versões realinhadas com os nomes de arquivo
 - [x] **Gate:** `npm run build` e `npm run lint` limpos
 
@@ -85,13 +87,9 @@ Nada em execução. F-01 fechada e verificada.
 
 ## ⏭️ Próxima ação
 
-**F-02 — Admin.** Mas antes, o que só o Edu faz (`OP-01` a `OP-03` no BACKLOG):
+**F-02 — Admin.** Nada mais bloqueia a escrita: a conta do curador existe e foi verificada.
 
-1. Criar **a** conta do Michael (`mikemyday@…`) no painel, com "Auto Confirm User" marcado — é uma conta só, que o Edu também usa
-2. Desabilitar signup no projeto
-3. Criar o repo no GitHub e adicionar o remote — a `main` local está à frente e não tem para onde subir
-
-Feito o passo 1, o CLI insere a linha em `curators` via MCP lendo o `user_id` de `auth.users`. Sem isso o admin não tem como ser testado: `is_curator()` retorna false para todo mundo e nenhuma escrita passa.
+Duas pendências operacionais menores, nenhuma bloqueante (`OP-01` e `OP-03` no BACKLOG): desabilitar o signup no painel e rodar o `git push`.
 
 Depois disso, a F-02 entrega: login dos 2 curadores, lista com filtros, editor de lugar, atribuição de tags, quick-add mobile, fila de revisão, distribuição de tiers e lista de desatualizados.
 
@@ -101,7 +99,7 @@ Depois disso, a F-02 entrega: login dos 2 curadores, lista com filtros, editor d
 
 ## 🚫 Blockers
 
-Nenhum bloqueante para código. `OP-02` bloqueia o *teste* da F-02, não a escrita dela.
+Nenhum. A conta de curador existe e a autorização foi verificada — a F-02 pode começar e ser testada.
 
 **`OP-03` — push pendente de autenticação.** O repositório `AdminFeedpro/MichaelinMap` **existe e a S01 estava certa**: tem os commits `038d040` e `d98f07c`, com os 68 arquivos da fundação. O que a S03 fez foi `git init` numa pasta que havia perdido o `.git`, criando um histórico órfão em paralelo — daí a ausência de ancestral comum. Reconciliado nesta sessão por rebase (ver log).
 
@@ -121,7 +119,7 @@ Lido via MCP no fim da S04.
 | `tiers` | 4 | `destination`, `experience`, `fair`, `cool` |
 | `place_tags` | 145 | todas `source = 'suggested'` |
 | `codes` | 1 | `DEMO`, para smoke da RPC |
-| `curators` | 0 | ⚠️ vazia — ver `OP-02` |
+| `curators` | 1 | `Michael` — `mikemyday@mikecofone.com`, conta confirmada |
 | `field_reports` | 0 | |
 
 Distribuição de julgamento: estrela 22 (4,3%), não visitados 42, com tier 279 (`fair` 182, `destination` 38, `experience` 30, `cool` 29), com área 107, 16 cidades.
@@ -172,7 +170,9 @@ Total estimado: ~10 sessões. A curadoria do Michael roda em paralelo a partir d
 - **História reconciliada com o GitHub.** O repo remoto existia desde a S01, com dois commits de fundação; o `git init` da S03 tinha criado um histórico órfão em paralelo, sem ancestral comum. Resolvido por `git rebase --onto origin/main b6fef0c main`: o "commit inicial" local, que só replicava o que já estava no GitHub, foi descartado e os quatro seguintes replicados sobre a história real. Resultado linear, árvore final byte-idêntica à de antes do rebase, push vira fast-forward — nada de `--force`, nenhum commit da fundação perdido. Branch `backup-pre-rebase` guardada por segurança
 - **Correção de registro:** eu havia escrito neste arquivo que "o remote nunca existiu" e que era "a terceira afirmação da S01 que não se sustenta". Errado nas duas contas — a S01 estava certa. O que falhou foi o diagnóstico da S03, que tratou a ausência de `.git` local como ausência de repositório
 
-**Próxima sessão:** F-02 — Admin. Primeiro `OP-01` a `OP-03`, senão não há como testar escrita nem como versionar fora desta máquina.
+- **Curador semeado no fim da sessão.** Conta `mikemyday@mikecofone.com` criada no painel pelo Edu, linha inserida por migration versionada. O teste com JWT simulado provou os dois lados do modelo: curador escreve, autenticado-fora-da-allowlist não vê nem escreve nada além do que um visitante anônimo veria
+
+**Próxima sessão:** F-02 — Admin, sem bloqueio. Sobram só o `git push` e o desligamento do signup, ambos operacionais.
 
 ### 2026-08-06 — S03: Destravamento de ambiente
 

@@ -101,6 +101,6 @@ Não são código. Precisam de alguém logado no painel, e **bloqueiam a F-02**.
 
 | # | Item | Estado |
 |---|---|---|
-| OP-01 | Desabilitar signup no projeto Supabase | ⬜ Pendente. Enquanto estiver aberto, qualquer pessoa cria conta — o que não dá escrita nenhuma (a allowlist `curators` é que decide), mas cria contas órfãs |
-| OP-02 | Criar **a** conta do Michael (`mikemyday@…`) em `auth.users`, com "Auto Confirm User" marcado, e inserir a linha em `curators` | ⬜ Pendente. É uma conta só, compartilhada com o Edu (Bíblia §4). Até existir, `is_curator()` é false para todo mundo e **ninguém escreve nada**. O INSERT em `curators` o CLI faz via MCP lendo o `user_id` de `auth.users` |
+| OP-01 | Desabilitar signup no projeto Supabase | ⬜ Pendente, mas **não é buraco de segurança**: o teste negativo da S04 mostrou que conta autenticada fora da allowlist é tratada como visitante — 0 lugares, 0 codes, escrita bloqueada. É higiene, para não acumular conta órfã |
+| ✅ OP-02 | Criar a conta do Michael e inserir a linha em `curators` | Feito na S04. `mikemyday@mikecofone.com`, confirmada, semeada por `20260806130000_f01_seed_curator.sql` com `name = 'Michael'`. Verificado ponta a ponta com JWT simulado |
 | OP-03 | Rodar `! git push -u origin main` | ⬜ Pendente. Remote já configurado e histórico já reconciliado por rebase — o push é fast-forward, sem `--force`. Não roda pelo CLI: a escrita abre prompt do Git Credential Manager e trava em shell não-interativo. `gh` também não está instalado |
