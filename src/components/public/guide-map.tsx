@@ -17,16 +17,11 @@ import type { Place } from '@/types'
  * Point MapLibre at its own worker, explicitly.
  *
  * MapLibre v6 builds the worker path at runtime by concatenating a string and
- * resolving it against `import.meta.url`:
- *
- *   new URL(`./maplibre-gl-worker.mjs`, import.meta.url)
- *
- * No bundler can see through that, so Rollup never emits the file and the URL
- * ends up pointing at `/assets/maplibre-gl-worker.mjs`, which does not exist.
- * The worker request then hangs, and since the worker is what fetches and
- * decodes vector tiles, the map renders its background colour and nothing else
- * — no error, no failed request, just a blank canvas with the markers floating
- * on top. `config.WORKER_URL` is the supported way out.
+ * resolving it against `import.meta.url`. No bundler can see through that, so
+ * Rollup never emits the file and the URL points at an asset that does not
+ * exist. The worker is what fetches and decodes vector tiles, so without it the
+ * map draws its background colour and nothing else — no error, no failed
+ * request. `config.WORKER_URL` is the supported way out.
  */
 maplibreConfig.WORKER_URL = maplibreWorkerUrl
 
@@ -70,20 +65,18 @@ export function GuideMap({ places, selectedId, onSelect }: Props) {
   const container = useRef<HTMLDivElement>(null)
   const map = useRef<MapLibreMap | null>(null)
   const markers = useRef(new globalThis.Map<string, Marker>())
-  const ready = useRef(false)
+  const fittedFor = useRef<string | null>(null)
+  const [loaded, setLoaded] = useState(false)
   const [failure, setFailure] = useState<string | null>(null)
 
-  // One map per mount. StrictMode runs effects twice in development, so the
-  // cleanup has to fully dispose or the second run leaves an orphan canvas.
   useEffect(() => {
     if (!container.current) return
 
-    // Captured for the cleanup: by the time it runs, `markers.current` may
-    // already point somewhere else.
     const markerStore = markers.current
+    const node = container.current
 
     const instance = new MapLibreMap({
-      container: container.current,
+      container: node,
       style: STYLE_URL,
       center: [-97.74, 30.27],
       zoom: 10,
@@ -93,15 +86,10 @@ export function GuideMap({ places, selectedId, onSelect }: Props) {
     instance.addControl(new NavigationControl({ showCompass: false }), 'top-right')
 
     instance.on('load', () => {
-      ready.current = true
-      // The container is often laid out after the map is constructed — inside a
-      // lazy boundary especially. Without this the canvas keeps whatever size it
-      // had at construction, which is how a map ends up grey and empty.
       instance.resize()
+      setLoaded(true)
     })
 
-    // A failing style or tile source is otherwise silent: the map just sits
-    // there grey. Surface it instead of making someone open devtools.
     instance.on('error', (event) => {
       const message = event?.error?.message ?? 'Unknown map error'
       console.error('[GuideMap]', message, event)
@@ -111,17 +99,17 @@ export function GuideMap({ places, selectedId, onSelect }: Props) {
     // Height comes from a vh unit and a sticky wrapper, both of which settle
     // after the first paint and change again on rotate or resize.
     const observer = new ResizeObserver(() => instance.resize())
-    observer.observe(container.current)
+    observer.observe(node)
 
     map.current = instance
 
     return () => {
       observer.disconnect()
-      ready.current = false
       markerStore.forEach((marker) => marker.remove())
       markerStore.clear()
       instance.remove()
       map.current = null
+      setLoaded(false)
     }
   }, [])
 
@@ -133,9 +121,6 @@ export function GuideMap({ places, selectedId, onSelect }: Props) {
 
     markers.current.forEach((marker) => marker.remove())
     markers.current.clear()
-
-    const bounds = new LngLatBounds()
-    let plotted = 0
 
     for (const place of places) {
       if (place.lat == null || place.lng == null) continue
@@ -150,18 +135,41 @@ export function GuideMap({ places, selectedId, onSelect }: Props) {
       })
 
       markers.current.set(place.id, marker)
-      bounds.extend([Number(place.lng), Number(place.lat)])
-      plotted += 1
-    }
-
-    if (plotted > 0) {
-      instance.fitBounds(bounds, {
-        padding: 48,
-        maxZoom: plotted === 1 ? 15 : 14,
-        duration: 0,
-      })
     }
   }, [places, selectedId, onSelect])
+
+  /**
+   * Fit the view only once the style is loaded and the container has real size.
+   *
+   * WHY both conditions: fitBounds against a zero-width container computes a
+   * degenerate zoom, and the map then never works out which tiles it needs —
+   * it just sits there, correctly sized, requesting nothing. Resizing later
+   * fixes the canvas but does not recompute the camera, so the bad view sticks.
+   */
+  useEffect(() => {
+    const instance = map.current
+    if (!instance || !loaded) return
+
+    const key = places.map((p) => p.id).join(',')
+    if (fittedFor.current === key) return
+
+    const withCoords = places.filter((p) => p.lat != null && p.lng != null)
+    if (withCoords.length === 0) return
+    if (instance.getContainer().clientWidth === 0) return
+
+    const bounds = new LngLatBounds()
+    for (const place of withCoords) {
+      bounds.extend([Number(place.lng), Number(place.lat)])
+    }
+
+    instance.fitBounds(bounds, {
+      padding: 48,
+      maxZoom: withCoords.length === 1 ? 15 : 14,
+      duration: 0,
+    })
+
+    fittedFor.current = key
+  }, [places, loaded])
 
   // Clicking the water clears the selection, so the list goes back to whole.
   useEffect(() => {
@@ -178,16 +186,13 @@ export function GuideMap({ places, selectedId, onSelect }: Props) {
   // Bring the chosen place into view when the selection came from the list.
   useEffect(() => {
     const instance = map.current
-    if (!instance || !selectedId) return
+    if (!instance || !loaded || !selectedId) return
 
     const place = places.find((p) => p.id === selectedId)
     if (!place || place.lat == null || place.lng == null) return
 
-    instance.easeTo({
-      center: [Number(place.lng), Number(place.lat)],
-      duration: 400,
-    })
-  }, [selectedId, places])
+    instance.easeTo({ center: [Number(place.lng), Number(place.lat)], duration: 400 })
+  }, [selectedId, places, loaded])
 
   return (
     <div className="relative size-full">
