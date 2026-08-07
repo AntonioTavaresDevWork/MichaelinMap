@@ -34,16 +34,6 @@ export default function App() {
             <Route path="overview" element={<OverviewPage />} />
             <Route path="new" element={<QuickAddPage />} />
             <Route
-              path="review"
-              element={
-                <AdminPlaceholder
-                  title="Review queue"
-                  feature="F-02"
-                  description="Unreviewed places, the 28 tier conflicts and the 15 unclassified entries land here."
-                />
-              }
-            />
-            <Route
               path="codes"
               element={
                 <AdminPlaceholder

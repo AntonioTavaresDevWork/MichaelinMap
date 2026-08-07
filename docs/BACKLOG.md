@@ -61,6 +61,7 @@ Cortado com motivo. Não repropor sem fato novo.
 
 | Item | Motivo do corte |
 |---|---|
+| Tela dedicada de fila de revisão (F-02) | Cortada na S05. As três filas — 28 conflitos de tier, tags sugeridas pendentes, 15 sem tipo — já são cartões no Overview que linkam para a lista com o filtro aplicado. Uma tela própria seria uma quarta forma de olhar os mesmos registros, com o custo de manter dois lugares em sincronia |
 | Google Places API + hidratação dos 511 | ADR-06 — preço é julgamento do curador; horário resolve pelo botão de direções |
 | My Maps KML sync + `sync_runs` + teste de sabotagem | ADR-08 — quick-add mobile já é caminho completo de captura |
 | SEO: sitemap, JSON-LD, meta dinâmica, pré-render | ADR-07 — o guia é não-listado |
