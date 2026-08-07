@@ -238,17 +238,17 @@ Nada em execução.
 
 ## 🚫 Blockers
 
-**Nenhum blocker aberto.**
+**Nenhum blocker de código.** O MVP fechou e nada impede o produto de ir ao ar.
 
-**`BL-29` deixou de reproduzir na S07.** Na verificação visual da F-05 o mapa desenhou geometria
-completa — rodovias com rótulo (`Express 183 Toll`, `Loop 1`), parques e água — tanto no estilo
-escuro aplicado pelo code quanto no padrão. Nada mudou no nosso código do mapa além do `setStyle`
-que a F-05 acrescentou.
+⚠️ **`BL-29` — o mapa é intermitente, e essa é a informação nova.** Ele parou de reproduzir na S07
+(geometria completa nos dois estilos, rodovias com rótulo, parques e água) e **voltou a reproduzir
+na S08**, na verificação da remoção da faceta de rating: pins posicionados certo, zero geometria,
+fundo liso. Entre uma coisa e outra o nosso código do mapa não mudou.
 
-**Registrado como sintoma ausente, não como causa explicada.** Ninguém sabe o que mudou no
-ambiente, e não fui atrás: a investigação técnica já estava esgotada na S05 e o próximo passo
-registrado era do Edu. Se voltar a acontecer, o histórico inteiro do que já foi descartado com
-evidência continua no `BL-29` e não deve ser refeito.
+**Continua sendo sintoma sem causa explicada, e continua não valendo a pena refazer a investigação.**
+O que a intermitência acrescenta é que a hipótese ambiental do `BL-29` ficou mais forte: causa no
+código não vai e volta sozinha entre duas sessões sem deploy. O histórico do que já foi descartado
+com evidência está no `BL-29` e não deve ser repetido.
 
 **Um detalhe adjacente, da mesma sessão e possivelmente da mesma família:** o Chrome recusou
 `localhost:5173` e `127.0.0.1:5173` com a porta comprovadamente escutando, e só respondeu pelo IP
@@ -378,6 +378,30 @@ boot desta sessão conferiu com `git fetch` e a `main` local está idêntica à 
 commits da S07 estão no GitHub. Corrigido abaixo.
 
 **Commit:** `5aa2b96`.
+
+**Ainda na S08, depois da F-06: a faceta de rating saiu do filtro público**, por decisão do Edu. Ele
+escolheu o alcance mais estreito dos três que apresentei — só a faceta; os selos `Destination`,
+`Experience`, `Fair` e `Cool` continuam na linha da lista e na página do lugar, o admin e o banco
+não foram tocados.
+
+**A única decisão que tomei por conta foi tirar o parâmetro `tier` da URL junto com a faceta.**
+Deixar o predicado vivo sem controle na tela criaria um filtro que estreita o guia de forma
+invisível — a falha exata que a RN-27 foi escrita para impedir, e que ninguém conseguiria desfazer
+porque não haveria o que clicar. Conferi antes que nenhum code dependia disso: o `DEMO` é o único
+que existe e tem `preset_filter` null. Link antigo com `?tier=` agora é ignorado, verificado na tela.
+
+Virou **RN-30**, e a Bíblia §6 ganhou a distinção que faltava: julgamento e eixo de navegação não são
+a mesma coisa. O tier segue sendo tudo o que a §6 descreve; o que ele deixou de ser é uma faceta.
+A estrela passa a ser o único sinal de qualidade filtrável — que é como os oito tipos sem tier
+sempre funcionaram (RN-05), agora valendo também para restaurante e bar.
+
+**Gate:** build e lint limpos. Bundle 762 → 761 kB.
+
+⚠️ **O `BL-29` voltou a reproduzir.** Nas duas telas do guia de Austin desta verificação o mapa
+desenhou os pins posicionados certo e **nenhuma geometria** — sem ruas, sem água, fundo liso. Não
+fui atrás: a investigação técnica está esgotada desde a S05 e o próximo passo registrado é do Edu.
+Registro aqui só para desfazer o "deixou de reproduzir" da S07 — o sintoma é intermitente, o que é
+informação nova e reforça a hipótese ambiental.
 
 ### 2026-08-07 — S07: F-05 — Codes e Roulette
 

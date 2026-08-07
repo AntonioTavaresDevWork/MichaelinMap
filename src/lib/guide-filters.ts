@@ -1,5 +1,5 @@
 import { slugify } from '@/lib/utils'
-import type { Place, PlaceTag, PlaceType, Tag, TagFacet, Tier } from '@/types'
+import type { Place, PlaceTag, PlaceType, Tag, TagFacet } from '@/types'
 
 /**
  * The public faceted filter.
@@ -15,12 +15,20 @@ import type { Place, PlaceTag, PlaceType, Tag, TagFacet, Tier } from '@/types'
  *
  * The URL is the source of truth (RN-19), and each facet is its own parameter:
  *
- *   ?tier=destination,experience&star=1&cuisine=tacos,bbq
+ *   ?type=restaurant&star=1&cuisine=tacos,bbq
  *
  * That mirrors RN-16 in the address bar — commas are the OR, separate keys are
  * the AND — and it sidesteps a real ambiguity: tag slugs are unique per facet,
  * not globally (`tags` is UNIQUE (facet, slug)), so a bare list of slugs could
  * not be resolved back to tags.
+ *
+ * **The visitor cannot filter by tier.** Removed by Edu's call in S08: the
+ * guide no longer presents Destination / Experience / Fair / Cool as a rating
+ * system a visitor navigates by. The tier itself is untouched — it still labels
+ * each place in the list and on its own page, still orders the list, and the
+ * curator still assigns it. What is gone is the *facet*, and with it the `tier`
+ * URL parameter: a filter with no control on screen would narrow the guide
+ * invisibly, which is the exact failure RN-27 exists to prevent.
  */
 
 export const TAG_FACETS: TagFacet[] = [
@@ -34,12 +42,10 @@ export const TAG_FACETS: TagFacet[] = [
 ]
 
 /** Structural facets, kept apart from tag facets because they read off columns. */
-export type StructuralFacetKey = 'tier' | 'type' | 'area' | 'star'
+export type StructuralFacetKey = 'type' | 'area' | 'star'
 export type FacetKey = StructuralFacetKey | TagFacet
 
 export interface GuideFilters {
-  /** Tier slugs. Tiers are data, not constants (RN-12). */
-  tier: string[]
   type: PlaceType[]
   /** Slugified area names, so the URL stays readable. */
   area: string[]
@@ -49,7 +55,6 @@ export interface GuideFilters {
 }
 
 export const EMPTY_FILTERS: GuideFilters = {
-  tier: [],
   type: [],
   area: [],
   star: false,
@@ -81,7 +86,6 @@ export function placeTypeLabel(type: PlaceType): string {
 }
 
 const FACET_TITLES: Record<FacetKey, string> = {
-  tier: 'Rating',
   type: 'Type',
   area: 'Area',
   star: 'Top picks',
@@ -110,7 +114,6 @@ function readList(params: URLSearchParams, key: string): string[] {
 export function filtersToParams(filters: GuideFilters): URLSearchParams {
   const params = new URLSearchParams()
 
-  if (filters.tier.length) params.set('tier', filters.tier.join(','))
   if (filters.type.length) params.set('type', filters.type.join(','))
   if (filters.area.length) params.set('area', filters.area.join(','))
   if (filters.star) params.set('star', '1')
@@ -131,7 +134,7 @@ export function filtersFromParams(params: URLSearchParams): GuideFilters {
   }
 
   return {
-    tier: readList(params, 'tier'),
+    // A stale `?tier=` from a link shared before S08 is simply ignored here.
     type: readList(params, 'type') as PlaceType[],
     area: readList(params, 'area'),
     star: params.get('star') === '1',
@@ -141,7 +144,6 @@ export function filtersFromParams(params: URLSearchParams): GuideFilters {
 
 export function hasActiveFilters(filters: GuideFilters): boolean {
   return (
-    filters.tier.length > 0 ||
     filters.type.length > 0 ||
     filters.area.length > 0 ||
     filters.star ||
@@ -151,7 +153,6 @@ export function hasActiveFilters(filters: GuideFilters): boolean {
 
 export function countActiveFilters(filters: GuideFilters): number {
   return (
-    filters.tier.length +
     filters.type.length +
     filters.area.length +
     (filters.star ? 1 : 0) +
@@ -167,7 +168,7 @@ export function toggleFacetValue(
 ): GuideFilters {
   if (facet === 'star') return { ...filters, star: !filters.star }
 
-  if (facet === 'tier' || facet === 'type' || facet === 'area') {
+  if (facet === 'type' || facet === 'area') {
     const current = filters[facet] as string[]
     const next = current.includes(value)
       ? current.filter((entry) => entry !== value)
@@ -234,11 +235,6 @@ function predicateFor(
     case 'star':
       return filters.star ? (place) => place.starred : null
 
-    case 'tier':
-      return filters.tier.length
-        ? (place) => place.tier !== null && filters.tier.includes(place.tier)
-        : null
-
     case 'type':
       return filters.type.length ? (place) => filters.type.includes(place.place_type) : null
 
@@ -260,7 +256,7 @@ function predicateFor(
   }
 }
 
-const ALL_FACETS: FacetKey[] = ['tier', 'type', 'area', 'star', ...TAG_FACETS]
+const ALL_FACETS: FacetKey[] = ['type', 'area', 'star', ...TAG_FACETS]
 
 /**
  * Places matching every active facet.
@@ -309,7 +305,6 @@ interface BuildArgs {
   places: Place[]
   filters: GuideFilters
   index: GuideIndex
-  tiers: Tier[] | undefined
   tags: Tag[] | undefined
 }
 
@@ -328,7 +323,6 @@ export function buildFacetGroups({
   places,
   filters,
   index,
-  tiers,
   tags,
 }: BuildArgs): FacetGroup[] {
   const groups: FacetGroup[] = []
@@ -361,27 +355,9 @@ export function buildFacetGroups({
     )
   }
 
-  // Tier — ordered by the curator's own sort order, labelled by the editable
-  // label (RN-12). Places without a tier are not an option: "no rating" is not
-  // a thing anyone looks for.
-  const presentTiers = new Set(
-    places.map((place) => place.tier).filter((tier): tier is string => tier !== null),
-  )
-  push(
-    'tier',
-    (tiers ?? [])
-      .filter((tier) => presentTiers.has(tier.slug))
-      .map((tier) => {
-        const count = countWith('tier', (place) => place.tier === tier.slug)
-        return {
-          value: tier.slug,
-          label: tier.label,
-          count,
-          selected: filters.tier.includes(tier.slug),
-          disabled: count === 0 && !filters.tier.includes(tier.slug),
-        }
-      }),
-  )
+  // No tier facet. The star above is the only quality signal the visitor
+  // filters by — which is already how the eight untiered place types have
+  // always worked (RN-05), now applied to restaurants and bars as well.
 
   // Type — the second gate (bible §7).
   const typeCounts = new Map<PlaceType, number>()

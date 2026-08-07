@@ -84,8 +84,8 @@ export function GuidePage() {
   )
 
   const facetGroups = useMemo(
-    () => buildFacetGroups({ places: inCity, filters, index, tiers: tiers.data, tags: tags.data }),
-    [inCity, filters, index, tiers.data, tags.data],
+    () => buildFacetGroups({ places: inCity, filters, index, tags: tags.data }),
+    [inCity, filters, index, tags.data],
   )
 
   const setFilters = useCallback(

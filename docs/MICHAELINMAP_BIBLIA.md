@@ -16,6 +16,7 @@ crítico agora é inteiramente humano: a voz do curador e a taggeação (§13.1)
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 2.7 | 2026-08-07 | **A faceta de rating saiu do filtro público** por decisão do Edu (S08). **RN-30 nova** (§14.4). O tier continua existindo inteiro — rotula o lugar na lista e no detalhe, ordena a lista, colore o pin e é do curador; o que saiu é o eixo de navegação e o parâmetro `tier` da URL. §6 ganha a distinção entre julgamento e eixo de navegação |
 | 2.6 | 2026-08-07 | F-06 aplicada (S08), sem tocar o schema — **o MVP fechou**. **RN-29 nova** (§14.6): a pergunta de acompanhamento (`judgment_prompt`) é escolha fechada, nunca texto livre. §10 ganha como a semeadura do curador funciona na prática |
 | 2.5 | 2026-08-07 | F-05 aplicada (S07), sem tocar o schema. **RN-27 e RN-28 novas** (§14.5): o preset de um code semeia o painel uma vez e nunca sobrescreve a URL; o resgate é revalidado no servidor a cada carga. §13 ganha a nota de que a F-01 já entregara a tabela inteira |
 | 2.4 | 2026-08-07 | F-04 aplicada (S06). **RN-26 nova** (§14.4): faceta sem opção populada não é renderizada |
@@ -135,6 +136,12 @@ Cool Bars (31) e Fair Bars (46) compartilham exatamente um lugar: uma segunda es
 | **Status de visita** | `places.visited` | boolean | `false` = Try List. Não pode ter tier nem estrela |
 
 `destination` e `experience` **não são 1º e 2º lugar** — são dois topos paralelos acima de `fair` (DP-01 resolvida: "não faz diferença"). A interface os exibe em ordem fixa, mas a copy nunca afirma superioridade de um sobre o outro.
+
+> **Julgamento não é o mesmo que eixo de navegação (S08).** O tier continua sendo tudo o que esta
+> seção descreve: o curador atribui, o selo aparece na linha da lista e na página do lugar, a ordem
+> da lista o obedece e a cor do pin o reflete. O que ele **não** é mais é uma faceta pela qual o
+> visitante filtra — ver RN-30. A distinção importa porque o tier segue insubstituível como dado, e
+> nada aqui em §6 mudou.
 
 Ambas as restrições são garantidas por constraint de banco, não por lógica de aplicação. A disciplina do curador vira garantia do schema.
 
@@ -456,6 +463,14 @@ Registrados em `docs/BACKLOG.md`, com o motivo de cada corte: Google Places API 
 - **RN-17** — Toda opção de filtro exibe contagem de resultado ao vivo. Opção que retornaria zero fica **desabilitada, não escondida**.
 - **RN-18** — O filtro de área só aparece em cidades com ~15 lugares ou mais.
 - **RN-19** — O estado do filtro serializa na URL. Qualquer visão é compartilhável.
+- **RN-30** — **O visitante não filtra por tier.** Não existe faceta de rating no painel, e o
+  parâmetro `tier` saiu da URL junto — um filtro sem controle na tela estreitaria o guia de forma
+  invisível, que é exatamente a falha que a RN-27 existe para impedir. Link antigo com `?tier=` é
+  simplesmente ignorado. **O tier em si não foi tocado:** continua rotulando o lugar na lista e no
+  detalhe, ordenando a lista, colorindo o pin e sendo atribuído pelo curador (§6). A estrela passa a
+  ser o único sinal de qualidade *filtrável*, que é como os oito tipos sem tier sempre funcionaram
+  (RN-05) — agora vale também para restaurante e bar. Decisão do Edu na S08; nada de schema mudou,
+  então é reversível sem migration.
 - **RN-26** — **Faceta sem nenhuma opção populada não é renderizada.** A RN-17 governa a *opção* dentro
   de uma faceta e continua valendo integralmente; uma faceta inteira sem nada por trás é o caso que a
   §8 já resolveu para área — degradar em silêncio em vez de renderizar controle vazio. Consequência

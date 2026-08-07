@@ -26,7 +26,6 @@ import { GuideFilterPanel } from '@/components/public/guide-filter-panel'
 import { useCodes, useCreateCode, useDeleteCode, useUpdateCode, type CodeDraft } from '@/hooks/use-codes'
 import { usePlaces } from '@/hooks/use-places'
 import { usePlaceTags, useTags } from '@/hooks/use-tags'
-import { useTiers } from '@/hooks/use-tiers'
 import { filtersToPreset, presetToFilters } from '@/lib/code-effects'
 import {
   buildFacetGroups,
@@ -206,7 +205,6 @@ function CodeEditor({ code, onClose }: { code: Code | null; onClose: () => void 
   const places = usePlaces()
   const tags = useTags()
   const placeTags = usePlaceTags()
-  const tiers = useTiers()
 
   const [form, setForm] = useState<FormState>(() => initialForm(code))
   const [filters, setFilters] = useState<GuideFilters>(
@@ -242,10 +240,9 @@ function CodeEditor({ code, onClose }: { code: Code | null; onClose: () => void 
         places: published,
         filters,
         index,
-        tiers: tiers.data,
         tags: tags.data,
       }),
-    [published, filters, index, tiers.data, tags.data],
+    [published, filters, index, tags.data],
   )
 
   const matches = useMemo(() => {
@@ -455,8 +452,9 @@ function CodeEditor({ code, onClose }: { code: Code | null; onClose: () => void 
             </div>
 
             <p className="text-xs text-muted-foreground">
-              A pin colour repaints every pin. The rating colours only survive where you leave it
-              blank — a code decorates the guide, it does not restate the verdict.
+              A pin colour repaints every pin. The default colours, which follow your own verdict,
+              only survive where you leave it blank — a code decorates the guide, it does not
+              restate the verdict.
             </p>
           </section>
 
