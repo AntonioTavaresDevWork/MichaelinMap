@@ -270,7 +270,7 @@ Reconferido via MCP na S06 (`list_tables`, `list_migrations`). RLS ligada nas 8 
 | `tags` | 94 | 93 públicas + `Hype trap` admin-only |
 | `questions` | 38 | 4 com `requires_review` (as de texto livre) |
 | `tiers` | 4 | `destination`, `experience`, `fair`, `cool` |
-| `place_tags` | 145 | todas `source = 'suggested'` |
+| `place_tags` | **173** | todas `source = 'suggested'` — 145 do import da F-01, 28 do lote de cuisine da S08. **Zero do curador** |
 | `codes` | 1 | `DEMO`, para smoke da RPC. A S07 criou 4 codes de teste e **apagou os quatro** ao fim |
 | `curators` | 1 | `Michael` — `mikemyday@mikecofone.com`, conta confirmada |
 | `field_reports` | 0 | A S08 criou linhas de teste pela RPC e por SQL e **apagou todas** ao fim; a tabela voltou a zero, conferido |
@@ -281,8 +281,9 @@ Distribuição de julgamento: estrela 22 (4,3%), não visitados 42, com tier 279
 
 ⚠️ **Nenhum dos 58 tem `the_dish` ou `curator_note`.** O guia está populado mas mudo: mostra os vereditos, não a voz. Escrever essas frases em 8-10 dos mais fortes é o que separa a demo de uma lista organizada — e é trabalho humano, não de CLI.
 
-Migrations vivas — **3**, não 2 como este arquivo dizia até a S06: `20260806120000_f01_schema_rls_rpc`,
-`20260806120100_f01_seed_and_import`, `20260806130000_f01_seed_curator`.
+Migrations vivas — **4**: `20260806120000_f01_schema_rls_rpc`, `20260806120100_f01_seed_and_import`,
+`20260806130000_f01_seed_curator` e `20260807140000_suggest_cuisine_published` (S08).
+`schema_migrations` saneado após o apply, versões alinhadas com os nomes de arquivo.
 
 A F-02 e a F-03 **não alteraram o schema** — são frontend sobre o banco da F-01. O `place_tags`
 continua com as 145 linhas `suggested` do import: a curadoria ainda não começou a escrever.
@@ -433,6 +434,29 @@ valor inteiro é o julgamento de uma pessoa (§1.1).
 
 **O efeito colateral bom:** agora que sugestão é invisível ao visitante, sugerir em massa virou
 seguro — vira fila de aprovação no admin, não afirmação pública. É o `BL-34`.
+
+**E foi o que fechou a sessão: 28 cuisines novas** (`20260807140000_suggest_cuisine_published`),
+levando os publicados de comida sem cuisine de 45 para 17. Duas coisas ficam registradas sobre o
+critério:
+
+- **Dez delas são legíveis do próprio nome** e qualquer um confere sem conhecer Austin: `ALC Steaks`
+  → Steakhouse, `Chez L'Amour` → French, `Il Brutto` e `L'Oca d'Oro` → Italian, `El Raval` → Spanish
+  (bairro de Barcelona). **As outras dezoito dependem de eu conhecer o restaurante**, o que é
+  memória e não observação — pode estar desatualizada, e um lugar pode ter mudado de conceito.
+  Justamente por isso todas entraram como `suggested`.
+- **Dezessete ficaram de fora de propósito**, com a lista nominal no rodapé da migration. Sugestão
+  errada custa mais que sugestão ausente: alguém tem de ler e rejeitar.
+
+**Um GATE reprovou o primeiro apply, e o errado era eu.** O G3 afirmava que nenhum lugar carrega
+duas cuisines; falhou apontando 11. Fui olhar: são todos do import da F-01 e **todos corretos** —
+`Dean's Italian Steakhouse` é Italian *e* Steakhouse, cafeteria que serve café da manhã é Coffee *e*
+Breakfast & Diner. Duas cuisines não são contradição; a regra que eu tinha escrito é que era. O
+gate foi reescrito para o escopo do lote e a migration voltou atrás inteira antes disso — o banco
+nunca ficou num estado intermediário.
+
+**Verificado depois do apply:** o painel público de Austin continua com três facetas, sem nenhuma
+seção de cuisine, com as 28 tags já no banco. É a RN-31 provada no sentido que importa — dado novo
+entrou e o visitante não viu.
 
 ### 2026-08-07 — S07: F-05 — Codes e Roulette
 

@@ -386,8 +386,8 @@ Tiers: destination 43, experience 36, fair 198, cool 30. Estrela 22. Não visita
 
 **As 93 tags nascem vazias.** A coluna `Tags` do CSV traz apenas 5 valores distintos (Breakfast & brunch 54, Rooftop 14, Night out 3, Vacation 2, Food truck 1), derivados dos nomes dos guias. Taggear 511 lugares é o gargalo real do projeto — ver §13.1.
 
-> **Medido na S08, e é pior do que "gargalo".** Das 145 atribuições existentes, **zero** são do
-> curador — todas são `suggested`, produzidas pelo import. Dos 58 publicados, 11 têm alguma tag e
+> **Medido na S08, e é pior do que "gargalo".** Das atribuições existentes, **zero** são do
+> curador — todas são `suggested`, produzidas por máquina. Dos 58 publicados, 11 tinham alguma tag e
 > **nenhum** tem `the_dish`. Só 21 das 94 tags foram usadas alguma vez. Ou seja: a curadoria que a
 > §13.1 descreve como "rodando em paralelo desde a F-02" **não começou**. O Edu não pode substituí-la
 > — ele nunca esteve em nenhum desses lugares; a lista é do Michael, e o julgamento também.
@@ -396,6 +396,12 @@ Tiers: destination 43, experience 36, fair 198, cool 30. Estrela 22. Não visita
 > dele, cobrem os 58 publicados e sustentam a lista, a ordem e o mapa. O que falta é a voz —
 > `the_dish` e `curator_note` —, e a §1.1 diz que é ela que separa o artefato de personalidade de uma
 > lista organizada. É trabalho humano de dez frases, não de quinhentas tags.
+>
+> **Ainda na S08, 28 cuisines novas entraram como `suggested`** (migration
+> `20260807140000`), cobrindo os publicados de comida que não tinham nenhuma — de 45 sem cuisine
+> para 17. Não é curadoria: é fila de aprovação, invisível ao visitante pela RN-31 até o Michael
+> confirmar. Total de sugestões pendentes: **173**. Os 17 restantes são os que nem nome nem
+> conhecimento público resolvem, e estão listados no rodapé da migration.
 
 ---
 
