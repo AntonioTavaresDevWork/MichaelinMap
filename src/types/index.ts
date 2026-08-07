@@ -121,12 +121,37 @@ export interface Curator {
   created_at: string
 }
 
+/**
+ * Map style tokens are *our* vocabulary, not the tile provider's.
+ *
+ * A code stores `dark`, not a URL: the curator picks a mood, and swapping tile
+ * providers later stays a one-file change. Unknown values fall back rather than
+ * break — see `mapStyleUrl()` in lib/code-effects.ts.
+ */
+export const MAP_STYLE_TOKENS = ['default', 'bright', 'minimal', 'dark', 'slate'] as const
+export type MapStyleToken = (typeof MAP_STYLE_TOKENS)[number]
+
 export interface CodeTheme {
+  /** Hex. Everything else in the palette is derived from these. */
   primary?: string
   background?: string
   foreground?: string
   mapStyle?: string
 }
+
+export interface PinStyle {
+  color?: string
+  highlightColor?: string
+  shape?: 'dot' | 'square'
+}
+
+/**
+ * A preset filter is stored exactly as the guide serialises its filters to the
+ * URL (RN-19): param → comma-joined values. That way the admin builds one with
+ * `filtersToParams()` and the guide reads it back with `filtersFromParams()` —
+ * the same two functions the address bar already round-trips through.
+ */
+export type PresetFilter = Record<string, string>
 
 export interface Code {
   id: string
@@ -134,13 +159,29 @@ export interface Code {
   label: string | null
   message: string | null
   theme: CodeTheme | null
-  pin_style: Record<string, unknown> | null
-  preset_filter: Record<string, unknown> | null
+  pin_style: PinStyle | null
+  preset_filter: PresetFilter | null
   highlighted_places: string[] | null
   starts_at: string | null
   ends_at: string | null
   active: boolean
   created_at: string
+}
+
+/**
+ * What `rpc_redeem_code()` hands back — the code minus its bookkeeping.
+ *
+ * `id`, `active` and the date window never cross the wire: the server has
+ * already applied them, and a visitor has no use for the row's identity.
+ */
+export interface RedeemedCode {
+  code: string
+  label: string | null
+  message: string | null
+  theme: CodeTheme | null
+  pin_style: PinStyle | null
+  preset_filter: PresetFilter | null
+  highlighted_places: string[]
 }
 
 export interface Question {

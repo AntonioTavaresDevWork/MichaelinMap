@@ -53,6 +53,7 @@ npm run preview     # serve o dist
 - Env: copiar `.env.example` → `.env.local`.
 - Vitest ainda não configurado — entra quando houver o que testar.
 - Antes de commit: `build` + `lint` limpos + validação SQL no banco via MCP.
+- **Para inspeção visual pelo navegador, use a URL de rede que o Vite imprime** (`http://192.168.1.127:5173`), não `localhost` nem `127.0.0.1`. Nesta máquina o Chrome devolve `ERR_CONNECTION_REFUSED` nas duas com a porta comprovadamente escutando (`Test-NetConnection` responde True). Descoberto na S07; convive com o `BL-29`, que também é rede local desta máquina se comportando mal.
 
 ## Stack obrigatória
 
@@ -84,6 +85,7 @@ supabase/  migrations/  rollbacks/
 - Comentários: WHY, not WHAT
 - Mapeamento snake_case → camelCase acontece **na fronteira de acesso a dados**, não espalhado. Tipo populado por `select('*')` direto fica em snake_case.
 - Um único objeto de estado de filtro, compartilhado por mapa e lista. Nunca dois. Serializa na URL.
+- **A URL do guia pertence ao filtro.** `filtersToParams()` monta um `URLSearchParams` do zero a cada clique, então qualquer parâmetro alheio (`?code=`, utm, o que for) é apagado no primeiro toque em faceta. Quem precisar passar algo por URL tem de consumir e remover o parâmetro na chegada — foi assim que a F-05 tratou `?code=`.
 
 ## Segurança
 

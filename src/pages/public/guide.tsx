@@ -5,7 +5,10 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { GuideFilterPanel } from '@/components/public/guide-filter-panel'
+import { RouletteButton } from '@/components/public/roulette-button'
 import { usePublicVocabulary, usePublishedPlaces } from '@/hooks/use-public-guide'
+import { useActiveCode } from '@/lib/code-context'
+import { mapStyleUrl, presetToFilters } from '@/lib/code-effects'
 import {
   applyGuideFilters,
   buildFacetGroups,
@@ -39,6 +42,7 @@ export function GuidePage() {
   const { citySlug } = useParams<{ citySlug: string }>()
   const places = usePublishedPlaces()
   const { tiers, tags, placeTags } = usePublicVocabulary()
+  const { code } = useActiveCode()
 
   // One selection, shared by map and list. Never two (see CLAUDE.md) — and the
   // filter below follows the same discipline: it lives in the URL, and both the
@@ -101,9 +105,52 @@ export function GuidePage() {
 
   const clear = useCallback(() => setFilters(EMPTY_FILTERS), [setFilters])
 
+  // ---------------------------------------------------------------------
+  // The active code's effects on this page
+  // ---------------------------------------------------------------------
+
+  const highlighted = useMemo(
+    () => new Set(code?.highlighted_places ?? []),
+    [code],
+  )
+
+  const preset = useMemo(() => presetToFilters(code?.preset_filter), [code])
+  const presetAppliedFor = useRef<string | null>(null)
+
+  /**
+   * A code may arrive with a filter already chosen for this person.
+   *
+   * It seeds the panel once and then behaves exactly like a filter the visitor
+   * set: selected, counted, and cleared by the same button. A pre-applied
+   * filter that could not be undone would be a code hiding places, which RN-21
+   * forbids. It also never overrides a filter already in the URL — a shared
+   * link is somebody's explicit choice and outranks the decoration.
+   */
+  useEffect(() => {
+    if (!code || !preset) return
+
+    const key = `${code.code}:${citySlug}`
+    if (presetAppliedFor.current === key) return
+    presetAppliedFor.current = key
+
+    if (searchParams.toString()) return
+    if (!hasActiveFilters(preset)) return
+
+    setSearchParams(filtersToParams(preset), { replace: true })
+  }, [code, preset, citySlug, searchParams, setSearchParams])
+
   const sections = useMemo(() => {
-    /** Star first, then tier order, then name. The star crosses tiers (RN-03). */
+    /**
+     * Highlights first, then star, then tier order, then name.
+     *
+     * Reordering is the strongest thing a code is allowed to do to the list
+     * (RN-21): what Michael picked for this person floats, and nothing is
+     * pushed out of the guide to make room.
+     */
     const rank = (a: Place, b: Place) => {
+      const aPicked = highlighted.has(a.id)
+      const bPicked = highlighted.has(b.id)
+      if (aPicked !== bPicked) return aPicked ? -1 : 1
       if (a.starred !== b.starred) return a.starred ? -1 : 1
       const ta = a.tier ? (tierOrder.get(a.tier) ?? 99) : 99
       const tb = b.tier ? (tierOrder.get(b.tier) ?? 99) : 99
@@ -115,7 +162,7 @@ export function GuidePage() {
       { title: 'Eat & drink', places: visible.filter((p) => EAT_AND_DRINK.includes(p.place_type)).sort(rank) },
       { title: 'Everything else', places: visible.filter((p) => !EAT_AND_DRINK.includes(p.place_type)).sort(rank) },
     ].filter((section) => section.places.length > 0)
-  }, [visible, tierOrder])
+  }, [visible, tierOrder, highlighted])
 
   const select = useCallback((placeId: string | null) => setSelectedId(placeId), [])
 
@@ -170,9 +217,20 @@ export function GuidePage() {
       </Link>
 
       <h1 className="mt-4 font-heading text-3xl font-semibold tracking-tight">{cityName}</h1>
-      <p className="mt-2 text-sm text-muted-foreground">
-        {formatNumber(inCity.length)} {inCity.length === 1 ? 'place' : 'places'}
-      </p>
+
+      <div className="mt-2 flex flex-wrap items-center gap-3">
+        <p className="text-sm text-muted-foreground">
+          {formatNumber(inCity.length)} {inCity.length === 1 ? 'place' : 'places'}
+        </p>
+
+        {/* Spins over `visible`, so it can only ever hand back something the
+            filters already allow (PRD §9.6). Additive, never exclusive (RN-11). */}
+        <RouletteButton
+          places={visible}
+          tierLabel={(slug) => tierLabel.get(slug) ?? slug}
+          onLocate={select}
+        />
+      </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_minmax(0,420px)]">
         <div className="order-2 lg:order-1">
@@ -204,6 +262,7 @@ export function GuidePage() {
                     place={place}
                     tierLabel={place.tier ? tierLabel.get(place.tier) ?? place.tier : null}
                     selected={place.id === selectedId}
+                    picked={highlighted.has(place.id)}
                     onLocate={() => select(place.id)}
                     registerRef={(node) => {
                       if (node) rowRefs.current.set(place.id, node)
@@ -220,7 +279,14 @@ export function GuidePage() {
         <div className="order-1 lg:order-2">
           <div className="h-[45vh] overflow-hidden rounded-lg border lg:sticky lg:top-6 lg:h-[calc(100vh-8rem)]">
             <Suspense fallback={<Skeleton className="size-full rounded-none" />}>
-              <GuideMap places={visible} selectedId={selectedId} onSelect={select} />
+              <GuideMap
+                places={visible}
+                selectedId={selectedId}
+                onSelect={select}
+                styleUrl={mapStyleUrl(code?.theme?.mapStyle)}
+                pinStyle={code?.pin_style ?? null}
+                highlighted={highlighted}
+              />
             </Suspense>
           </div>
         </div>
@@ -267,23 +333,26 @@ interface LineProps {
   place: Place
   tierLabel: string | null
   selected: boolean
+  /** Singled out by the active code, for this one person. */
+  picked: boolean
   onLocate: () => void
   registerRef: (node: HTMLLIElement | null) => void
 }
 
-function PlaceLine({ place, tierLabel, selected, onLocate, registerRef }: LineProps) {
+function PlaceLine({ place, tierLabel, selected, picked, onLocate, registerRef }: LineProps) {
   return (
     <li
       ref={registerRef}
       className={cn('flex items-stretch transition-colors', selected && 'bg-accent')}
     >
       <Link to={`/place/${place.slug}`} className="flex flex-1 flex-col gap-1 px-5 py-4 hover:bg-accent/50">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="font-heading text-lg">{place.name}</span>
           {place.starred && (
             <StarIcon className="size-4 shrink-0 fill-current text-amber-500" aria-label="Top pick" />
           )}
           {tierLabel && <Badge variant="secondary" className="shrink-0">{tierLabel}</Badge>}
+          {picked && <Badge className="shrink-0">Picked for you</Badge>}
         </div>
 
         {/* The dish leads when it exists — it is the reason to go, and the

@@ -8,26 +8,21 @@
 ## 🗓️ Última atualização
 
 **Data:** 2026-08-07
-**Sessão:** S06 — reconciliação documental
-**Versão:** `0.1.0`
+**Sessão:** S07 — F-05 (Codes + Roulette)
+**Versão:** `0.1.0` — mantida por decisão do Edu; bump só quando o produto for ao ar
 **Atualizado por:** Claude Code (orquestrador)
-
-> **Nota de registro (S06).** A S05 entregou F-02 e F-03 mas fechou sem atualizar este arquivo:
-> o cabeçalho seguia dizendo "F-01 concluída, F-02 a iniciar" enquanto 12 commits de F-02/F-03
-> já estavam na `main`. O log da S05 abaixo foi **reconstruído a partir das mensagens de commit
-> e da árvore de código**, não escrito ao vivo — é fiel ao que está versionado, mas não registra
-> o que tenha sido decidido em conversa e não tenha deixado rastro no repositório.
 
 ---
 
 ## 📍 Fase atual
 
-**F-00 a F-04 concluídas.** O produto tem admin funcional, lado público navegável e filtro facetado.
-Objetivo imediato: **F-05 — Codes + Roulette**.
+**F-00 a F-05 concluídas.** O produto tem admin funcional, lado público navegável, filtro facetado,
+Codes e Roulette. Objetivo imediato: **F-06 — Field reports**, a última do MVP.
 
-Uma ressalva na F-03: o mapa está integrado, sincronizado com a lista e com os marcadores
-posicionados corretamente, mas **não desenha geometria nesta máquina** — `BL-29`, causa
-ambiental, provada fora do nosso código. Não bloqueia a F-04.
+**O `BL-29` deixou de reproduzir.** Na verificação visual da F-05 o mapa desenhou geometria
+completa — rodovias com rótulo, parques e água — nos dois estilos. Nada mudou no nosso código do
+mapa além da troca de estilo em runtime que a F-05 acrescentou. Fica registrado como sintoma
+ausente, **não** como causa explicada: ninguém sabe o que mudou no ambiente.
 
 ---
 
@@ -144,51 +139,91 @@ ambiental, provada fora do nosso código. Não bloqueia a F-04.
       defesa em profundidade da RN-14
 - [x] **Gate:** `npm run build` e `npm run lint` limpos. Bundle principal 699 → 707 kB
 
+### F-05 — Codes + Roulette ✅ (S07)
+
+- [x] **Nenhuma migration.** A F-01 já havia entregue `codes` com os seis campos de efeito e a
+      `rpc_redeem_code()` com `anon` autorizado. Feature 100% frontend, zero dependência npm nova,
+      zero componente shadcn novo
+- [x] `src/lib/code-effects.ts` — tema por CSS custom properties (todo shadcn do app lê esses
+      tokens, então um code repinta a interface sem tocar em componente nenhum); `contrastOn()`
+      deriva o texto legível por luminância WCAG; fundo escuro liga a classe `dark`; token de estilo
+      de mapa → URL, com fallback para valor desconhecido
+- [x] `src/lib/roulette.ts` — sorteio ponderado (estrela 6, `destination`/`experience` 3, `cool` 2,
+      `fair` 1), sobre o resultado **filtrado**, com `random` injetável e "spin again" que não repete
+- [x] `src/lib/code-context.ts` + `code-provider.tsx` — code lembrado em `localStorage` mas
+      **revalidado no servidor a cada carga** (RN-28); `?code=` aceito e retirado da URL na chegada
+- [x] `code-entry.tsx` — escuta de teclado sem campo visível no desktop, dialog por long-press da
+      logo no celular (PRD §9.7). Falha silenciosa na escuta: quem não perguntou nada não recebe erro
+- [x] `code-banner.tsx` — faixa com a mensagem e a saída; aplica e **remove** o tema, montado no
+      layout público para o admin nunca vestir o code de um visitante
+- [x] `guide-map.tsx` — `setStyle` em runtime (os marcadores são DOM, sobrevivem à troca), pins
+      repintados pelo code, anel nos destacados sem apagar a cor do tier
+- [x] `guide.tsx` — preset semeia o painel uma vez e nunca sobrescreve a URL (RN-27); destacados
+      sobem na ordem com selo "Picked for you"; Roulette ao lado da contagem
+- [x] `/admin/codes` no lugar do placeholder — lista, editor com cor, estilo de mapa, pin, janela de
+      datas, e o `preset_filter` montado **pelo próprio painel do visitante**
+- [x] **Verificado no navegador** (a extensão do Chrome conectou, ao contrário da S06): code digitado
+      no ar → URL virou `?tier=destination&star=1` sozinha, guia escureceu, banner apareceu, selo
+      âmbar entrou na linha, pins viraram quadrados com anel, opções zeradas ficaram cinza e
+      clicáveis. "Back to normal" desfez tudo. Troca de estilo confirmada por rede: `/styles/liberty`
+      na carga, `/styles/dark` no instante do resgate
+- [x] **60 checks num harness descartável**, os puros e o caminho anônimo real: code válido,
+      minúsculo, com espaço, inexistente, vazio, desligado, ainda não começado e expirado — mais a
+      prova de que toda falha responde idêntica (RN-20) e de que `anon` segue sem listar `codes`
+- [x] `BL-19` fechado na parte de contraste; `BL-23` parcialmente resolvido
+- [x] **Gate:** `npm run build` e `npm run lint` limpos. Bundle principal 707 → 736 kB (214 kB gzip)
+- [ ] ⚠️ **A tela `/admin/codes` não foi clicada** — está atrás do login do curador e o CLI não tem
+      a senha. `BL-31`
+
 ---
 
 ## 🔄 Em andamento
 
-Nada em execução. F-03 fechada; só o `BL-29` fica em aberto, e é ambiental.
+Nada em execução.
 
 ---
 
 ## ⏭️ Próxima ação
 
-**F-05 — Codes + Roulette.** Entrega: codes completo (tema, estilo de mapa, pins, filtro pré-aplicado,
-destaques, type-anywhere no desktop, long-press no mobile) e a Roulette.
+**F-06 — Field reports**, a última feature do MVP. Entrega: 7 tipos de input, sorteio de 2-3
+perguntas por lugar, agregado oculto abaixo de n=5, texto livre em fila de revisão, rate limit.
 
-O terreno da F-04 já serve: `preset_filter` dos codes é o mesmo objeto que a URL serializa, então um
-code aplica um filtro reutilizando `filtersFromParams`. E o MapLibre foi escolhido justamente por
-trocar de estilo em runtime (ADR-05) — mas o `BL-29` significa que o efeito visual do tema de mapa
-**não é verificável nesta máquina**.
+O terreno já existe e é o mais pronto de todas as features até aqui: `rpc_submit_field_report()`
+está aplicada desde a F-01 e **já foi testada ponta a ponta** — deriva o status de
+`questions.requires_review`, trunca texto em 40 caracteres, bloqueia duplicata e limita a 30 por
+hora por `session_hash`. As 38 perguntas estão semeadas, 4 com `requires_review`. A view
+`field_report_aggregates` existe com `security_invoker`. Falta a interface e a fila no admin.
+
+**Antes de codar, uma coisa a decidir com o Edu:** o `BL-20` diz que o curador semeia as próprias
+respostas para nada nascer em zero — isso é escrita em nome do Michael e precisa da palavra dele.
 
 **Duas filas de revisão têm dado esperando o Michael, não o CLI:** os 28 conflitos marcados em
 `source_guides` (`DP-08`) e as 145 tags `suggested` do import (`DP-09`). Ambas já têm superfície no
 Overview.
 
-**O que mais move o produto e não é código:** nenhum dos 58 publicados tem `the_dish` ou
-`curator_note`. O guia mostra os vereditos, mas não a voz.
+**O que mais move o produto e não é código, e agora é o único gargalo real:** nenhum dos 58
+publicados tem `the_dish` ou `curator_note`. O guia mostra os vereditos, mas não a voz — e com os
+Codes prontos, é exatamente essa voz que um code entrega a uma pessoa.
 
 ---
 
 ## 🚫 Blockers
 
-**`BL-29` — o mapa não desenha geometria nesta máquina.** Marcadores aparecem e se posicionam
-certo; nenhum tile renderiza; zero erros no console.
+**Nenhum blocker aberto.**
 
-**Provado que não é o nosso código:** um mapa MapLibre puro, carregado de CDN numa página em branco,
-sem uma linha nossa, se comporta idêntico — `sourcedata:openmaptiles` fica `pending` para sempre,
-nunca `loaded`. Reproduz em Chrome, Firefox e Edge. Descartados com evidência medida no próprio
-navegador: WebGL (2.0, GPU AMD via ANGLE), Web Workers, rede da página (`fetch` do TileJSON traz
-19 kB e de um tile real 116 kB, ambos 200), style, sprite, fontes, coordenadas, canvas, CSS e as
-duas versões do MapLibre (6.2 e 5.24).
+**`BL-29` deixou de reproduzir na S07.** Na verificação visual da F-05 o mapa desenhou geometria
+completa — rodovias com rótulo (`Express 183 Toll`, `Loop 1`), parques e água — tanto no estilo
+escuro aplicado pelo code quanto no padrão. Nada mudou no nosso código do mapa além do `setStyle`
+que a F-05 acrescentou.
 
-**O que sobra:** algo nesta máquina interfere na rede feita de dentro do *worker* do MapLibre.
-Suspeitos: antivírus, filtro de endpoint, proxy de sistema. **Próximo passo é testar noutra máquina
-ou rede — ação do Edu, não do CLI. Nada a corrigir no repositório até lá.**
+**Registrado como sintoma ausente, não como causa explicada.** Ninguém sabe o que mudou no
+ambiente, e não fui atrás: a investigação técnica já estava esgotada na S05 e o próximo passo
+registrado era do Edu. Se voltar a acontecer, o histórico inteiro do que já foi descartado com
+evidência continua no `BL-29` e não deve ser refeito.
 
-**Não bloqueia a F-04:** o filtro opera sobre a lista e sobre o conjunto de marcadores, que
-funcionam. O que falta desenhar é o fundo do mapa.
+**Um detalhe adjacente, da mesma sessão e possivelmente da mesma família:** o Chrome recusou
+`localhost:5173` e `127.0.0.1:5173` com a porta comprovadamente escutando, e só respondeu pelo IP
+de rede. Anotado no `.claude/CLAUDE.md` para a próxima verificação visual não perder tempo.
 
 ---
 
@@ -203,7 +238,7 @@ Reconferido via MCP na S06 (`list_tables`, `list_migrations`). RLS ligada nas 8 
 | `questions` | 38 | 4 com `requires_review` (as de texto livre) |
 | `tiers` | 4 | `destination`, `experience`, `fair`, `cool` |
 | `place_tags` | 145 | todas `source = 'suggested'` |
-| `codes` | 1 | `DEMO`, para smoke da RPC |
+| `codes` | 1 | `DEMO`, para smoke da RPC. A S07 criou 4 codes de teste e **apagou os quatro** ao fim |
 | `curators` | 1 | `Michael` — `mikemyday@mikecofone.com`, conta confirmada |
 | `field_reports` | 0 | |
 
@@ -230,16 +265,83 @@ continua com as 145 linhas `suggested` do import: a curadoria ainda não começo
 | F-02 | Admin | ✅ Concluída (S05) | ~1 |
 | F-03 | Público (city gate, mapa, lista, detalhe) | ⚠️ Concluída (S05) — mapa mudo por `BL-29` | ~1 |
 | F-04 | Filtros facetados | ✅ Concluída (S06) | ~0,5 |
-| F-05 | Codes completo + Roulette | ⬜ **Próxima** | ~2 |
-| F-06 | Field reports | ⬜ | ~1,5 |
+| F-05 | Codes completo + Roulette | ✅ Concluída (S07) | ~1 |
+| F-06 | Field reports | ⬜ **Próxima** | ~1,5 |
 
-Total estimado: ~10 sessões — **quatro das sete features fechadas em 5 sessões de CLI**, à frente
-da estimativa. A curadoria do Michael roda em paralelo a partir da F-02 — ver Bíblia §13.1 — e
-segue sendo o caminho crítico real do projeto.
+Total estimado: ~10 sessões — **seis das sete features fechadas em 6 sessões de CLI**, à frente da
+estimativa (a F-05 estava orçada em ~2 e saiu em ~1, porque não precisou de schema). A curadoria do
+Michael roda em paralelo a partir da F-02 — ver Bíblia §13.1 — e agora é o **único** caminho crítico
+do projeto: o código está à frente do conteúdo.
 
 ---
 
 ## 📝 Log de sessões
+
+### 2026-08-07 — S07: F-05 — Codes e Roulette
+
+**O que foi feito:** a feature que o PRD chama de mais diretamente ligada ao propósito do produto
+(§9.7 — "o curador cria um code para cada pessoa a quem mostra o guia, para sempre, sem envolver
+desenvolvedor"). Entregue inteira, sem tocar o banco.
+
+**O achado que definiu a sessão: a F-05 não precisava de migration.** O boot conferiu o schema vivo
+antes de planejar e encontrou `codes` já com `theme`, `pin_style`, `preset_filter`,
+`highlighted_places`, janela de datas e `active`; a `rpc_redeem_code()` aplicada, com `anon` já
+autorizado a executá-la; e a policy de curador no lugar. A F-01 tinha construído o terreno inteiro
+oito meses antes de alguém pisar nele. Resultado: zero migration, zero dependência npm, zero
+componente shadcn novo — 10 arquivos novos e 5 tocados, tudo frontend.
+
+**Duas decisões de comportamento viraram RN, porque não são detalhe de implementação:**
+
+- **RN-27** — o preset de um code semeia o painel **uma vez**, entra selecionado, sai pelo *Clear*
+  normal, e **nunca sobrescreve filtro já presente na URL**. Sem isso, um preset seria um code
+  escondendo lugares, que é exatamente o que a RN-21 proíbe. Link compartilhado é escolha explícita
+  de alguém e vence a decoração.
+- **RN-28** — o code é lembrado em `localStorage` (o Michael entrega um code a uma *pessoa*, não a
+  uma aba) mas o efeito é **revalidado no servidor a cada carga**. Desligar um code no admin passa a
+  valer na próxima visita, em vez de ficar preso no navegador de quem já o usou.
+
+**Um detalhe de URL que virou regra no CLAUDE.md.** `filtersToParams()` monta um `URLSearchParams`
+do zero a cada clique, então um `?code=` estacionado ali sumiria no primeiro toque em faceta — e
+reapareceria no próximo compartilhamento. Pior do que não suportar. A solução foi resgatar e retirar
+o parâmetro na chegada; a regra geral é que a URL do guia pertence ao filtro.
+
+**Contraste resolvido na origem, não policiado depois.** `contrastOn()` deriva
+`--primary-foreground` e `--foreground` da luminância WCAG da cor que o curador escolheu, então
+nenhum tema de code pode nascer ilegível, por pior que seja a cor. Fecha a parte de contraste do
+`BL-19` sem precisar auditar componente por componente. E fundo escuro liga a classe `dark`, porque
+sobrescrever só `--background` deixaria borda, texto suave e acento nos valores claros — página
+escura com costura clara em toda parte.
+
+**Verificação: desta vez houve olho, não só asserção.** A extensão do Chrome conectou (na S06 não
+conectara, e o registro da época dizia isso com todas as letras). O code foi digitado no ar na
+página do guia e, em sequência e sem mais nenhum toque: a URL virou `?tier=destination&star=1`
+sozinha, o guia inteiro escureceu, o banner apareceu com a mensagem e a saída, o selo âmbar "Picked
+for you" entrou na linha do Canje, os pins viraram quadrados âmbar com anel nos destacados, e as
+opções que zeraram ficaram cinza e ainda clicáveis (RN-17). "Back to normal" desfez tudo. A troca de
+estilo de mapa ficou provada por rede: `/styles/liberty` na carga, `/styles/dark` no instante exato
+do resgate.
+
+Antes disso, **60 checks num harness descartável** cobriram o que o olho não vê: o caminho anônimo
+real com code válido, minúsculo, com espaço em volta, inexistente, vazio, desligado, ainda não
+começado e expirado — mais a prova de que toda falha responde byte a byte igual, que é o que impede
+a RPC de virar oráculo de códigos (RN-20), e de que `anon` continua sem conseguir listar `codes`.
+
+**O `BL-29` deixou de reproduzir.** O mapa desenhou geometria completa nos dois estilos. Nada mudou
+no nosso código do mapa além do `setStyle` que esta feature acrescentou. Está registrado como
+sintoma ausente, **não** como causa explicada — não fui atrás do porquê, porque a investigação
+técnica já tinha sido esgotada na S05 e o próximo passo registrado era do Edu. Se voltar, o
+histórico do que já foi descartado com evidência continua no `BL-29`.
+
+**O que ficou sem olhar, dito explicitamente:** a tela `/admin/codes` compila e passa no lint, mas
+está atrás do login do curador e o CLI não tem a senha do Michael. É o único pedaço da entrega que
+ninguém viu rodando (`BL-31`).
+
+**Dívida assumida.** O harness dos 60 checks é descartável de novo, não suíte versionada — foi para
+o scratchpad, fora do repo. O `BL-22` ganhou a técnica que o tornou possível: `vite build --ssr`
+bunda um harness TS resolvendo os aliases `@/`, o Node roda o resultado, e um `document` de mentira
+de dez linhas basta para testar o que escreve CSS var. É o esboço pronto da suíte quando ela vier.
+
+**Versão mantida em `0.1.0`** por decisão do Edu — bump só quando o produto for ao ar.
 
 ### 2026-08-07 — S06: Reconciliação documental
 

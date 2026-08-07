@@ -6,35 +6,63 @@ import {
   NavigationControl,
 } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import type { Place } from '@/types'
+import { DEFAULT_MAP_STYLE_URL } from '@/lib/code-effects'
+import type { Place, PinStyle } from '@/types'
 
 /**
- * OpenFreeMap: free, no key, no quota (ADR-06 logic — the guide should not
- * depend on a billed API). MapLibre was chosen precisely because the style can
- * be swapped at runtime, which is what the Codes feature needs in F-05.
+ * Tiles come from OpenFreeMap: free, no key, no quota (the ADR-06 logic — the
+ * guide should not depend on a billed API). MapLibre was chosen precisely
+ * because the style can be swapped at runtime, which is what a code does.
  */
-const STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty'
 
 interface Props {
   places: Place[]
   selectedId: string | null
   onSelect: (placeId: string | null) => void
+  /** Set by the active code; falls back to the house style. */
+  styleUrl?: string
+  pinStyle?: PinStyle | null
+  /** Place ids a code singles out. They keep a ring so they read at a glance. */
+  highlighted?: Set<string>
 }
 
 /** A pin says where. The colour says how much the curator rates it. */
-function markerElement(place: Place, selected: boolean): HTMLElement {
+function markerElement(
+  place: Place,
+  selected: boolean,
+  highlighted: boolean,
+  pinStyle: PinStyle | null | undefined,
+): HTMLElement {
   const el = document.createElement('button')
   el.type = 'button'
   el.setAttribute('aria-label', place.name)
+
   el.className = [
-    'grid place-items-center rounded-full border-2 shadow-sm transition-transform',
-    selected ? 'size-6 border-background ring-2 ring-foreground' : 'size-4 border-background',
-    place.starred
-      ? 'bg-amber-500'
-      : place.tier === 'destination' || place.tier === 'experience'
-        ? 'bg-foreground'
-        : 'bg-muted-foreground',
+    'grid place-items-center border-2 border-background shadow-sm transition-transform',
+    pinStyle?.shape === 'square' ? 'rounded-sm' : 'rounded-full',
+    selected ? 'size-6 ring-2 ring-foreground' : highlighted ? 'size-5' : 'size-4',
   ].join(' ')
+
+  // A code may repaint the pins, but only wholesale. The judgment colouring
+  // below is the default and stays the default: a code decorates the guide, it
+  // does not get to invent a per-place verdict.
+  const custom = (highlighted ? pinStyle?.highlightColor : null) ?? pinStyle?.color
+
+  if (custom) {
+    el.style.backgroundColor = custom
+  } else if (place.starred) {
+    el.classList.add('bg-amber-500')
+  } else if (place.tier === 'destination' || place.tier === 'experience') {
+    el.classList.add('bg-foreground')
+  } else {
+    el.classList.add('bg-muted-foreground')
+  }
+
+  if (highlighted) {
+    // A ring rather than a different colour, so a highlighted place still shows
+    // its tier — the code adds emphasis without overwriting the verdict.
+    el.style.boxShadow = `0 0 0 3px ${pinStyle?.highlightColor ?? 'rgb(245 158 11 / 0.55)'}`
+  }
 
   if (place.starred) {
     el.innerHTML =
@@ -44,13 +72,24 @@ function markerElement(place: Place, selected: boolean): HTMLElement {
   return el
 }
 
-export function GuideMap({ places, selectedId, onSelect }: Props) {
+export function GuideMap({
+  places,
+  selectedId,
+  onSelect,
+  styleUrl = DEFAULT_MAP_STYLE_URL,
+  pinStyle = null,
+  highlighted,
+}: Props) {
   const container = useRef<HTMLDivElement>(null)
   const map = useRef<MapLibreMap | null>(null)
   const markers = useRef(new globalThis.Map<string, Marker>())
   const fittedFor = useRef<string | null>(null)
   const [loaded, setLoaded] = useState(false)
   const [failure, setFailure] = useState<string | null>(null)
+
+  // Read once, so a code arriving later swaps the style instead of rebuilding
+  // the whole map — and so a visitor who already has one starts on it.
+  const initialStyle = useRef(styleUrl)
 
   useEffect(() => {
     if (!container.current) return
@@ -60,7 +99,7 @@ export function GuideMap({ places, selectedId, onSelect }: Props) {
 
     const instance = new MapLibreMap({
       container: node,
-      style: STYLE_URL,
+      style: initialStyle.current,
       center: [-97.74, 30.27],
       zoom: 10,
       attributionControl: { compact: true },
@@ -96,8 +135,23 @@ export function GuideMap({ places, selectedId, onSelect }: Props) {
     }
   }, [])
 
-  // Markers follow the list. When F-04 narrows the list, the map narrows with
-  // it — one filter state, never two (see CLAUDE.md).
+  /**
+   * Swap the basemap when the code changes it.
+   *
+   * Markers are DOM overlays, not style layers, so they survive this untouched
+   * — which is the whole reason ADR-05 picked MapLibre over an embed.
+   */
+  useEffect(() => {
+    const instance = map.current
+    if (!instance || !loaded) return
+    if (styleUrl === initialStyle.current) return
+
+    initialStyle.current = styleUrl
+    instance.setStyle(styleUrl)
+  }, [styleUrl, loaded])
+
+  // Markers follow the list. When the filter narrows the list, the map narrows
+  // with it — one filter state, never two (see CLAUDE.md).
   useEffect(() => {
     const instance = map.current
     if (!instance) return
@@ -108,7 +162,14 @@ export function GuideMap({ places, selectedId, onSelect }: Props) {
     for (const place of places) {
       if (place.lat == null || place.lng == null) continue
 
-      const marker = new Marker({ element: markerElement(place, place.id === selectedId) })
+      const element = markerElement(
+        place,
+        place.id === selectedId,
+        Boolean(highlighted?.has(place.id)),
+        pinStyle,
+      )
+
+      const marker = new Marker({ element })
         .setLngLat([Number(place.lng), Number(place.lat)])
         .addTo(instance)
 
@@ -119,7 +180,7 @@ export function GuideMap({ places, selectedId, onSelect }: Props) {
 
       markers.current.set(place.id, marker)
     }
-  }, [places, selectedId, onSelect])
+  }, [places, selectedId, onSelect, pinStyle, highlighted])
 
   /**
    * Fit the view only once the style is loaded and the container has real size.

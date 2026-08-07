@@ -1,9 +1,9 @@
 # Michaelin Map — Bíblia do Projeto
 
-**Versão:** 2.4 | **Data:** 2026-08-07 | **Autor:** Edu Mello
-**Status do projeto:** 🟢 F-00 a F-04 concluídas — admin funcional, lado público navegável e filtro
-facetado, com 58 lugares publicados. F-05 (Codes + Roulette) a iniciar. Uma ressalva: o mapa não
-desenha geometria nesta máquina por causa ambiental (`BL-29`), fora do nosso código
+**Versão:** 2.5 | **Data:** 2026-08-07 | **Autor:** Edu Mello
+**Status do projeto:** 🟢 F-00 a F-05 concluídas — admin funcional, lado público navegável, filtro
+facetado, Codes e Roulette, com 58 lugares publicados. F-06 (Field reports) a iniciar. O `BL-29`
+deixou de reproduzir na S07: o mapa desenhou geometria nos dois estilos, sem mudança nossa
 
 > Fonte da verdade do Michaelin Map. O CLI lê este arquivo no boot de toda sessão.
 > Deriva do PRD v1.0 produzido no Claude Web (`docs/files/2026-08-05-michaelin-map-prd.md`),
@@ -16,6 +16,7 @@ desenha geometria nesta máquina por causa ambiental (`BL-29`), fora do nosso c�
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 2.5 | 2026-08-07 | F-05 aplicada (S07), sem tocar o schema. **RN-27 e RN-28 novas** (§14.5): o preset de um code semeia o painel uma vez e nunca sobrescreve a URL; o resgate é revalidado no servidor a cada carga. §13 ganha a nota de que a F-01 já entregara a tabela inteira |
 | 2.4 | 2026-08-07 | F-04 aplicada (S06). **RN-26 nova** (§14.4): faceta sem opção populada não é renderizada |
 | 2.3 | 2026-08-07 | F-02 e F-03 aplicadas (S05), registradas na S06. Fonte de tiles cravada: **OpenFreeMap** (§2, ADR-05). §13 ganha coluna de status. Tela dedicada de fila de revisão cortada (§13). Estado de publicação em §12 |
 | 2.2 | 2026-08-06 | Curadoria passa a ter **uma conta só** (§4, §9.4, §11). Consequência: `updated_by` não identifica pessoa |
@@ -375,10 +376,15 @@ Sete features. Ordem de dependência estrita: cada uma só começa com a anterio
 | **F-02** | Admin | Login, lista com filtros, editor de lugar, atribuição de tags, quick-add mobile, Overview (distribuição de tiers, progresso de curadoria, filas, desatualizados) | ~2 | ✅ S05 |
 | **F-03** | Público | Portão de cidade, mapa MapLibre, lista sincronizada, detalhe do lugar | ~2 | ⚠️ S05 — mapa mudo por `BL-29` |
 | **F-04** | Filtros | Painel facetado, OR dentro / AND entre facetas, contagem ao vivo, opção zerada desabilitada, estado na URL, empty state autoral | ~1 | ✅ S06 |
-| **F-05** | Codes + Roulette | Codes completo (tema, estilo de mapa, pins, filtro pré-aplicado, destaques, type-anywhere no desktop, long-press no mobile) + Roulette | ~2 | ⬜ Próxima |
-| **F-06** | Field reports | 7 tipos de input, sorteio de 2-3 perguntas, agregado com n≥5, texto livre em fila, rate limit | ~1,5 | ⬜ |
+| **F-05** | Codes + Roulette | Codes completo (tema, estilo de mapa, pins, filtro pré-aplicado, destaques, type-anywhere no desktop, long-press no mobile) + Roulette | ~2 | ✅ S07 |
+| **F-06** | Field reports | 7 tipos de input, sorteio de 2-3 perguntas, agregado com n≥5, texto livre em fila, rate limit | ~1,5 | ⬜ **Próxima** |
 
-Total estimado: **~10 sessões de CLI.** Quatro features fechadas em 5 sessões.
+Total estimado: **~10 sessões de CLI.** Cinco features fechadas em 6 sessões.
+
+**A F-05 não tocou o schema.** A F-01 já havia entregue `codes` com os seis campos de efeito
+(`theme`, `pin_style`, `preset_filter`, `highlighted_places`, janela de datas, `active`) e a
+`rpc_redeem_code()` com `anon` autorizado a executá-la. A feature inteira é frontend sobre o
+banco existente — nenhuma migration, nenhuma dependência npm nova, nenhum componente shadcn novo.
 
 **Corte de escopo na F-02 (S05):** a tela dedicada de fila de revisão não foi construída. As três
 filas — conflitos de tier, tags sugeridas, lugares sem tipo — são cartões no Overview que linkam
@@ -439,6 +445,15 @@ Registrados em `docs/BACKLOG.md`, com o motivo de cada corte: Google Places API 
 
 - **RN-20** — Códigos nunca são listáveis. O público não tem SELECT em `codes`; a validação passa pela RPC, que responde por código específico.
 - **RN-21** — Codes nunca removem conteúdo. Eles reestilizam, reordenam, destacam e adicionam mensagem. Nunca escondem um lugar de quem não tem o código.
+- **RN-27** — **O filtro pré-aplicado de um code semeia o painel uma vez e depois é do visitante.**
+  Ele entra selecionado, conta como qualquer outro filtro, e sai pelo mesmo botão *Clear*. E
+  **nunca sobrescreve filtro já presente na URL** — link compartilhado é escolha explícita de
+  alguém e vence a decoração. É a RN-21 aplicada ao único efeito de code que estreita a visão:
+  sem esta regra, um preset seria um code escondendo lugares. Registrada na F-05.
+- **RN-28** — **O resgate de um code é revalidado no servidor a cada carga.** O código digitado
+  é lembrado localmente para sobreviver a um reload — o Michael entrega um code a uma *pessoa*,
+  não a uma aba —, mas o efeito nunca é lido do que ficou guardado. Desligar um code no admin
+  vale na próxima visita, e não fica preso no navegador de quem já o usou.
 
 ### 14.6 Field reports
 
