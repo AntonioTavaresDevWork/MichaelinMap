@@ -41,7 +41,7 @@ Encontradas ao cruzar PRD × `CLAUDE.md` do produto × `PLAN.md` × `schema.sql`
 
 | # | Item | Motivo |
 |---|---|---|
-| BL-14 | As 5 skills em `.claude/skills/` mantêm exemplos do WiseFacilities (`audit_log`, `capacidades`, `is_admin_atual()`) — objetos que não existem aqui | Adaptar aos objetos reais após a F-01, quando o schema existir. Risco atual: um agente inferir tabelas inexistentes |
+| ✅ BL-14 | As 5 skills mantinham exemplos do WiseFacilities — objetos que não existem aqui | Reescritas na S04 sobre os objetos reais. `naming` também tinha um risco pior que os exemplos órfãos: prescrevia **formato BR** (`1.234,56`, `DD/MM/YYYY`, `R$`), em contradição direta com o ADR-02. `spec-format` foi marcada como não usada (ADR-04), preservada só como referência |
 | BL-15 | `docs/GANTT-MichaelinMap.csv` e `docs/DOMAIN_QUESTIONS.md` estão preenchidos com o conteúdo-exemplo do template e não são mantidos neste projeto | ADR-04. Arquivos preservados mas fora de uso — não ler no boot, não atualizar |
 | BL-16 | `docs/files/CLAUDE.md` (vindo do Claude Web) coexiste com `.claude/CLAUDE.md` e diverge dele | `.claude/CLAUDE.md` é o canônico. O de `docs/files/` é material de origem |
 | BL-17 | Sem tabela de auditoria — apenas `places.updated_by` + `updated_at` | Com **uma** conta de curador (S04), `updated_by` é constante e não atribui edição a ninguém. `updated_at` continua útil (alimenta a lista de desatualizados da F-02). Reabrir só se surgir uma segunda conta |

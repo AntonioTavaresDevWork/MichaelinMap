@@ -1,110 +1,148 @@
 ---
 name: michaelinmap-rpc
-description: PadrÃ£o de funÃ§Ã£o RPC SECURITY DEFINER nos projetos Wise*. SET search_path obrigatÃ³rio, validaÃ§Ãµes server-side, auditoria na tabela declarada pelo projeto, REVOKE pÃºblico + GRANT seletivo (com exceÃ§Ã£o de portal pÃºblico via ADR), retorno padronizado JSON. AutorizaÃ§Ã£o e auditoria adaptam ao modelo declarado na BÃ­blia. Use ao criar ou modificar funÃ§Ãµes RPC chamadas pelo frontend via supabase-js.
+description: Padrão de função RPC SECURITY DEFINER no Michaelin Map. SET search_path obrigatório, validação server-side, retorno jsonb {ok,…}, GRANT a anon quando a RPC é o caminho público declarado na Bíblia §11. Use ao criar ou modificar funções RPC chamadas pelo frontend via supabase-js.
 ---
 
-> **Template Wise\*:** ao instanciar num projeto, copie para `.claude/skills/MICHAELINMAP-rpc/SKILL.md` e renomeie `name:` para `MICHAELINMAP-rpc`.
+# Padrão de RPC — Michaelin Map
 
-# PadrÃ£o de RPC â€” Wise*
+> Exemplos são as duas RPCs **reais** do projeto, em
+> `supabase/migrations/20260806120000_f01_schema_rls_rpc.sql` BLOCK 08.
 
-## Anatomia mÃ­nima
+## O que este projeto NÃO tem
+
+Antes de copiar padrão de outro projeto Wise*: aqui **não existe** `audit_log`, `company_id`,
+`has_capacidade()`, `is_superadmin()` nem `perfis`. A auditoria é `places.updated_by` +
+`updated_at`, e com conta única de curador o `updated_by` nem identifica pessoa (Bíblia §4).
+Não invente essas tabelas.
+
+## Quando uma RPC se justifica
+
+Só quando o RLS **não dá conta sozinho**. Neste projeto há exatamente dois casos, ambos porque o
+visitante anônimo precisa de uma capacidade que uma policy não consegue expressar com segurança:
+
+| RPC | Por que não dá para ser policy |
+|---|---|
+| `rpc_redeem_code(p_code)` | O público não pode ter SELECT em `codes` (RN-20). Uma policy `code = <input>` ainda exporia a tabela; a RPC responde sobre **um** código por vez |
+| `rpc_submit_field_report(…)` | O status da resposta é **derivado no servidor** de `questions.requires_review` (RN-23). Uma policy de INSERT deixaria o visitante escolher `published` |
+
+Se a operação cabe numa policy, **não faça RPC**.
+
+## Anatomia
 
 ```sql
-CREATE OR REPLACE FUNCTION rpc_<acao>(
-  p_param1 <tipo>,
-  p_param2 <tipo>
-)
+CREATE OR REPLACE FUNCTION public.rpc_<verbo>_<entidade>(p_x <tipo>)
 RETURNS jsonb
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public, pg_temp
+SET search_path = public, pg_temp      -- obrigatório
 AS $$
 DECLARE
-  v_company_id uuid;
-  v_result jsonb;
+  v_row public.<tabela>%ROWTYPE;
 BEGIN
-  -- 1. Resolver company_id do caller
-  SELECT company_id INTO v_company_id
-  FROM perfis WHERE id = auth.uid();
-
-  IF v_company_id IS NULL AND NOT is_superadmin() THEN
-    RAISE EXCEPTION 'UsuÃ¡rio sem company_id vÃ¡lido';
+  -- 1. Validar a forma do input antes de qualquer leitura
+  IF p_x IS NULL THEN
+    RETURN jsonb_build_object('ok', false, 'error', 'invalid_input');
   END IF;
 
-  -- 2. Validar permissÃ£o
-  IF NOT (is_admin_atual() OR has_capacidade('<capability>')) THEN
-    RAISE EXCEPTION 'PermissÃ£o negada: requer capability <capability>';
-  END IF;
+  -- 2. Validar o estado no servidor — nunca confiar no que veio do client
+  -- 3. Derivar o que o caller não pode escolher
+  -- 4. Executar
+  -- 5. Retornar
 
-  -- 3. Validar inputs (negÃ³cio) â€” V1..VN numeradas
-  --    Para operaÃ§Ãµes decisÃ³rias: SELECT ... FOR UPDATE no inÃ­cio (race-safe)
-  -- ...
-
-  -- 4. Executar a operaÃ§Ã£o principal
-  -- ...
-
-  -- 5. Registrar no audit_log
-  INSERT INTO audit_log (
-    company_id, tabela, registro_id, acao,
-    campo_alterado, valor_anterior, valor_novo,
-    usuario_id, cargo_no_momento
-  ) VALUES (
-    v_company_id, '<tabela>', <id>, '<acao>',
-    NULL, NULL, to_jsonb(<dados>)::text,
-    auth.uid(), cargo_atual_texto()
-  );
-
-  -- 6. Retornar resultado estruturado
-  RETURN jsonb_build_object(
-    'success', true,
-    'data', v_result
-  );
+  RETURN jsonb_build_object('ok', true, 'status', v_status);
 END;
 $$;
 
-REVOKE ALL ON FUNCTION rpc_<acao> FROM PUBLIC, anon;
-GRANT EXECUTE ON FUNCTION rpc_<acao> TO authenticated;
+REVOKE ALL ON FUNCTION public.rpc_<verbo>_<entidade>(<assinatura>) FROM public;
+GRANT EXECUTE ON FUNCTION public.rpc_<verbo>_<entidade>(<assinatura>) TO anon, authenticated;
 ```
 
-## Dois pontos que dependem do modelo declarado na BÃ­blia
+## GRANT a `anon` é a norma aqui — não o erro
 
-A anatomia acima reflete o **Modelo B** (capability-RBAC) do WiseFacilities. Dois elementos se adaptam Ã  escolha do projeto (ver skill `MICHAELINMAP-rls-policy` â†’ "Modelo de autorizaÃ§Ã£o"):
+O template Wise* manda revogar de `anon` e ter um GATE que falha se `anon` puder executar.
+**Neste projeto isso está invertido:** as duas RPCs são o caminho público declarado na Bíblia
+§11 e **precisam** do GRANT a `anon`. A segurança vem da validação dentro da função, não do
+GRANT ausente.
 
-1. **AutorizaÃ§Ã£o do caller:**
-   - Modelo B â†’ `IF NOT (is_admin_atual() OR has_capacidade('<cap>'))`.
-   - Modelo A (tenant-scoped) â†’ validar sÃ³ o tenant (`v_company_id` resolvido + escopo da operaÃ§Ã£o); sem `has_capacidade()`.
-
-2. **Destino da auditoria:** o framework usa `audit_log` por default, mas **o projeto declara sua tabela de auditoria na BÃ­blia**. Se o projeto jÃ¡ tem outra (ex: `sync_log` com `dados_antes`/`dados_depois`/`device_info`), a RPC grava nela, no schema real â€” nÃ£o force `audit_log`/`cargo_no_momento`/`varchar(20)`. O princÃ­pio (toda mutaÃ§Ã£o auditada server-side) Ã© universal; o schema da tabela, nÃ£o.
-
-## Regras inviolÃ¡veis (ambos os modelos)
-
-**`SET search_path = public, pg_temp` obrigatÃ³rio.** Sem isso, atacante pode criar schema malicioso que sequestra a funÃ§Ã£o. PadrÃ£o de seguranÃ§a da Supabase.
-
-**ValidaÃ§Ã£o de permissÃ£o ANTES de qualquer side effect.** RAISE EXCEPTION cedo. NÃ£o fazer trabalho que vai ser desfeito. (Modelo B valida capability; Modelo A valida tenant + escopo.)
-
-**Naming:** RPCs novas usam `rpc_<verbo>_<entidade>`. RPCs legadas sem prefixo (em projeto prÃ©-existente) sÃ£o aceitas â€” nÃ£o renomear o que jÃ¡ estÃ¡ em uso pelo frontend.
-
-**Race-safety em RPCs decisÃ³rias:** `SELECT ... FOR UPDATE` no inÃ­cio para travar a linha decisÃ³ria (duas abas decidindo simultaneamente â†’ `40001`).
-
-**Auditoria sempre populada**, na tabela declarada pelo projeto (ver acima). No `audit_log` padrÃ£o: `cargo_no_momento` server-side, `acao` em `varchar(20)`, flags em `valor_novo text` via `jsonb_build_object(...)::text`.
-
-**Mensagens de erro em PT-BR** via `RAISE EXCEPTION ... USING ERRCODE = '<cÃ³digo>'` â€” frontend traduz com `mapRpcError`. ERRCODEs comuns: `22023`, `42501`, `P0002`, `23505`, `40001`, `P0001`.
-
-**REVOKE FROM PUBLIC, anon + GRANT TO authenticated por default.** AtenÃ§Ã£o (liÃ§Ã£o WF S39): `REVOKE ... FROM PUBLIC` sozinho **nÃ£o** tira o EXECUTE do role `anon` â€” o Supabase concede EXECUTE direto a `anon`/`authenticated` em funÃ§Ãµes novas via *default privileges*. Revogar de `PUBLIC, anon` explicitamente. Sempre via migration â€” nunca via dashboard. **Inclua um GATE inline** que falha o apply se `anon` ainda puder executar:
-
-> **ExceÃ§Ã£o declarada (ADR):** RPCs de acesso pÃºblico intencional (ex: portal sem login via token, `SECURITY DEFINER`) **mantÃªm** o GRANT a `anon` â€” desde que coberto por um ADR na BÃ­blia. Nesse caso o GATE de anon NÃƒO se aplica Ã quela funÃ§Ã£o; a seguranÃ§a vem da validaÃ§Ã£o do token dentro da RPC.
+O GATE correto aqui é o oposto — confirmar que as RPCs públicas continuam executáveis:
 
 ```sql
-IF has_function_privilege('anon', 'rpc_<acao>(<assinatura>)', 'EXECUTE') THEN
-  RAISE EXCEPTION 'GATE FALHOU: anon ainda executa rpc_<acao>';
+SELECT count(*) INTO v_count
+FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+WHERE n.nspname = 'public'
+  AND p.proname IN ('rpc_redeem_code','rpc_submit_field_report')
+  AND has_function_privilege('anon', p.oid, 'EXECUTE');
+IF v_count <> 2 THEN
+  RAISE EXCEPTION 'GATE FALHOU: % de 2 RPCs executáveis por anon', v_count;
 END IF;
 ```
 
-(dentro do BEGIN/COMMIT â†’ rollback automÃ¡tico se vazar).
+`REVOKE ALL … FROM public` seguido de `GRANT … TO anon, authenticated` é a forma: torna a
+concessão explícita em vez de herdada.
 
-**Retorno em jsonb estruturado.** Mesmo pra ops simples. Permite evoluir sem quebrar contrato com o frontend. ConvenÃ§Ã£o: `{success: bool, data: {...}, error: text|null}`.
+## Retorno padronizado
 
-## ReferÃªncias
+`{"ok": true, …}` / `{"ok": false, "error": "<código>"}`. Sempre jsonb, mesmo para operação
+trivial — permite evoluir sem quebrar o contrato com o frontend.
 
-- Origem do padrÃ£o: WiseFacilities, migration `20260522120000_f_rbac_v2.sql` BLOCK 10 (5 RPCs canÃ´nicas: `rpc_ajustar_estoque`, `rpc_decidir_autorizacao_fora_tr`, `rpc_definir_minimos_em_massa`, `rpc_marcar_contagem_fisica`, `rpc_reatribuir_unidades_almoxarifado`).
-- No projeto novo: apontar aqui as primeiras RPCs aprovadas como referÃªncia local.
+**Códigos de erro em inglês, snake_case**, porque a UI é em inglês (ADR-02):
+`invalid_answer`, `place_not_available`, `question_not_available`, `rate_limited`,
+`already_answered`. O frontend traduz para copy com `mapRpcError()` em `src/lib/utils.ts`.
+
+Preferir **retorno** a `RAISE EXCEPTION` para falha esperada de negócio: exceção vira erro HTTP
+no supabase-js e obriga o frontend a distinguir falha de rede de "código não existe". Reservar
+`RAISE EXCEPTION` para o que é realmente excepcional.
+
+## Não vazar informação pela forma da resposta
+
+`rpc_redeem_code` devolve **exatamente** `{"ok": false}` em todo caminho de falha — código
+inexistente, inativo, fora da janela de datas, input vazio. Qualquer diferença entre esses casos
+transforma a função num oráculo e devolve a enumeração que remover o SELECT público evitou
+(RN-20).
+
+```sql
+IF NOT FOUND THEN
+  RETURN jsonb_build_object('ok', false);   -- sem 'error', sem detalhe
+END IF;
+```
+
+Contraste: `rpc_submit_field_report` **pode** detalhar o erro, porque ali não há segredo a
+proteger — o visitante precisa saber se já respondeu ou se caiu no rate limit.
+
+## Derivar no servidor o que o caller não pode escolher
+
+```sql
+v_status := CASE WHEN v_question.requires_review THEN 'pending' ELSE 'published' END;
+```
+
+O visitante manda a resposta, nunca o status (RN-23). Mesma lógica para o truncamento: texto
+livre é cortado em 40 caracteres **na função**, não confiado ao client (RN-24).
+
+```sql
+v_answer := jsonb_set(p_answer, '{value}', to_jsonb(left(btrim(p_answer->>'value'), 40)));
+```
+
+## Rate limit por `session_hash`
+
+`session_hash` serve só para limitar, nunca para identificar. Dois controles:
+
+- teto por janela: 30 respostas por hora
+- uma resposta por `(session_hash, place_id, question_id)` — sem isso, um visitante entediado
+  entorta um agregado sozinho, e o agregado é a feature (RN-25)
+
+É contornável com sessão nova, e tudo bem: o objetivo é atrito, não identidade.
+
+## Regras invioláveis
+
+- `SET search_path = public, pg_temp` em toda função `SECURITY DEFINER`
+- Validar estado no servidor antes de qualquer side effect
+- Naming `rpc_<verbo>_<entidade>`
+- Falha de negócio → retorno `{"ok": false, …}`; exceção só para o excepcional
+- Resposta de falha **uniforme** quando distinguir casos vaza informação
+- Campo que o caller não pode escolher é derivado no servidor, sempre
+- Nunca escrever na camada de julgamento (`tier`, `starred`, `the_dish`, `curator_note`, `story`, `last_visited`, atribuições em `place_tags`) sem autorização explícita do Edu
+
+## Referências
+
+- RPCs reais: `20260806120000_f01_schema_rls_rpc.sql` BLOCK 08
+- Smoke com as duas RPCs, incluindo truncamento e duplicata: log da S04 em `docs/STATUS.md`

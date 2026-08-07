@@ -1,131 +1,218 @@
 ---
 name: michaelinmap-migration
-description: ConvenÃ§Ãµes de migration SQL nos projetos Wise*. BEGIN/COMMIT explÃ­cito, blocos numerados, comentÃ¡rios WHY, hot-patch forward-declaration, saneamento manual de schema_migrations apÃ³s apply via Supabase MCP, GATEs internos de validaÃ§Ã£o. Use ao escrever ou aplicar qualquer migration Supabase no projeto.
+description: Convenções de migration SQL no Michaelin Map. BEGIN/COMMIT explícito, blocos numerados, comentários WHY, GATEs inline de validação, bloco de GRANT sempre por último, saneamento manual de schema_migrations após apply via MCP, verificação por checksum em import de massa. Use ao escrever ou aplicar qualquer migration Supabase no projeto.
 ---
 
-> **Template Wise\*:** ao instanciar num projeto, copie para `.claude/skills/MICHAELINMAP-migration/SKILL.md` e renomeie `name:` para `MICHAELINMAP-migration`.
+# Padrão de Migration — Michaelin Map
 
-> âš ï¸ **Exemplos sÃ£o ilustrativos de SINTAXE, nÃ£o de schema.** Os snippets abaixo usam objetos do WiseFacilities (`audit_log`, `cargo_atual_texto()`, `is_admin_atual()`, `capacidades`, `seed_cargos_padrao()`) apenas para demonstrar a mecÃ¢nica (comentÃ¡rio WHY, forward-declaration, GATE, seed sem hardcode de UUID). **Ao instanciar, troque esses objetos pelos reais do seu projeto** â€” senÃ£o um agente pode inferir que tabelas/funÃ§Ãµes inexistentes existem. A estrutura (BEGIN/COMMIT, BLOCKs, GATEs, saneamento de `schema_migrations`) Ã© universal; os objetos dos exemplos, nÃ£o.
-
-# PadrÃ£o de Migration â€” Wise*
+> Referência local aprovada: `supabase/migrations/20260806120000_f01_schema_rls_rpc.sql`
+> (schema + RLS + RPCs, 12 GATEs) e `20260806120100_f01_seed_and_import.sql` (seed + import
+> de 511 linhas, 18 GATEs). Comentários de SQL em **inglês** (ADR-02).
 
 ## Estrutura do arquivo
 
 ```
-supabase/migrations/YYYYMMDDHHMMSS_<feature>.sql
+supabase/migrations/YYYYMMDDNNNNNN_<descricao>.sql
 
 BEGIN;
 
--- ========================================================================
--- F-<NUMERO> â€” <TÃ­tulo da feature>
+-- ====================================================================
+-- F-<NN> — <Título>
 --
--- VersÃ£o: 1.0
--- Spec: docs/specs/F-<NUMERO>-spec.md
--- Investigation: docs/specs/F-<NUMERO>-investigation.md
--- ========================================================================
+-- Version: 1.0
+-- Requires: <migration anterior, se houver>
+-- Backlog items closed here: BL-XX..BL-YY
+-- ====================================================================
 
--- BLOCK 00 â€” Forward-declarations (se necessÃ¡rio)
--- BLOCK 01 â€” <descriÃ§Ã£o>
--- BLOCK 02 â€” <descriÃ§Ã£o>
+-- BLOCK 01 — Tables
+-- BLOCK 02 — Indexes
 -- ...
--- BLOCK N â€” GATEs de validaÃ§Ã£o
+-- BLOCK NN-1 — Table grants        <- SEMPRE o penúltimo
+-- BLOCK NN   — Validation gates    <- SEMPRE o último
 
 COMMIT;
 ```
 
-## Regras inviolÃ¡veis
+## Regras invioláveis
 
-**BEGIN/COMMIT explÃ­citos.** Migration atÃ´mica. Se qualquer bloco falhar, rollback total.
+**BEGIN/COMMIT explícitos.** Migration atômica: um GATE que falha derruba tudo e o banco fica
+intacto. Isso já pagou — ver "O caso do G6" abaixo.
 
-**Blocos numerados.** Cada `BLOCK NN` agrupa operaÃ§Ãµes relacionadas (CREATE TABLE, ALTER, CREATE FUNCTION, etc.). Comentado no topo de cada bloco.
+**Blocos numerados**, cada um com um cabeçalho dizendo o que faz.
 
-**ComentÃ¡rios WHY.** Cada decisÃ£o nÃ£o-Ã³bvia precisa ter um comentÃ¡rio explicando POR QUÃŠ. Sintaxe Ã© trivial; intenÃ§Ã£o nÃ£o. Exemplo:
-
-```sql
--- WHY DEFAULT: padroniza populaÃ§Ã£o server-side. Audits via RPCs continuam
--- populando explicitamente (sobrescreve DEFAULT â€” comportamento esperado).
--- Audits via supabase-js NÃƒO precisam passar o campo.
-ALTER TABLE audit_log ADD COLUMN cargo_no_momento text DEFAULT cargo_atual_texto();
-```
-
-**Sem hardcode de UUIDs.** Resolver por subquery em `empresas` (ou outra tabela base). Hardcode falha quando o tenant tiver outro id em outra instÃ¢ncia. Exemplo correto:
+**Comentários WHY, não WHAT.** Sintaxe é trivial, intenção não:
 
 ```sql
-DO $SEED_ALL$
-DECLARE v_company_id uuid;
-BEGIN
-  FOR v_company_id IN SELECT id FROM empresas LOOP
-    PERFORM seed_cargos_padrao(v_company_id);
-  END LOOP;
-END $SEED_ALL$;
+-- WHY ON DELETE RESTRICT: dropping a tier row would silently erase the judgment
+-- layer on every place carrying it. Deleting a tier in use must fail loudly.
+tier text REFERENCES public.tiers(slug) ON UPDATE CASCADE ON DELETE RESTRICT,
 ```
 
-**Enum novo:** Postgres nÃ£o permite usar novo enum value na mesma transaÃ§Ã£o do `ADD VALUE`. Separar em migrations distintas quando necessÃ¡rio.
-
-## Forward-declaration (hot-patch)
-
-Se um bloco precisa de funÃ§Ã£o que sÃ³ Ã© criada em bloco posterior (ex: policies das tabelas novas usando `is_admin_atual()` criada depois), criar BLOCK 00 com stub:
+**Sem hardcode de UUID.** Resolver por subquery na chave natural:
 
 ```sql
--- BLOCK 00 â€” Forward-declaration de is_admin_atual()
--- Stub temporÃ¡rio. CREATE OR REPLACE no BLOCK 06 substitui pela versÃ£o real.
-CREATE OR REPLACE FUNCTION is_admin_atual() RETURNS boolean AS $$
-  SELECT false;  -- stub
-$$ LANGUAGE sql STABLE;
+INSERT INTO public.curators (user_id, name)
+SELECT id, 'Michael' FROM auth.users WHERE email = 'mikemyday@mikecofone.com'
+ON CONFLICT (user_id) DO NOTHING;
 ```
 
-## GATEs de validaÃ§Ã£o inline
+**Idempotência por chave natural.** Todo seed usa `ON CONFLICT … DO NOTHING` sobre uma UNIQUE
+real. Se a tabela não tem chave natural, a migration **cria uma** — foi o motivo de
+`questions.prompt` ganhar UNIQUE (BL-05).
 
-No fim da migration (antes do COMMIT), 5-15 GATEs que validam estado esperado. PadrÃ£o:
+**Enum novo:** Postgres não permite usar valor novo de enum na mesma transação do `ADD VALUE`.
+Separar em migrations distintas. (Este projeto usa CHECK constraint em vez de enum — mais fácil
+de evoluir.)
+
+**SAVEPOINT/ROLLBACK TO não é gramática válida dentro de `DO $$ … $$`.** Smoke inline tem de ser
+read-only. Para validar mutação, ver "Smoke que precisa reverter" abaixo.
+
+## O bloco de GRANT é sempre o último — lição que custou um apply
+
+**Default privileges do Supabase são aplicadas no momento da criação do objeto.** Um
+`REVOKE ALL … FROM anon` colocado antes de um `CREATE VIEW` não protege a view: ela nasce depois,
+herdando GRANT completo.
+
+Foi exatamente o que reprovou a primeira aplicação da F-01. O GATE de privilégios acusou
+`anon holds 4 write grant(s) in public` — INSERT, UPDATE, DELETE e TRUNCATE na view
+`field_report_aggregates`, criada dois blocos depois do REVOKE. A migration inteira voltou
+atrás, os blocos foram trocados de ordem e a segunda tentativa passou.
+
+**Regra: criar todos os objetos primeiro; revogar e conceder no penúltimo bloco.**
+
+## GATEs de validação inline
+
+5-20 GATEs antes do COMMIT. Falha dispara EXCEPTION → rollback total → crash visível.
 
 ```sql
 DO $GATES$
-DECLARE
-  v_count integer;
+DECLARE v_count integer;
 BEGIN
-  -- GATE G1: linhas seedadas
-  SELECT COUNT(*) INTO v_count FROM capacidades;
-  IF v_count <> <N_ESPERADO> THEN
-    RAISE EXCEPTION 'GATE G1 FALHOU: capacidades tem % linhas, esperado <N_ESPERADO>', v_count;
+  SELECT count(*) INTO v_count FROM public.places;
+  IF v_count <> 511 THEN
+    RAISE EXCEPTION 'GATE G4 FAILED: expected 511 places, found %', v_count;
   END IF;
-
-  -- ... mais GATEs ...
-
-  RAISE NOTICE 'F-XX GATE PASSOU: todas as N verificaÃ§Ãµes OK';
+  RAISE NOTICE 'F-01 gates passed: 18 of 18';
 END $GATES$;
 ```
 
-GATE FALHOU dispara EXCEPTION â†’ BEGIN/COMMIT roda rollback â†’ banco fica intacto. Crash visÃ­vel.
-
-> âš ï¸ **SAVEPOINT/ROLLBACK TO nÃ£o Ã© gramÃ¡tica vÃ¡lida dentro de `DO $$ ... $$`.** Smokes inline devem ser read-only puros. Se exigir mutaÃ§Ã£o real pra validar, mover pra smoke query pÃ³s-apply (comentÃ¡rio no fim do arquivo).
-
-## AplicaÃ§Ã£o via Supabase MCP
-
-`mcp__supabase__apply_migration` **reescreve o timestamp** em `schema_migrations`. Saneamento manual obrigatÃ³rio apÃ³s apply:
+**GATEs que valem em qualquer migration que mexa em RLS ou grants** — estes pegam o que revisão
+visual não pega:
 
 ```sql
-DELETE FROM supabase_migrations.schema_migrations
-WHERE version = '<TIMESTAMP_REESCRITO>';
+-- privilégio de escrita sobrando para anon
+SELECT count(*) INTO v_count FROM information_schema.role_table_grants
+WHERE grantee = 'anon' AND table_schema = 'public'
+  AND privilege_type IN ('INSERT','UPDATE','DELETE','TRUNCATE');
 
-INSERT INTO supabase_migrations.schema_migrations (version, name, statements)
-VALUES ('<TIMESTAMP_DO_ARQUIVO>', '<nome_sem_extensao>', ARRAY[<STATEMENTS>]);
+-- tabela com RLS ligado e zero policies (trancada por acidente)
+SELECT count(*) INTO v_count FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE n.nspname = 'public' AND c.relrowsecurity = true
+  AND NOT EXISTS (SELECT 1 FROM pg_policy p WHERE p.polrelid = c.oid);
+
+-- SECURITY DEFINER sem search_path fixo
+SELECT count(*) INTO v_count FROM pg_proc p
+JOIN pg_namespace n ON n.oid = p.pronamespace
+WHERE n.nspname = 'public' AND p.prosecdef = true
+  AND (p.proconfig IS NULL OR NOT EXISTS (
+    SELECT 1 FROM unnest(p.proconfig) cfg WHERE cfg LIKE 'search_path=%'));
+
+-- view que lê tabela sob RLS precisa de security_invoker
+SELECT (c.reloptions @> ARRAY['security_invoker=on']) INTO v_bool
+FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE n.nspname = 'public' AND c.relname = '<view>';
 ```
 
-Validar pÃ³s-saneamento: entrada nova existe; entrada divergente removida; `version` cai cronologicamente entre predecessor e sucessor; banco funcional.
+E um GATE de integridade do julgamento, em qualquer migration que toque `places`:
 
-**Quem aplica:** SEMPRE o orquestrador (CLI#1). Executor escreve, nunca aplica.
+```sql
+SELECT count(*) INTO v_count FROM public.places
+WHERE the_dish IS NOT NULL OR curator_note IS NOT NULL OR story IS NOT NULL
+   OR last_visited IS NOT NULL OR price_band IS NOT NULL;
+-- numa migration de import, tem de ser 0
+```
 
-## AplicaÃ§Ã£o via Dashboard SQL Editor
+## Aplicação via Supabase MCP
 
-Quando MCP/CLI falha (arquivo grande, etc.): copiar arquivo inteiro â†’ SQL Editor â†’ Run. BEGIN/COMMIT funciona nativamente. Saneamento de `schema_migrations` Ã© manual (mesma sequÃªncia DELETE+INSERT acima).
+`mcp__supabase__apply_migration` **reescreve o `version`** com o timestamp dele. Saneamento
+manual obrigatório depois:
 
-**ExceÃ§Ã£o dashboard:** REVOKE/GRANT de 1-2 statements podem ir via dashboard sem migration formal, mas DEVEM ser registrados em `docs/STATUS.md` + na spec da feature + com data. DDL multi-statement / objetos novos = migration formal sempre.
+```sql
+DELETE FROM supabase_migrations.schema_migrations WHERE version = '<TIMESTAMP_REESCRITO>';
+INSERT INTO supabase_migrations.schema_migrations (version, name, statements)
+VALUES ('<TIMESTAMP_DO_ARQUIVO>', '<nome_sem_extensao>',
+        ARRAY['-- see supabase/migrations/<arquivo>.sql']);
+```
+
+Validar depois: entrada nova existe, divergente sumiu, `version` cai cronologicamente entre
+predecessor e sucessor.
+
+**Quem aplica: sempre o orquestrador (CLI#1).** Executor escreve, nunca aplica.
+
+### Limite de payload
+
+`apply_migration` **não engole arquivo grande** — 155 kB (511 linhas de INSERT) não passou.
+Opções, em ordem de preferência:
+
+1. Quebrar em migrations menores, se o conteúdo permitir
+2. SQL Editor do painel: cola o arquivo inteiro, BEGIN/COMMIT funciona nativamente
+3. `execute_sql` em blocos, com o arquivo completo versionado no repo como artefato de verdade
+   e `schema_migrations` preenchido à mão
+
+**Se usar 2 ou 3 para carga de massa, verificação por checksum contra a fonte é obrigatória.**
+Transcrição em blocos corrompe em silêncio — um endereço trocado não dispara erro nenhum.
+
+```sql
+-- no banco: hash por linha, agregado em ordem de hash (independe de collation)
+WITH r AS (SELECT md5(col1||'|'||coalesce(col2,'')||'|'||…) AS h FROM public.<tabela>)
+SELECT md5(string_agg(h, '' ORDER BY h)) FROM r;
+```
+
+O mesmo cálculo roda num script local sobre a fonte e os dois md5 têm de bater. Detalhes:
+
+- **Ordenar por hash, não por chave textual.** `ORDER BY` no Postgres usa a collation do banco;
+  `sort()` do JS usa code point. Ordens diferentes → hashes diferentes com dados idênticos
+- **`numeric(p,s)::text` sempre traz `s` casas.** No script, `Number(v).toFixed(s)`
+- Se der divergência, comparar por **grupo de campos** para localizar antes de suspeitar do dado.
+  Na F-01 a primeira divergência era bug do script de verificação, não do banco
+
+## Smoke que precisa reverter
+
+`execute_sql` do MCP devolve **só o resultado do último statement**. Para um smoke que muta e
+precisa voltar atrás, um `DO` block que termina em `RAISE EXCEPTION` com os resultados na
+mensagem resolve as duas coisas: devolve tudo e reverte.
+
+```sql
+DO $SMOKE$
+DECLARE r1 jsonb; r2 jsonb;
+BEGIN
+  UPDATE public.places SET status = 'published' WHERE slug = '<x>';
+  PERFORM set_config('role', 'anon', true);
+  r1 := public.rpc_submit_field_report(…);
+  PERFORM set_config('role', 'postgres', true);
+  RAISE EXCEPTION E'SMOKE (rolled back)\nr1 -> %\nr2 -> %', r1, r2;
+END $SMOKE$;
+```
+
+O erro que volta **é** o relatório, e nada persiste.
 
 ## Rollback
 
-Cada migration crÃ­tica tem arquivo rollback em `supabase/rollbacks/` (NÃƒO em `supabase/migrations/`, senÃ£o `supabase db push` aplica). Nomenclatura: `<timestamp+1>_<feature>_rollback.sql`. ConteÃºdo: reverte exatamente o que a migration aplicou.
+Toda migration tem arquivo em `supabase/rollbacks/` (**não** em `migrations/`, senão
+`supabase db push` aplica). Nome: `<timestamp+1>_<descricao>_rollback.sql`.
 
-## ReferÃªncias
+Rollback de dados que possam ter sido curados leva aviso e consulta de verificação no topo:
 
-- Exemplo canÃ´nico de origem: `WiseFacilities â€” supabase/migrations/20260522120000_f_rbac_v2.sql` (49 policies + 5 RPCs + 3 triggers + GATEs) e seu rollback estruturado.
-- No projeto novo: apontar aqui a primeira migration grande aprovada como referÃªncia local.
+```sql
+-- ⚠️ Só seguro antes de o curador ter trabalhado. Verificar primeiro:
+--   SELECT count(*) FROM place_tags WHERE source = 'curator';
+--   SELECT count(*) FROM places WHERE the_dish IS NOT NULL OR curator_note IS NOT NULL;
+DELETE FROM public.place_tags WHERE source = 'suggested';   -- só palpite de máquina
+```
+
+## Antes de escrever qualquer SQL
+
+**Schema vivo primeiro.** `list_tables` + `list_migrations` via MCP. Convenção não substitui
+introspecção — coluna "óbvia" pode não existir. Este projeto usa `status`, não `deleted_at`
+(ADR-03), e não tem `company_id` (ADR-01).

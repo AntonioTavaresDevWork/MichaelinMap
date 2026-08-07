@@ -9,6 +9,7 @@
 
 **Data:** 2026-08-06
 **Sessão:** S04 — F-01: schema, RLS, RPCs e import
+**Versão:** `0.1.0` (primeira versão do projeto — a F-00 era scaffold sem banco)
 **Atualizado por:** Claude Code (orquestrador)
 
 ---
@@ -171,6 +172,27 @@ Total estimado: ~10 sessões. A curadoria do Michael roda em paralelo a partir d
 - **Correção de registro:** eu havia escrito neste arquivo que "o remote nunca existiu" e que era "a terceira afirmação da S01 que não se sustenta". Errado nas duas contas — a S01 estava certa. O que falhou foi o diagnóstico da S03, que tratou a ausência de `.git` local como ausência de repositório
 
 - **Curador semeado no fim da sessão.** Conta `mikemyday@mikecofone.com` criada no painel pelo Edu, linha inserida por migration versionada. O teste com JWT simulado provou os dois lados do modelo: curador escreve, autenticado-fora-da-allowlist não vê nem escreve nada além do que um visitante anônimo veria
+
+**Aprendizados registrados (onde procurar depois):**
+
+| Aprendizado | Onde ficou |
+|---|---|
+| Bloco de GRANT/REVOKE é sempre o último da migration — default privileges valem no momento da criação do objeto | `.claude/CLAUDE.md` + skill `michaelinmap-migration` |
+| `apply_migration` tem limite de payload; carga de massa por fallback exige checksum contra a fonte | `.claude/CLAUDE.md` + skill `michaelinmap-migration` |
+| Ausência de `.git` local não é diagnóstico de "repositório não existe" | `.claude/CLAUDE.md`, fluxo de trabalho |
+| GATEs de privilégio, RLS órfã e `search_path` pegam o que revisão visual não pega | skill `michaelinmap-migration` |
+| `execute_sql` devolve só o último resultado; `RAISE EXCEPTION` serve de relatório em smoke que precisa reverter | skill `michaelinmap-migration` |
+| Verificação de RLS com JWT simulado, testando os dois lados | skill `michaelinmap-rls-policy` |
+
+**`BL-14` fechado no caminho.** As cinco skills traziam objetos do WiseFacilities que não existem
+aqui. O achado mais grave não eram os exemplos órfãos: a `michaelinmap-naming` prescrevia formato
+brasileiro (`1.234,56`, `DD/MM/YYYY`, `R$`), em contradição direta com o ADR-02 — um agente
+seguindo a skill produziria formatação errada num produto em inglês.
+
+**Curiosidade útil:** o `docs/S01.md`, que só apareceu nesta máquina via rebase, já recomendava
+converter o CSV em migration de seed idempotente em vez de rodar o `import-places.ts`, pelo mesmo
+motivo que decidimos nesta sessão — não expor a service-role key. A decisão foi tomada sem
+conhecer esse arquivo.
 
 **Próxima sessão:** F-02 — Admin, sem bloqueio. Sobram só o `git push` e o desligamento do signup, ambos operacionais.
 

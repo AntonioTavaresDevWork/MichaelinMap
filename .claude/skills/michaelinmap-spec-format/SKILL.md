@@ -1,11 +1,19 @@
 ---
 name: michaelinmap-spec-format
-description: Formato de spec tÃ©cnica de feature nos projetos Wise*. 12 entregÃ¡veis padrÃ£o (schema, RLS, RPCs, smoke tests, mudanÃ§as de comportamento, migration plan). Use ao escrever spec de qualquer feature (F-XX-spec.md), antes do handoff pro Data Architect.
+description: NÃO USADA no Michaelin Map — o ADR-04 dispensa spec por feature; o PRD em docs/files/ cumpre o papel. Mantida só como referência do template Wise* caso o projeto volte atrás. Não invocar para escrever spec neste projeto.
 ---
 
-> **Template Wise\*:** ao instanciar num projeto, copie para `.claude/skills/MICHAELINMAP-spec-format/SKILL.md` e renomeie `name:` para `MICHAELINMAP-spec-format`.
+> # ⚠️ Esta skill não vale para o Michaelin Map
+>
+> **O ADR-04 (Bíblia §15) dispensa spec por feature neste projeto.** Não existe `docs/specs/`,
+> não há pipeline de agentes e o PRD original em `docs/files/` cumpre o papel de spec. A Bíblia
+> é a fonte da verdade; decisões novas vão para lá, pendências para `docs/BACKLOG.md`.
+>
+> O conteúdo abaixo é o template Wise* original, **preservado apenas como referência** caso o
+> projeto cresça a ponto de justificar spec formal. Ele descreve objetos do WiseFacilities que
+> **não existem aqui** (`audit_log`, `capacidades`, multi-tenant). Não seguir.
 
-# Formato de Spec TÃ©cnica â€” Wise*
+# Formato de Spec Técnica — Wise* (template não aplicado neste projeto)
 
 ## LocalizaÃ§Ã£o
 

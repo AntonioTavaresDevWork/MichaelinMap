@@ -1,76 +1,99 @@
 ---
 name: michaelinmap-naming
-description: ConvenÃ§Ãµes de nomes nos projetos Wise*. DB snake_case, frontend camelCase, componentes PascalCase, arquivos kebab-case, formato BR de nÃºmero/data/moeda. Use ao nomear tabela, coluna, RPC, componente, hook, arquivo, ou ao formatar valores numÃ©ricos/datas/moeda na UI.
+description: Convenções de nomes no Michaelin Map. DB snake_case, frontend camelCase, componentes PascalCase, arquivos kebab-case, formato en-US de número/data/moeda. Use ao nomear tabela, coluna, RPC, componente, hook, arquivo, ou ao formatar valores numéricos/datas/moeda na UI.
 ---
 
-> **Template Wise\*:** ao instanciar num projeto, copie para `.claude/skills/MICHAELINMAP-naming/SKILL.md` e renomeie `name:` para `MICHAELINMAP-naming`.
+# Convenções de Nomes — Michaelin Map
 
-# ConvenÃ§Ãµes de Nomes â€” Wise*
+> Exemplos são objetos **reais** deste banco. Se um nome citado aqui não existir mais,
+> valide contra o schema vivo via MCP antes de usar.
 
 ## Tabela resumo
 
-| Camada                | ConvenÃ§Ã£o                                    | Exemplos                                                     |
-| --------------------- | -------------------------------------------- | ------------------------------------------------------------ |
-| Tabelas DB            | `snake_case` (plural)                        | `contratos`, `itens_catalogo`, `solicitacao_itens`           |
-| Colunas DB            | `snake_case`                                 | `company_id`, `created_at`, `deleted_at`, `cargo_no_momento` |
-| FunÃ§Ãµes/RPCs SQL      | `snake_case` com prefixo `rpc_` ou semÃ¢ntico | `rpc_ajustar_estoque`, `has_capacidade`, `cargo_atual_texto` |
-| VariÃ¡veis frontend TS | `camelCase`                                  | `contratoId`, `itensCatalogo`, `cargoAtual`                  |
-| Componentes React     | `PascalCase`                                 | `ContratoForm`, `ItemList`, `RequisicaoCard`                 |
-| Hooks                 | `camelCase` com prefixo `use`                | `useContrato`, `useEstoqueAtual`, `useAuditLog`              |
-| Arquivos (todos)      | `kebab-case`                                 | `contrato-form.tsx`, `use-contrato.ts`, `audit-helpers.ts`   |
-| Tipos TS              | `PascalCase`                                 | `Contrato`, `ItemCatalogo`, `AuditLogEntry`                  |
-| Constantes            | `UPPER_SNAKE_CASE`                           | `MAX_RETRIES`, `SLA_HORAS_APROVACAO`                         |
+| Camada | Convenção | Exemplos reais |
+|---|---|---|
+| Tabelas DB | `snake_case` (plural) | `places`, `tags`, `place_tags`, `field_reports`, `curators` |
+| Colunas DB | `snake_case` | `place_type`, `apple_id`, `source_guides`, `admin_only`, `requires_review` |
+| Funções/RPCs SQL | `snake_case`, prefixo `rpc_` quando exposta ao client | `rpc_redeem_code`, `rpc_submit_field_report`, `is_curator`, `touch_updated_at` |
+| Variáveis frontend TS | `camelCase` | `placeId`, `selectedTags`, `cityGate` |
+| Componentes React | `PascalCase` | `PlaceCard`, `FilterPanel`, `ProtectedRoute` |
+| Hooks | `camelCase` com prefixo `use` | `useSession`, `usePlaces`, `useFilterState` |
+| Arquivos (todos) | `kebab-case` | `place-card.tsx`, `use-session.ts`, `admin-layout.tsx` |
+| Tipos TS | `PascalCase` | `Place`, `Tag`, `FieldReport`, `PlaceType` |
+| Constantes | `UPPER_SNAKE_CASE` | `SEEDED_TIER_SLUGS` |
 
-> âš ï¸ Arquivo de componente Ã© **kebab-case** (`contrato-form.tsx`), NÃƒO `ContratoForm.tsx`. Erro comum.
+> ⚠️ Arquivo de componente é **kebab-case** (`place-card.tsx`), NÃO `PlaceCard.tsx`. Erro comum.
 
-## ConversÃ£o DB â†” Frontend
+## Conversão DB ↔ Frontend
 
-O cliente Supabase TS nÃ£o converte automaticamente. Use mapeadores explÃ­citos ou nomeie as variÃ¡veis TS no padrÃ£o DB (`snake_case`) quando vier de query direta. Exemplo:
+O cliente Supabase JS **não** converte snake_case → camelCase. A conversão, quando existir,
+acontece **na fronteira de acesso a dados** — no hook — e não espalhada pelos componentes.
+
+**Regra prática deste projeto:** tipo populado por `select('*')` direto, sem mapeamento
+explícito, é nomeado em `snake_case`, igual ao banco. É o que `src/types/index.ts` faz:
 
 ```typescript
-// DB devolve snake_case
-const { data } = await supabase.from('contratos').select('id, company_id, created_at');
-
-// Mapear pra camelCase no domÃ­nio
-type Contrato = {
-  id: string;
-  companyId: string;   // mapeado de company_id
-  createdAt: string;   // mapeado de created_at
-};
+export interface Place {
+  place_type: PlaceType   // não placeType — vem cru do select('*')
+  apple_id: string | null
+  source_guides: string[] | null
+}
 ```
 
-**Regra prÃ¡tica:** tipo populado por `select('*')` direto sem mapeamento explÃ­cito â†’ nomear os campos em `snake_case` (igual ao banco). Declarar `metaMensal` quando o banco retorna `meta_mensal` resulta em `undefined` em runtime.
+Declarar `placeType` quando o banco devolve `place_type` resulta em `undefined` em runtime,
+silenciosamente.
 
-## Formato BR â€” nÃºmeros, datas, moeda
+## Formato en-US — números, datas, moeda
 
-| Tipo           | Formato BR                    | Exemplo                |
-| -------------- | ----------------------------- | ---------------------- |
-| NÃºmero         | Ponto milhar, vÃ­rgula decimal | `1.234.567,89`         |
-| Data UI        | `DD/MM/YYYY`                  | `22/05/2026`           |
-| Data + hora UI | `DD/MM/YYYY HH:mm`            | `22/05/2026 14:30`     |
-| Data DB        | ISO 8601 TIMESTAMPTZ          | `2026-05-22T17:30:00Z` |
-| Moeda          | `R$` prefixo, 2 decimais      | `R$ 1.234,56`          |
-| Porcentagem    | VÃ­rgula decimal, sufixo `%`   | `12,5%`                |
+**ADR-02: o produto é em inglês e usa formato en-US.** O guia é de Austin e o público é
+anglófono. Nada de formato brasileiro na UI.
 
-Use `Intl.NumberFormat('pt-BR', ...)` e `Intl.DateTimeFormat('pt-BR', ...)` no frontend. NÃ£o inventar formatador manual.
+| Tipo | Formato | Exemplo |
+|---|---|---|
+| Número | Vírgula milhar, ponto decimal | `1,234,567.89` |
+| Data UI | `MM/DD/YYYY` | `08/06/2026` |
+| Data + hora UI | `MM/DD/YYYY h:mm a` | `08/06/2026 2:30 PM` |
+| Data DB | ISO 8601 TIMESTAMPTZ | `2026-08-06T17:30:00Z` |
+| Moeda | `$` prefixo, 2 decimais | `$1,234.56` |
+| Faixa de preço | `$` a `$$$$` | `$$` |
 
-## Prefixos semÃ¢nticos comuns
+Use `Intl.NumberFormat('en-US', …)` e `Intl.DateTimeFormat('en-US', …)`. Os formatadores já
+existem em `src/lib/utils.ts` — usar os de lá antes de escrever outro.
 
-| Prefixo    | Uso                                                                             |
-| ---------- | ------------------------------------------------------------------------------- |
-| `rpc_`     | FunÃ§Ã£o SQL exposta ao frontend via supabase.rpc()                               |
-| `is_`      | FunÃ§Ã£o booleana (`is_admin_atual`, `is_superadmin`)                             |
-| `has_`     | FunÃ§Ã£o booleana de posse/permissÃ£o (`has_capacidade`)                           |
-| `get_`     | FunÃ§Ã£o que retorna valor nÃ£o-booleano (`get_user_company_id`)                   |
-| `validar_` | Trigger function de validaÃ§Ã£o (`validar_responsavel_almoxarifado`)              |
-| `enforce_` | Trigger function de constraint complexo (`enforce_archive_admin_only`)          |
-| `vw_`      | View SQL (`vw_fila_aprovacao`)                                                  |
-| `mat_vw_`  | Materialized view                                                               |
-| `fn_`      | FunÃ§Ã£o utilitÃ¡ria de cÃ¡lculo (`fn_horas_uteis_decorridas`)                      |
+> **Idioma por superfície:** UI, tags, perguntas, mensagens de erro e copy em **inglês**.
+> Conversa com o Edu, Bíblia, STATUS e BACKLOG em **PT-BR**. Comentário de código e nome de
+> variável em **inglês**.
 
-## Anti-padrÃµes â€” nÃ£o fazer
+## Prefixos semânticos
 
-- âŒ Misturar idiomas: `clienteName` (escolher: `clienteNome` ou `clientName`)
-- âŒ Camelizar siglas inteiras: `cnpjValido` âœ…, `cNPJValido` âŒ
-- âŒ Plural inconsistente: tabelas DB sempre plural (`contratos`), componentes singular (`ContratoForm`)
-- âŒ Format manual: `valor.toFixed(2).replace('.', ',')` âŒ â€” use `Intl.NumberFormat`
+| Prefixo | Uso | Exemplo neste projeto |
+|---|---|---|
+| `rpc_` | Função SQL exposta ao client via `supabase.rpc()` | `rpc_redeem_code` |
+| `is_` | Função booleana | `is_curator` |
+| `touch_` | Trigger function que carimba timestamp | `touch_updated_at` |
+| `use` | Hook React | `useSession` |
+
+Prefixos do template Wise* que **não se aplicam aqui**: `has_` (não há capabilities),
+`get_user_company_id` e afins (não há multi-tenant — ADR-01).
+
+## Vocabulário do domínio — usar os termos certos
+
+Confundir estes termos gera bug e confunde o Michael:
+
+| Termo | O que é | O que NÃO é |
+|---|---|---|
+| **tier** | `destination`, `experience`, `fair`, `cool`. Dado editável, não constante | Não é a estrela |
+| **starred** | Honraria que **cruza** os tiers, 22 de 511 | Não é um tier a mais (RN-03) |
+| **visited** | `false` = Try List | Não é `status` |
+| **status** | `unreviewed \| published \| closed \| hidden` | Não é soft delete por `deleted_at` (ADR-03) |
+| **facet** | Agrupamento de tags: `cuisine`, `vibe`, `character`… | Não é a tag |
+| **area** | Município ou bairro dentro da cidade-portão | Não é a cidade |
+
+## Anti-padrões — não fazer
+
+- ❌ Formato brasileiro na UI: `1.234,56`, `22/05/2026`, `R$` — viola o ADR-02
+- ❌ Misturar idiomas num identificador: `lugarName` (escolher `placeName`)
+- ❌ Camelizar sigla inteira: `bbqTag` ✅, `bBQTag` ❌
+- ❌ Plural inconsistente: tabela DB sempre plural (`places`), componente singular (`PlaceCard`)
+- ❌ Formatação manual: `value.toFixed(2)` para moeda — use `Intl.NumberFormat`
+- ❌ Inventar `company_id` ou qualquer coluna de tenant — não existe (ADR-01)

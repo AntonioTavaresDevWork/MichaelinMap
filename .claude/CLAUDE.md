@@ -105,6 +105,8 @@ supabase/  migrations/  rollbacks/
 - Saneamento de `schema_migrations` pós-apply é obrigatório — detalhe na skill `michaelinmap-migration`.
 - **Schema vivo primeiro:** validar tabelas/colunas via MCP (`list_tables`, `execute_sql`) antes de propor SQL. Convenção não substitui introspecção.
 - SAVEPOINT/ROLLBACK TO não é gramática válida dentro de `DO $$ … $$`. Smoke inline deve ser read-only.
+- **O bloco de GRANT/REVOKE é sempre o último da migration.** Default privileges do Supabase são aplicadas no momento da criação do objeto: revogar antes de criar deixa o objeto novo com tudo liberado. Foi assim que a F-01 reprovou no primeiro apply — a view nasceu depois do `REVOKE` e o `anon` ficou com INSERT/UPDATE/DELETE/TRUNCATE nela.
+- **`apply_migration` tem limite prático de payload** (155 kB não passou). Fallback: quebrar em migrations menores, SQL Editor do painel, ou `execute_sql` em blocos. **Se for carga de massa por qualquer fallback, verificação por checksum contra a fonte é obrigatória** — transcrição em blocos corrompe em silêncio.
 
 ## Skills do projeto
 
@@ -113,12 +115,14 @@ supabase/  migrations/  rollbacks/
 | `michaelinmap-migration` | Antes de escrever/aplicar migration SQL |
 | `michaelinmap-rls-policy` | Antes de escrever/revisar RLS policy |
 | `michaelinmap-rpc` | Antes de criar/modificar RPC `SECURITY DEFINER` |
-| `michaelinmap-naming` | Ao nomear tabela/coluna/RPC/componente/hook/arquivo |
+| `michaelinmap-naming` | Ao nomear tabela/coluna/RPC/componente/hook/arquivo, ou ao formatar número/data/moeda |
 
-> ⚠️ As skills ainda trazem exemplos do WiseFacilities (`audit_log`, `capacidades`, `is_admin_atual()`) — objetos que **não existem aqui**. Adaptar após a F-01 (BL-14). Até lá, tratar os snippets como ilustração de sintaxe, nunca de schema.
+As quatro foram reescritas na S04 sobre os objetos reais deste banco (BL-14 fechado). A quinta,
+`michaelinmap-spec-format`, está marcada como **não usada** — o ADR-04 dispensa spec por feature.
 
 ## Fluxo de trabalho
 
+0. **Antes de `git init` em pasta sem `.git`, verificar o remoto** (`git ls-remote`, ou perguntar ao Edu a URL). Ausência de `.git` local **não** é diagnóstico de "repositório não existe". A S03 concluiu isso e criou um histórico órfão que custou um rebase para reconciliar na S04.
 1. Boot segue `.claude/init.md`. **Regra de ouro: nunca codar sem confirmar a próxima ação com o Edu.**
 2. Apresentar plano antes de qualquer mutação. Aguardar OK explícito.
 3. Decisão técnica é do CLI — recomendar UMA opção com justificativa enxuta, nunca um menu A/B/C. O Edu valida direção, não tecnicidade.

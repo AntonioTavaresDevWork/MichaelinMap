@@ -1,87 +1,146 @@
 ---
 name: michaelinmap-rls-policy
-description: PadrÃµes de RLS policy nos projetos Wise*. Modelo de autorizaÃ§Ã£o declarado na BÃ­blia (tenant-scoped OU capability-RBAC), is_superadmin sempre no topo, exceÃ§Ãµes documentadas. Use ao escrever, revisar ou refatorar Row Level Security policies em qualquer tabela do projeto.
+description: Padrões de RLS policy no Michaelin Map. Modelo curator allowlist via is_curator(), sem multi-tenant e sem capabilities. Verificação obrigatória com JWT simulado nos dois sentidos. Use ao escrever, revisar ou refatorar Row Level Security policies em qualquer tabela do projeto.
 ---
 
-> **Template Wise\*:** ao instanciar num projeto, copie para `.claude/skills/MICHAELINMAP-rls-policy/SKILL.md` e renomeie `name:` para `MICHAELINMAP-rls-policy`. Ajuste o snippet ao **modelo de autorizaÃ§Ã£o declarado na BÃ­blia** do projeto (ver abaixo).
+# Padrão de RLS Policy — Michaelin Map
 
-# PadrÃ£o de RLS Policy â€” Wise*
+> Exemplos são as policies **reais** aplicadas em `20260806120000_f01_schema_rls_rpc.sql`.
+> Validar contra o banco vivo via MCP antes de escrever policy nova.
 
-## Modelo de autorizaÃ§Ã£o â€” escolha declarada na BÃ­blia
+## Modelo de autorização: curator allowlist
 
-O modelo de autorizaÃ§Ã£o **nÃ£o Ã© universal** â€” cada projeto declara o seu na BÃ­blia (seÃ§Ã£o 2 / subseÃ§Ã£o "Modelo de AutorizaÃ§Ã£o"). A skill se adapta Ã  escolha. HÃ¡ dois modelos suportados:
+**Não é tenant-scoped e não é capability-RBAC** (ADR-01). Não existe `company_id`, não existe
+`has_capacidade()`, não existe `is_superadmin()`. Há um guia, um curador e visitantes anônimos.
 
-| Modelo | Quando usar | Predicado de policy |
-| --- | --- | --- |
-| **A â€” Tenant-scoped** (default p/ projetos simples) | Isolamento por empresa + 1-3 papÃ©is simples. Sem permissÃµes finas por papel. | `is_superadmin() OR company_id = get_user_company_id()` |
-| **B â€” Capability-RBAC** | Hierarquia de papÃ©is com permissÃµes granulares (ex: aprovaÃ§Ã£o multi-etapa, muitos leitores). | `is_superadmin() OR (company_id = get_user_company_id() AND has_capacidade('<cap>'))` |
-
-> **Regra de ouro:** comece em **A**. Migre para **B** sÃ³ quando um papel novo exigir permissÃ£o fina que o tenant-scoped nÃ£o distingue. O caminho Aâ†’B Ã© aditivo; o inverso (arrancar capability que ninguÃ©m usa) Ã© caro. A escolha vale para o projeto inteiro â€” nÃ£o misturar modelos entre tabelas sem ADR.
-
-As seÃ§Ãµes abaixo descrevem o **Modelo B** (o mais rico, herdado do WiseFacilities). Para o **Modelo A**, use apenas `is_superadmin() OR company_id = get_user_company_id()` (mais o filtro de escopo da tabela quando houver, ex: `usuario_id = auth.uid()`), e ignore tudo que menciona `has_capacidade()`/`is_admin_atual()`/catÃ¡logo de capacidades.
-
-## Snippet canÃ´nico (Modelo B â€” capability-RBAC)
-
-A forma padrÃ£o de quase toda policy Ã©:
+O predicado de escrita é sempre o mesmo:
 
 ```sql
-CREATE POLICY "<nome>" ON <tabela> FOR <op>
-  USING (
-    is_superadmin() OR (
-      company_id = get_user_company_id()
-      AND has_capacidade('<capability>')
-    )
-  );
+CREATE POLICY <tabela>_curator_all ON public.<tabela>
+  FOR ALL TO authenticated
+  USING (public.is_curator())
+  WITH CHECK (public.is_curator());
 ```
 
-Para `INSERT`/`UPDATE`, repetir a mesma expressÃ£o em `WITH CHECK`.
+A leitura pública varia por tabela e é o que exige pensamento.
 
-> **Modelo A (tenant-scoped):** o snippet equivalente Ã© `is_superadmin() OR company_id = get_user_company_id()`. O nome da funÃ§Ã£o que resolve a empresa do caller pode variar por projeto (`get_user_company_id()`, `auth_company_id()`, etc.) â€” usar o que a BÃ­blia declarar.
+```sql
+CREATE POLICY <tabela>_public_select ON public.<tabela>
+  FOR SELECT TO anon, authenticated
+  USING (<predicado de publicação>);
+```
 
-## Por que `is_superadmin()` no topo
+## `is_curator()` — por que é SECURITY DEFINER
 
-Superadmin tem `company_id = NULL`. Se o filtro `company_id = get_user_company_id()` vier antes, o acesso Ã© negado mesmo com bypass dentro de `has_capacidade()`. Por isso `is_superadmin()` SEMPRE Ã© o primeiro OR.
+```sql
+CREATE OR REPLACE FUNCTION public.is_curator()
+RETURNS boolean
+LANGUAGE sql STABLE SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+  SELECT EXISTS (SELECT 1 FROM public.curators WHERE user_id = auth.uid());
+$$;
+```
 
-`is_admin_atual()` (admin do tenant) tem `company_id` populado, entÃ£o pode ser bypassado DENTRO de `has_capacidade()` â€” nÃ£o precisa ficar no topo.
+`curators` não tem policy de SELECT público. Uma função `SECURITY INVOKER` lendo essa tabela de
+dentro de uma policy enxergaria **zero linhas sempre** — e todo mundo seria negado. Direitos de
+definer contornam o RLS nessa única consulta, que é exatamente o propósito.
 
-## TrÃªs funÃ§Ãµes do substrato â€” quando usar cada
+`SET search_path` é obrigatório: sem ele, um schema malicioso no `search_path` do caller pode
+sequestrar a função.
 
-| FunÃ§Ã£o                                       | Quando usar                                                                                                                         |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `has_capacidade(cap text)`                   | 99% dos casos. Checa capability do caller (`auth.uid()` implÃ­cito). Embute short-circuit pra admin do tenant.                       |
-| `is_admin_atual()`                           | Quando a policy precisa distinguir admin (full access dentro do tenant) de operaÃ§Ã£o com escopo (ex: `responsavel_id = auth.uid()`). |
-| `usuario_tem_capacidade(uid uuid, cap text)` | Raro. Quando a policy/trigger checa capability de um usuÃ¡rio ARBITRÃRIO, nÃ£o do caller.                                             |
+## Mapa de leitura pública (Bíblia §11)
 
-## ExceÃ§Ãµes legÃ­timas ao snippet canÃ´nico (documentar TODAS na spec)
+| Tabela | SELECT público | Observação |
+|---|---|---|
+| `places` | `status = 'published'` | RN-07 — nada nasce visível |
+| `tiers` | `active = true` | |
+| `tags` | `active = true AND admin_only = false` | RN-14 — `Hype trap` some do público |
+| `place_tags` | duplo `EXISTS`: place publicado **E** tag ativa não-admin | vazava id de lugar não publicado |
+| `codes` | **nenhum** | RN-20 — só via `rpc_redeem_code()` |
+| `questions` | `active = true` | |
+| `field_reports` | `status = 'published'` | INSERT só via RPC |
+| `curators` | **nenhum** | quem está na allowlist não é dado público |
 
-PadrÃµes de exceÃ§Ã£o consolidados no WiseFacilities (spec F-RBAC-v2 Â§8.3) â€” reutilizar quando o caso bater:
+O caso de `place_tags` merece atenção — é o padrão para toda tabela de junção:
 
-| PadrÃ£o                              | Forma                                                                                     |
-| ----------------------------------- | ------------------------------------------------------------------------------------------ |
-| SELECT com toggle de arquivados     | Adiciona `AND (deleted_at IS NULL OR has_capacidade('ver_arquivados'))`                   |
-| UPDATE escopado por responsÃ¡vel     | `is_admin_atual() OR (has_capacidade('<cap>') AND responsavel_id = auth.uid())`           |
-| INSERT restrito (Admin-only)        | SÃ³ `has_capacidade('<cap>')`, sem `is_admin_atual()`                                      |
-| INSERT de tenant raiz (`empresas`)  | Sem filtro `company_id` (cria a prÃ³pria empresa)                                          |
-| Self-edit em `perfis`               | `... AND (id = auth.uid() OR has_capacidade('gerir_usuarios'))`                           |
-| Log write-once (ex: movimentaÃ§Ãµes)  | `auth.uid() = usuario_id`, sem UPDATE/DELETE                                              |
-| Tabela filha sem `company_id`       | Cross-table check via subquery na tabela pai                                              |
+```sql
+USING (
+  EXISTS (SELECT 1 FROM public.places p
+          WHERE p.id = place_tags.place_id AND p.status = 'published')
+  AND EXISTS (SELECT 1 FROM public.tags t
+              WHERE t.id = place_tags.tag_id
+                AND t.active = true AND t.admin_only = false)
+)
+```
 
-## Regras inviolÃ¡veis (ambos os modelos)
+Um `USING (true)` numa tabela de junção vaza a **existência** das linhas dos dois lados, mesmo
+que as tabelas-pai estejam protegidas.
 
-- `is_superadmin()` SEMPRE primeiro OR de policies multi-tenant
-- RLS habilitado em TODAS as tabelas; toda policy filtra por `company_id` (exceto superadmin)
-- NUNCA hardcode de papel (`papel = 'X'`) â€” no Modelo B usar `has_capacidade()`; no Modelo A o escopo vem do prÃ³prio tenant + colunas da linha (ex: `usuario_id = auth.uid()`)
-- GRANT/REVOKE sÃ³ via migration (dashboard Ã© sobrescrito por apply subsequente; exceÃ§Ã£o de 1-2 statements registrada â€” ver skill `wise-migration`)
-- Visibilidade ampliada exclui rascunho privado do criador explicitamente no filtro
-- **Acesso anon** Ã© negado por default; exceÃ§Ã£o sÃ³ com **ADR** explÃ­cito (ex: portal pÃºblico via RPC SECURITY DEFINER) registrado na BÃ­blia
+## Grants de tabela são a segunda tranca
 
-### EspecÃ­fico do Modelo B
+RLS é o portão real, mas o Supabase concede acesso amplo ao `anon` por default. Estreitar:
 
-- AutorizaÃ§Ã£o via `has_capacidade()` â€” capability-driven cobre "e semelhantes" sem manutenÃ§Ã£o
-- Toda mudanÃ§a em `has_capacidade()` precisa migration, NUNCA via dashboard
-- Capabilities forward-looking ficam no catÃ¡logo com matriz zerada â€” a feature futura popula
+```sql
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM anon;
+GRANT SELECT ON public.places, public.tiers, … TO anon;
+```
 
-## ReferÃªncias
+⚠️ **Este bloco tem de ser o último da migration.** Default privileges são aplicadas no momento
+da criação do objeto — revogar antes de criar a view deixa a view com tudo liberado. Foi assim
+que a primeira aplicação da F-01 falhou. Detalhe na skill `michaelinmap-migration`.
 
-- Origem do padrÃ£o: WiseFacilities `docs/specs/F-RBAC-v2-spec.md` Â§8.1 (snippet) e Â§8.3 (exceÃ§Ãµes); migration `20260522120000_f_rbac_v2.sql` BLOCK 09.
-- No projeto novo: apontar aqui a spec local de RBAC quando existir.
+## Verificação obrigatória — JWT simulado, nos DOIS sentidos
+
+Não aceite policy sem este teste. Inspeção visual não pega furo de autorização; foi testando o
+lado negativo que se comprovou o fechamento do `BL-03`.
+
+```sql
+BEGIN;
+-- lado positivo: o curador
+SELECT set_config('request.jwt.claims',
+  json_build_object('sub', (SELECT id FROM auth.users WHERE email = '<curador>'),
+                    'role','authenticated')::text, true);
+SET LOCAL ROLE authenticated;
+SELECT public.is_curator(), (SELECT count(*) FROM public.places);
+ROLLBACK;
+
+BEGIN;
+-- lado negativo: autenticado FORA da allowlist
+SELECT set_config('request.jwt.claims',
+  '{"sub":"00000000-0000-0000-0000-000000000001","role":"authenticated"}', true);
+SET LOCAL ROLE authenticated;
+SELECT public.is_curator(), (SELECT count(*) FROM public.places);
+WITH t AS (UPDATE public.places SET website = 'x' WHERE slug = '<algum>' RETURNING 1)
+SELECT count(*) AS linhas_escritas FROM t;   -- tem de ser 0
+ROLLBACK;
+
+BEGIN;
+-- lado anônimo
+SET LOCAL ROLE anon;
+SELECT (SELECT count(*) FROM public.places), (SELECT count(*) FROM public.tags);
+ROLLBACK;
+```
+
+Resultado esperado na F-01: curador vê 511 lugares e escreve; autenticado-fora-da-lista e anon
+veem 0 lugares, 93 tags (não 94) e escrevem 0 linhas.
+
+> **Escrever sempre em coluna fora da camada de julgamento** no teste (`website` serve).
+> Nunca usar `tier`, `starred`, `the_dish`, `curator_note`, `story` ou `last_visited`, mesmo
+> dentro de transação revertida.
+
+## Regras invioláveis
+
+- RLS habilitado em **todas** as tabelas. GATE inline que falhe se alguma tabela tiver RLS ligado e zero policies
+- Escrita passa por `is_curator()`. **Nunca** `auth.role() = 'authenticated'` — com signup aberto, isso dá escrita total a um estranho (era o furo do schema original)
+- `codes` nunca ganha SELECT público (RN-20). `field_reports` nunca ganha policy de INSERT (RN-23)
+- Toda função `SECURITY DEFINER` tem `SET search_path`
+- GRANT/REVOKE só em migration, nunca via dashboard
+- Acesso anônimo de **escrita** só via RPC `SECURITY DEFINER`, com o status derivado no servidor
+- Views que leem tabela sob RLS: `WITH (security_invoker = on)`, senão a view contorna o RLS
+
+## Referências
+
+- Policies reais: `supabase/migrations/20260806120000_f01_schema_rls_rpc.sql` BLOCK 05
+- Grants: mesmo arquivo, BLOCK 07 · GATEs de autorização: BLOCK 09 (G2 a G7)
+- Modelo declarado: Bíblia §11
