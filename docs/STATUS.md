@@ -343,6 +343,8 @@ de dez linhas basta para testar o que escreve CSS var. É o esboço pronto da su
 
 **Versão mantida em `0.1.0`** por decisão do Edu — bump só quando o produto for ao ar.
 
+**Commit:** `c782770` (local, não empurrado).
+
 ### 2026-08-07 — S06: Reconciliação documental
 
 **O que foi feito:** o boot encontrou o STATUS afirmando "F-01 concluída, F-02 a iniciar" com F-02 e
