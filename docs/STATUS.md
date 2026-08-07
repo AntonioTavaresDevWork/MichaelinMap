@@ -112,7 +112,7 @@ Lido via MCP no fim da S04.
 
 | Tabela | Linhas | Observação |
 |---|---|---|
-| `places` | 511 | 100% `unreviewed` — nada visível ao público (RN-07) |
+| `places` | 511 | **58 `published`** (lote de lançamento, S05), 453 `unreviewed` |
 | `tags` | 94 | 93 públicas + `Hype trap` admin-only |
 | `questions` | 38 | 4 com `requires_review` (as de texto livre) |
 | `tiers` | 4 | `destination`, `experience`, `fair`, `cool` |
@@ -122,6 +122,10 @@ Lido via MCP no fim da S04.
 | `field_reports` | 0 | |
 
 Distribuição de julgamento: estrela 22 (4,3%), não visitados 42, com tier 279 (`fair` 182, `destination` 38, `experience` 30, `cool` 29), com área 107, 16 cidades.
+
+**Lote de lançamento publicado na S05**, com aprovação do Edu: os 58 lugares com estrela ou tier `destination`, em 5 cidades (Austin 52, St. Augustine 3, Los Angeles 1, Mountain Home 1, Oxfordshire 1). Não foi julgamento novo — tier e estrela vieram dos guias do próprio Michael; o import só não os tinha revelado. Verificado pela API pública com a anon key: o visitante anônimo enxerga 58, não 511. Reversível com `UPDATE places SET status='unreviewed' WHERE status='published'`.
+
+⚠️ **Nenhum dos 58 tem `the_dish` ou `curator_note`.** O guia está populado mas mudo: mostra os vereditos, não a voz. Escrever essas frases em 8-10 dos mais fortes é o que separa a demo de uma lista organizada — e é trabalho humano, não de CLI.
 
 Migrations: `20260806120000_f01_schema_rls_rpc`, `20260806120100_f01_seed_and_import`.
 
