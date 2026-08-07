@@ -8,7 +8,7 @@
 ## 🗓️ Última atualização
 
 **Data:** 2026-08-07
-**Sessão:** S07 — F-05 (Codes + Roulette)
+**Sessão:** S08 — F-06 (Field reports)
 **Versão:** `0.1.0` — mantida por decisão do Edu; bump só quando o produto for ao ar
 **Atualizado por:** Claude Code (orquestrador)
 
@@ -16,13 +16,12 @@
 
 ## 📍 Fase atual
 
-**F-00 a F-05 concluídas.** O produto tem admin funcional, lado público navegável, filtro facetado,
-Codes e Roulette. Objetivo imediato: **F-06 — Field reports**, a última do MVP.
+**As sete features do MVP estão fechadas.** Admin, lado público, filtro facetado, Codes, Roulette e
+Field reports. Não há próxima feature planejada.
 
-**O `BL-29` deixou de reproduzir.** Na verificação visual da F-05 o mapa desenhou geometria
-completa — rodovias com rótulo, parques e água — nos dois estilos. Nada mudou no nosso código do
-mapa além da troca de estilo em runtime que a F-05 acrescentou. Fica registrado como sintoma
-ausente, **não** como causa explicada: ninguém sabe o que mudou no ambiente.
+**O caminho crítico agora é inteiramente humano** e não é código: nenhum dos 58 lugares publicados
+tem `the_dish` ou `curator_note`, e as 145 atribuições de tag continuam todas `suggested`. O guia
+mostra os vereditos, não a voz.
 
 ---
 
@@ -175,6 +174,41 @@ ausente, **não** como causa explicada: ninguém sabe o que mudou no ambiente.
 - [ ] ⚠️ **A tela `/admin/codes` não foi clicada** — está atrás do login do curador e o CLI não tem
       a senha. `BL-31`
 
+### F-06 — Field reports ✅ (S08)
+
+- [x] **Nenhuma migration** — segunda feature seguida assim. A F-01 já tinha entregue a RPC, a view
+      com `security_invoker`, as 38 perguntas e os grants. Verificado por introspecção antes de
+      planejar: `anon` executa `rpc_submit_field_report` e **não** tem INSERT em `field_reports`,
+      então a RN-23 está garantida no privilégio, não só na policy
+- [x] `src/lib/field-reports.ts` — sorteio semeado em `lugar + navegador` (aleatório de verdade
+      trocaria a pergunta debaixo do dedo a cada render), sorteio ponderado por `weight` sem
+      reposição, validação por tipo de input, formatação do agregado espelhando o que a view
+      **de fato** calcula (média só para `number` e `slider`; o resto reporta a moda)
+- [x] `src/hooks/use-field-reports.ts` — perguntas, agregados, contador de progresso, submissão
+      pela RPC, `session_hash` estável em `localStorage` com fallback para contexto não-seguro
+- [x] `src/components/public/field-report-form.tsx` — os 7 tipos de input, um recibo por pergunta.
+      `range` e `color` nativos cobrem slider e cor: acessíveis por teclado e sem dependência nova
+- [x] `src/components/public/field-report-panel.tsx` — agregado com seriedade impassível (mono,
+      tabular, `n = 5`), oculto abaixo de 5, e o contador de progresso no lugar do vazio
+- [x] `/admin/reports` — fila de revisão do texto livre (aprovar/rejeitar) e a superfície de
+      semeadura. "The dish you would order again" destacado, que é a única resposta de visitante
+      que alimenta o julgamento do curador (Bíblia §10)
+- [x] **RN-29 nova:** a pergunta de acompanhamento é escolha fechada, nunca texto livre — o
+      `judgment` publica na hora quando a pergunta principal não exige revisão, então um campo
+      aberto ali seria um segundo texto livre ao vivo e sem moderação
+- [x] **61 checks num harness descartável**, metade pura e metade pelo caminho anônimo real. Os que
+      mais valem: `anon` não consegue INSERT direto, texto livre cai em `pending` e fica invisível
+      ao público, um `status` contrabandeado dentro do `answer` não muda nada, e o agregado **não**
+      abre com quatro respostas e abre com a quinta
+- [x] **Verificado no navegador:** duas perguntas sorteadas em 24 Diner e três em Aba (o 2-3 varia),
+      acompanhamento aparecendo ao completar a resposta, recibo, pergunta já respondida some na
+      visita seguinte, e o agregado renderizando `Yes · n = 5` depois da quinta
+- [x] **Dois defeitos encontrados pelo olho, não pelas asserções** — ver o log da sessão
+- [x] `BL-32` fechado: `placeholder.tsx` apagado com autorização do Edu
+- [x] **Gate:** `npm run build` e `npm run lint` limpos. Bundle principal 736 → 762 kB (221 kB gzip)
+- [ ] ⚠️ **A tela `/admin/reports` não foi clicada** — mesmo motivo do `BL-31`, está atrás do login
+      do curador. O embed PostgREST da fila foi validado contra o banco à parte
+
 ---
 
 ## 🔄 Em andamento
@@ -185,25 +219,20 @@ Nada em execução.
 
 ## ⏭️ Próxima ação
 
-**F-06 — Field reports**, a última feature do MVP. Entrega: 7 tipos de input, sorteio de 2-3
-perguntas por lugar, agregado oculto abaixo de n=5, texto livre em fila de revisão, rate limit.
+**Não há próxima feature.** O MVP acabou. O que o produto precisa agora não é código:
 
-O terreno já existe e é o mais pronto de todas as features até aqui: `rpc_submit_field_report()`
-está aplicada desde a F-01 e **já foi testada ponta a ponta** — deriva o status de
-`questions.requires_review`, trunca texto em 40 caracteres, bloqueia duplicata e limita a 30 por
-hora por `session_hash`. As 38 perguntas estão semeadas, 4 com `requires_review`. A view
-`field_report_aggregates` existe com `security_invoker`. Falta a interface e a fila no admin.
+1. **A voz.** Nenhum dos 58 publicados tem `the_dish` ou `curator_note`. Escrever essas frases em
+   8-10 dos mais fortes é o que separa a demo de uma lista organizada — e com os Codes prontos, é
+   exatamente essa voz que um code entrega a uma pessoa.
+2. **Taggear.** As 145 atribuições continuam todas `suggested`, e seis das sete facetas de tag estão
+   dormentes (`BL-30`). O filtro está pronto e esperando o dado.
+3. **Duas filas com dado esperando o Michael:** os 28 conflitos de tier (`DP-08`) e as 145 tags
+   sugeridas (`DP-09`). Ambas já têm superfície no Overview.
+4. **Semear field reports** (`BL-20`): a superfície existe em `/admin/reports`; os valores são
+   observações e têm de ser digitados por quem esteve no lugar.
 
-**Antes de codar, uma coisa a decidir com o Edu:** o `BL-20` diz que o curador semeia as próprias
-respostas para nada nascer em zero — isso é escrita em nome do Michael e precisa da palavra dele.
-
-**Duas filas de revisão têm dado esperando o Michael, não o CLI:** os 28 conflitos marcados em
-`source_guides` (`DP-08`) e as 145 tags `suggested` do import (`DP-09`). Ambas já têm superfície no
-Overview.
-
-**O que mais move o produto e não é código, e agora é o único gargalo real:** nenhum dos 58
-publicados tem `the_dish` ou `curator_note`. O guia mostra os vereditos, mas não a voz — e com os
-Codes prontos, é exatamente essa voz que um code entrega a uma pessoa.
+**Do lado técnico, o que sobra é operacional:** clicar `/admin/codes` e `/admin/reports` logado
+(`BL-31`), desabilitar o signup (`OP-01`) e configurar o deploy na Vercel, que nunca foi feito.
 
 ---
 
@@ -240,7 +269,7 @@ Reconferido via MCP na S06 (`list_tables`, `list_migrations`). RLS ligada nas 8 
 | `place_tags` | 145 | todas `source = 'suggested'` |
 | `codes` | 1 | `DEMO`, para smoke da RPC. A S07 criou 4 codes de teste e **apagou os quatro** ao fim |
 | `curators` | 1 | `Michael` — `mikemyday@mikecofone.com`, conta confirmada |
-| `field_reports` | 0 | |
+| `field_reports` | 0 | A S08 criou linhas de teste pela RPC e por SQL e **apagou todas** ao fim; a tabela voltou a zero, conferido |
 
 Distribuição de julgamento: estrela 22 (4,3%), não visitados 42, com tier 279 (`fair` 182, `destination` 38, `experience` 30, `cool` 29), com área 107, 16 cidades.
 
@@ -266,16 +295,83 @@ continua com as 145 linhas `suggested` do import: a curadoria ainda não começo
 | F-03 | Público (city gate, mapa, lista, detalhe) | ⚠️ Concluída (S05) — mapa mudo por `BL-29` | ~1 |
 | F-04 | Filtros facetados | ✅ Concluída (S06) | ~0,5 |
 | F-05 | Codes completo + Roulette | ✅ Concluída (S07) | ~1 |
-| F-06 | Field reports | ⬜ **Próxima** | ~1,5 |
+| F-06 | Field reports | ✅ Concluída (S08) | ~1 |
 
-Total estimado: ~10 sessões — **seis das sete features fechadas em 6 sessões de CLI**, à frente da
-estimativa (a F-05 estava orçada em ~2 e saiu em ~1, porque não precisou de schema). A curadoria do
-Michael roda em paralelo a partir da F-02 — ver Bíblia §13.1 — e agora é o **único** caminho crítico
-do projeto: o código está à frente do conteúdo.
+Total estimado: ~10 sessões — **as sete features fecharam em 7 sessões de CLI**, à frente da
+estimativa. As duas últimas estavam orçadas em ~2 cada e saíram em ~1, pelo mesmo motivo: nenhuma
+das duas precisou de schema, porque a F-01 já tinha construído o terreno. A curadoria do Michael
+roda em paralelo desde a F-02 — ver Bíblia §13.1 — e agora é o **único** caminho crítico do
+projeto: o código terminou à frente do conteúdo.
 
 ---
 
 ## 📝 Log de sessões
+
+### 2026-08-07 — S08: F-06 — Field reports (o MVP fechou)
+
+**O que foi feito:** a última feature do MVP. Visitantes agora respondem 2-3 perguntas por lugar,
+os agregados abrem na quinta resposta, o texto livre espera o Michael numa fila, e o curador tem
+onde semear as próprias respostas.
+
+**Pela segunda sessão seguida, zero migration.** O boot conferiu o schema vivo antes de planejar e
+encontrou tudo pronto desde a F-01: a RPC derivando status, truncando em 40 e limitando por sessão;
+a view com `security_invoker` e o `HAVING count(*) >= 5`; as 38 perguntas semeadas. O achado que
+mais vale registrar é do nível de privilégio: **`anon` executa a RPC e não tem INSERT em
+`field_reports`**, então a RN-23 não depende de a policy estar certa — não existe caminho de escrita
+direta para revogar.
+
+**Uma regra nova saiu de uma coisa pequena.** Quatro perguntas carregam um acompanhamento
+(`judgment_prompt` — "Was it worth it?", "Is that good or bad?") e o `judgment` é publicado na hora
+sempre que a pergunta principal não exige revisão. Um campo de texto ali seria um **segundo** texto
+livre do visitante, ao vivo e sem moderação, quando a RN-24 permite exatamente um. Virou **RN-29**:
+o acompanhamento é escolha fechada, e os dois rótulos saem do próprio enunciado — que ou os oferece
+("good or bad" → Good/Bad) ou é sim/não.
+
+**Sobre semear (BL-20), o que foi entregue e o que não foi.** A superfície existe: o curador escolhe
+um lugar, responde as perguntas na mesma UI do visitante, e as respostas entram publicadas. O que o
+CLI **não** fez foi inventar os valores. Temperatura da comida no Franklin, pé-direito em mãos no
+Uchi — eu nunca estive em nenhum dos 58, e o painel reporta com uma casa decimal e cara de medição;
+um número inventado ali seria indistinguível de um medido. A Bíblia §10 sempre disse "**o curador**
+semeia as próprias respostas". Vale saber que semear não revela agregado nenhum: o n=5 é por lugar ×
+pergunta e uma pessoa dá uma resposta só — o ganho é o contador não nascer em zero.
+
+**Verificação: 61 checks, e depois o olho — que achou o que os 61 não achavam.**
+
+O harness cobriu o que asserção cobre bem: o sorteio ser estável para a mesma semente e mudar de
+pessoa para pessoa, `anon` não conseguir INSERT direto, texto livre cair em `pending` e ficar
+invisível ao público, um `status` contrabandeado dentro do `answer` não mudar nada, o agregado **não**
+abrir com quatro respostas e abrir com a quinta.
+
+Aí a página foi aberta no navegador e apareceram **dois defeitos que nenhum dos 61 pegava**, os dois
+de estado de interface:
+
+1. **O recibo nunca aparecia.** O painel filtra as perguntas já respondidas, e o predicado era
+   reativo — responder uma pergunta a removia da lista no mesmo instante, desmontando o cartão antes
+   de ele mostrar "Logged". Corrigido tirando um retrato do que já estava respondido **na abertura da
+   página**: uma pergunta respondida agora fica de pé até o fim da visita, e só some na próxima.
+2. **O recibo contava duas vezes** — dizia "2 of 5" na primeira resposta. A submissão invalida a
+   query de contagem, que revalida já incluindo a resposta nova, e o `+1` somava em cima. Corrigido
+   guardando a contagem de antes da resposta.
+
+Nenhum dos dois é sutil de ver e nenhum era visível sem abrir a página. É a mesma lição que a S05
+registrou por outro caminho, agora do lado do frontend: asserção prova regra, olho prova interface.
+
+**Um detalhe do ambiente que vale saber.** O `session_hash` gerado no navegador saiu no formato de
+fallback (`s-<timestamp>-<random>`) em vez de UUID: servido por HTTP no IP de rede, a página não é
+um contexto seguro e `crypto.randomUUID` não existe. O fallback estava lá para isso e funcionou —
+em produção (HTTPS na Vercel) será UUID. Não é bug, mas explica o formato se alguém olhar a coluna.
+
+**Dado de teste criado e apagado.** A verificação escreveu em `field_reports` pela RPC e por SQL —
+inclusive as cinco respostas necessárias para abrir um agregado de verdade na tela. Tudo apagado ao
+fim por `session_hash`; a tabela voltou a zero, conferido.
+
+**`BL-32` fechado:** `placeholder.tsx` estava órfão desde a F-05 e foi apagado com autorização do
+Edu, depois de confirmar que ninguém o importava.
+
+**O que ficou sem olhar, de novo dito explicitamente:** `/admin/reports` compila, passa no lint e o
+embed PostgREST da fila (`places(...)`, `questions(...)`) foi validado contra o banco à parte — mas
+a tela está atrás do login do curador e o CLI não tem a senha. Mesmo buraco do `BL-31`, agora com
+duas telas dentro.
 
 ### 2026-08-07 — S07: F-05 — Codes e Roulette
 

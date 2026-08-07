@@ -1,9 +1,9 @@
 # Michaelin Map — Bíblia do Projeto
 
-**Versão:** 2.5 | **Data:** 2026-08-07 | **Autor:** Edu Mello
-**Status do projeto:** 🟢 F-00 a F-05 concluídas — admin funcional, lado público navegável, filtro
-facetado, Codes e Roulette, com 58 lugares publicados. F-06 (Field reports) a iniciar. O `BL-29`
-deixou de reproduzir na S07: o mapa desenhou geometria nos dois estilos, sem mudança nossa
+**Versão:** 2.6 | **Data:** 2026-08-07 | **Autor:** Edu Mello
+**Status do projeto:** 🟢 **As sete features do MVP estão fechadas.** Admin funcional, lado público
+navegável, filtro facetado, Codes, Roulette e Field reports, com 58 lugares publicados. O caminho
+crítico agora é inteiramente humano: a voz do curador e a taggeação (§13.1)
 
 > Fonte da verdade do Michaelin Map. O CLI lê este arquivo no boot de toda sessão.
 > Deriva do PRD v1.0 produzido no Claude Web (`docs/files/2026-08-05-michaelin-map-prd.md`),
@@ -16,6 +16,7 @@ deixou de reproduzir na S07: o mapa desenhou geometria nos dois estilos, sem mud
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 2.6 | 2026-08-07 | F-06 aplicada (S08), sem tocar o schema — **o MVP fechou**. **RN-29 nova** (§14.6): a pergunta de acompanhamento (`judgment_prompt`) é escolha fechada, nunca texto livre. §10 ganha como a semeadura do curador funciona na prática |
 | 2.5 | 2026-08-07 | F-05 aplicada (S07), sem tocar o schema. **RN-27 e RN-28 novas** (§14.5): o preset de um code semeia o painel uma vez e nunca sobrescreve a URL; o resgate é revalidado no servidor a cada carga. §13 ganha a nota de que a F-01 já entregara a tabela inteira |
 | 2.4 | 2026-08-07 | F-04 aplicada (S06). **RN-26 nova** (§14.4): faceta sem opção populada não é renderizada |
 | 2.3 | 2026-08-07 | F-02 e F-03 aplicadas (S05), registradas na S06. Fonte de tiles cravada: **OpenFreeMap** (§2, ADR-05). §13 ganha coluna de status. Tela dedicada de fila de revisão cortada (§13). Estado de publicação em §12 |
@@ -307,6 +308,20 @@ Visitantes que estiveram em um lugar respondem 2 ou 3 perguntas sorteadas que **
 - **O agregado é a feature**, renderizado com seriedade científica impassível e oculto abaixo de 5 respostas. O curador semeia as próprias respostas para nada nascer em zero.
 - Uma pergunta — *the dish you would order again* — é o único ponto em que a resposta do visitante informa o julgamento do curador, e aparece destacada no admin.
 
+**Como o sorteio funciona (F-06).** As 2-3 perguntas saem de um sorteio **semeado em
+`lugar + navegador`**, não de `Math.random()`. Semeado, elas não trocam debaixo do dedo de quem está
+respondendo e sobrevivem a um reload; por variarem entre pessoas, duas que estiveram na mesma mesa
+recebem perguntas diferentes — que é o que faz um agregado acumular em vez de todo mundo responder
+a mesma coisa.
+
+**Como a semeadura funciona (F-06, BL-20).** O admin tem uma superfície onde o curador responde as
+próprias perguntas para um lugar, e essas respostas entram **publicadas na hora** — a fila de
+revisão existe para separar o texto de um estranho do guia, e o curador é a pessoa a quem essa fila
+obedece. Duas consequências que valem estar escritas: semear **não revela agregado nenhum** (o n=5 é
+por lugar × pergunta, e uma pessoa honestamente dá uma resposta só), e os valores são **digitados por
+quem esteve no lugar** — nada aqui é gerado, porque um pé-direito inventado seria indistinguível de
+um medido num painel que reporta com uma casa decimal.
+
 ---
 
 ## 11. Modelo de autorização
@@ -377,9 +392,15 @@ Sete features. Ordem de dependência estrita: cada uma só começa com a anterio
 | **F-03** | Público | Portão de cidade, mapa MapLibre, lista sincronizada, detalhe do lugar | ~2 | ⚠️ S05 — mapa mudo por `BL-29` |
 | **F-04** | Filtros | Painel facetado, OR dentro / AND entre facetas, contagem ao vivo, opção zerada desabilitada, estado na URL, empty state autoral | ~1 | ✅ S06 |
 | **F-05** | Codes + Roulette | Codes completo (tema, estilo de mapa, pins, filtro pré-aplicado, destaques, type-anywhere no desktop, long-press no mobile) + Roulette | ~2 | ✅ S07 |
-| **F-06** | Field reports | 7 tipos de input, sorteio de 2-3 perguntas, agregado com n≥5, texto livre em fila, rate limit | ~1,5 | ⬜ **Próxima** |
+| **F-06** | Field reports | 7 tipos de input, sorteio de 2-3 perguntas, agregado com n≥5, texto livre em fila, rate limit | ~1,5 | ✅ S08 |
 
-Total estimado: **~10 sessões de CLI.** Cinco features fechadas em 6 sessões.
+Total estimado: **~10 sessões de CLI.** As sete features fecharam em 7 sessões.
+
+**A F-06 também não tocou o schema** — segunda feature seguida assim. A F-01 já havia entregue
+`rpc_submit_field_report()` (deriva o status, trunca em 40, limita por sessão), a view
+`field_report_aggregates` com `security_invoker` e o `HAVING count(*) >= 5`, as 38 perguntas
+semeadas e os grants no lugar: `anon` executa a RPC e **não** tem INSERT na tabela, então a RN-23
+está garantida no privilégio, não só na policy.
 
 **A F-05 não tocou o schema.** A F-01 já havia entregue `codes` com os seis campos de efeito
 (`theme`, `pin_style`, `preset_filter`, `highlighted_places`, janela de datas, `active`) e a
@@ -461,6 +482,11 @@ Registrados em `docs/BACKLOG.md`, com o motivo de cada corte: Google Places API 
 - **RN-23** — O status da resposta é derivado de `questions.requires_review` pelo servidor. O visitante não escolhe se sua resposta vai ao ar.
 - **RN-24** — Texto livre é limitado a 40 caracteres, entra como `pending` e só publica com aprovação. Nenhum outro input de texto ilimitado existe no produto.
 - **RN-25** — Agregados ficam ocultos abaixo de 5 respostas.
+- **RN-29** — **A pergunta de acompanhamento (`judgment_prompt`) é escolha fechada, nunca campo de
+  texto.** O `judgment` viaja junto da resposta e é publicado na hora sempre que a pergunta principal
+  não exige revisão — um campo aberto ali seria um segundo texto livre do visitante, ao vivo e sem
+  moderação, exatamente o que a RN-24 permite uma única vez. Os dois rótulos saem do próprio enunciado,
+  que ou os oferece ("good or bad") ou é uma pergunta de sim/não. Registrada na F-06.
 
 ---
 

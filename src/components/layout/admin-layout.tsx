@@ -10,6 +10,7 @@ const NAV = [
   { to: '/admin', label: 'Places', end: true },
   { to: '/admin/overview', label: 'Overview', end: false },
   { to: '/admin/codes', label: 'Codes', end: false },
+  { to: '/admin/reports', label: 'Reports', end: false },
 ]
 
 export function AdminLayout() {

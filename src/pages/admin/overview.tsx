@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { AlertTriangleIcon, SparklesIcon, StarIcon, TagIcon } from 'lucide-react'
+import { AlertTriangleIcon, MessageSquareIcon, SparklesIcon, StarIcon, TagIcon } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { usePlaces } from '@/hooks/use-places'
 import { usePlaceTags, useTags } from '@/hooks/use-tags'
 import { useTiers } from '@/hooks/use-tiers'
+import { useReportQueue } from '@/hooks/use-report-queue'
 import { buildTagIndex, CONFLICT_MARKER } from '@/lib/place-filters'
 import { cn, formatDate, formatNumber, monthsSince } from '@/lib/utils'
 
@@ -20,6 +21,12 @@ export function OverviewPage() {
   const placeTags = usePlaceTags()
   const tags = useTags()
   const tiers = useTiers()
+  const reports = useReportQueue()
+
+  const pendingReports = useMemo(
+    () => (reports.data ?? []).filter((report) => report.status === 'pending').length,
+    [reports.data],
+  )
 
   const index = useMemo(
     () => buildTagIndex(placeTags.data ?? [], tags.data ?? []),
@@ -191,7 +198,7 @@ export function OverviewPage() {
         </Card>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <QueueCard
           icon={<AlertTriangleIcon className="size-4 text-amber-600" />}
           title="Tier conflicts"
@@ -212,6 +219,13 @@ export function OverviewPage() {
           count={stats.unclassified}
           to="/admin?type=unclassified"
           description="Cannot be published: “unclassified” is not a facet anyone can filter by."
+        />
+        <QueueCard
+          icon={<MessageSquareIcon className="size-4 text-emerald-600" />}
+          title="Field reports"
+          count={pendingReports}
+          to="/admin/reports"
+          description="Free-text answers waiting on you. Nothing else needs approval."
         />
       </div>
 

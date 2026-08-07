@@ -10,6 +10,7 @@ import {
   usePublicVocabulary,
   usePublishedPlaces,
 } from '@/hooks/use-public-guide'
+import { FieldReportPanel } from '@/components/public/field-report-panel'
 import { formatMonthYear, slugify } from '@/lib/utils'
 import type { Place } from '@/types'
 
@@ -133,6 +134,8 @@ export function PlaceDetailPage() {
           <p className="text-xs">Last visited {formatMonthYear(place.last_visited)}.</p>
         )}
       </footer>
+
+      <FieldReportPanel place={place} />
     </article>
   )
 }

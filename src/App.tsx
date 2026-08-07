@@ -13,6 +13,7 @@ import { PlaceEditorPage } from '@/pages/admin/place-editor'
 import { OverviewPage } from '@/pages/admin/overview'
 import { QuickAddPage } from '@/pages/admin/quick-add'
 import { CodesPage } from '@/pages/admin/codes'
+import { ReportsPage } from '@/pages/admin/reports'
 import { NotFoundPage } from '@/pages/not-found'
 
 export default function App() {
@@ -39,6 +40,7 @@ export default function App() {
               <Route path="overview" element={<OverviewPage />} />
               <Route path="new" element={<QuickAddPage />} />
               <Route path="codes" element={<CodesPage />} />
+              <Route path="reports" element={<ReportsPage />} />
               <Route path="*" element={<Navigate to="/admin" replace />} />
             </Route>
           </Route>
