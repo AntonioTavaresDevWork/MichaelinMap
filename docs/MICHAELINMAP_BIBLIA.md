@@ -68,7 +68,7 @@ Deploy:       Vercel
 ## 3. Repositório e infraestrutura
 
 ```
-GitHub:        AntonioTavaresDevWork/MichaelinMap (privado)
+GitHub:        AntonioTavaresDevWork/MichaelinMap (privado) — conta do Edu
 Pasta local:   C:\Users\tomme\OneDrive\Documents\Projects\Michaelin Map
 Supabase ID:   woapimgpmlgqqvauckdy
 Supabase URL:  https://woapimgpmlgqqvauckdy.supabase.co

@@ -10,7 +10,7 @@
 - **Natureza:** projeto pessoal do Edu Mello para o Michael. **Não é SaaS, não será monetizado, não tem cliente.**
 - **Pasta:** `C:\Users\tomme\OneDrive\Documents\Projects\Michaelin Map`
 - **Supabase:** ID `woapimgpmlgqqvauckdy` · URL `https://woapimgpmlgqqvauckdy.supabase.co`
-- **GitHub:** `AntonioTavaresDevWork/MichaelinMap` (privado). O `AdminFeedpro/MichaelinMap` foi a casa original e ficou parado nos dois commits da fundação — não é mais o remote (S04)
+- **GitHub:** `AntonioTavaresDevWork/MichaelinMap` (privado). **É conta do Edu** — não estranhe a diferença para o autor dos commits (`Edu Mello <eduardo@feedback.com.vc>`); são a mesma pessoa. O `AdminFeedpro/MichaelinMap` foi a casa original e ficou parado nos dois commits da fundação — não é mais o remote (S04)
 
 > Este projeto usa o framework Wise* em **versão reduzida** (ADR-04 da Bíblia). Sem GANTT, sem
 > DOMAIN_QUESTIONS, sem spec por feature, sem pipeline obrigatório de agentes. O PRD original
