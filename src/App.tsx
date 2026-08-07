@@ -7,7 +7,8 @@ import { CityGatePage } from '@/pages/public/city-gate'
 import { GuidePage } from '@/pages/public/guide'
 import { PlaceDetailPage } from '@/pages/public/place-detail'
 import { LoginPage } from '@/pages/admin/login'
-import { DashboardPage } from '@/pages/admin/dashboard'
+import { PlacesPage } from '@/pages/admin/places'
+import { PlaceEditorPage } from '@/pages/admin/place-editor'
 import { AdminPlaceholder } from '@/pages/admin/placeholder'
 import { NotFoundPage } from '@/pages/not-found'
 
@@ -26,7 +27,8 @@ export default function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<DashboardPage />} />
+            <Route index element={<PlacesPage />} />
+            <Route path="place/:slug" element={<PlaceEditorPage />} />
             <Route
               path="review"
               element={
