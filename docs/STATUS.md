@@ -458,6 +458,25 @@ nunca ficou num estado intermediário.
 seção de cuisine, com as 28 tags já no banco. É a RN-31 provada no sentido que importa — dado novo
 entrou e o visitante não viu.
 
+**Por fim, o repositório ficou pronto para a Vercel (`OP-04`).** Três coisas entraram, e a primeira
+é a que importa:
+
+- **`vercel.json` com rewrite de SPA.** Sem ele, `/city/austin` e `/place/canje` devolvem **404** em
+  acesso direto — e acesso direto é precisamente o que um link compartilhado é. Um guia que só
+  funciona se você navegar a partir da home não serve para o que este produto existe.
+- **`public/robots.txt`** com `Disallow: /`. O `noindex` do `index.html` já cobria o ADR-07 para
+  quem renderiza a página; isto cobre crawler que não executa JS. Cinto e suspensório, custo zero.
+- **`engines.node >= 22`** no `package.json`. Sem isso o Vercel escolhe a versão de Node dele, e o
+  Vite 8 não roda em Node antigo — é a causa clássica de primeiro deploy falhando.
+
+**O que eu não fiz e não vou fazer sozinho:** autenticar na conta da Vercel. O passo a passo com as
+variáveis está na conversa da sessão; o `.env.local` tem os valores e não vai para o repo.
+
+**Checagem de segurança antes de expor:** `get_advisors(security)` não acusou nenhuma falha de RLS.
+Os 8 avisos de `SECURITY DEFINER` são o `BL-28`, já aceito e reavaliado. Apareceu um aviso novo,
+`auth_leaked_password_protection` desligado — toca a senha da conta do curador, não o visitante, e
+resolve-se com um toggle no painel junto do `OP-01`.
+
 ### 2026-08-07 — S07: F-05 — Codes e Roulette
 
 **O que foi feito:** a feature que o PRD chama de mais diretamente ligada ao propósito do produto

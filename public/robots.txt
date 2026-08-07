@@ -1,0 +1,5 @@
+# The guide is public and unauthenticated, but deliberately unlisted (ADR-07).
+# The meta robots tag in index.html says the same thing; this file says it to
+# crawlers that never fetch the page. Michael hands the link to people.
+User-agent: *
+Disallow: /
