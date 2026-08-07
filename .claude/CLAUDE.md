@@ -54,6 +54,7 @@ npm run preview     # serve o dist
 - Vitest ainda não configurado — entra quando houver o que testar.
 - Antes de commit: `build` + `lint` limpos + validação SQL no banco via MCP.
 - **Para inspeção visual pelo navegador, use a URL de rede que o Vite imprime** (`http://192.168.1.127:5173`), não `localhost` nem `127.0.0.1`. Nesta máquina o Chrome devolve `ERR_CONNECTION_REFUSED` nas duas com a porta comprovadamente escutando (`Test-NetConnection` responde True). Descoberto na S07; convive com o `BL-29`, que também é rede local desta máquina se comportando mal.
+- **Nunca matar processo `node` por janela de tempo.** O MCP do Supabase roda via `npx` — é `node`, igual ao Vite e a qualquer outra ferramenta do projeto. Um `Get-Process node | Where StartTime -gt ...` derruba o MCP junto com o dev server, e aí só volta reiniciando o Claude Code. Para encerrar o dev server, usar o ID que o `run_in_background` devolveu, ou filtrar pela linha de comando (`vite`). Aconteceu na S07.
 
 ## Stack obrigatória
 
