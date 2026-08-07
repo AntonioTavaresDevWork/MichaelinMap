@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 
 const NAV = [
   { to: '/admin', label: 'Places', end: true },
+  { to: '/admin/overview', label: 'Overview', end: false },
   { to: '/admin/review', label: 'Review queue', end: false },
   { to: '/admin/codes', label: 'Codes', end: false },
 ]
