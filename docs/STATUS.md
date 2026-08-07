@@ -373,6 +373,12 @@ embed PostgREST da fila (`places(...)`, `questions(...)`) foi validado contra o 
 a tela está atrás do login do curador e o CLI não tem a senha. Mesmo buraco do `BL-31`, agora com
 duas telas dentro.
 
+**Correção de registro:** o log da S07 dizia que o commit `c782770` era "local, não empurrado". O
+boot desta sessão conferiu com `git fetch` e a `main` local está idêntica à `origin/main` — os três
+commits da S07 estão no GitHub. Corrigido abaixo.
+
+**Commit:** `5aa2b96`.
+
 ### 2026-08-07 — S07: F-05 — Codes e Roulette
 
 **O que foi feito:** a feature que o PRD chama de mais diretamente ligada ao propósito do produto
@@ -439,7 +445,7 @@ de dez linhas basta para testar o que escreve CSS var. É o esboço pronto da su
 
 **Versão mantida em `0.1.0`** por decisão do Edu — bump só quando o produto for ao ar.
 
-**Commit:** `c782770` (local, não empurrado).
+**Commit:** `c782770` — está no GitHub (a S08 conferiu; este registro dizia "local, não empurrado").
 
 ### 2026-08-07 — S06: Reconciliação documental
 
