@@ -7,17 +7,27 @@
 
 ## 🗓️ Última atualização
 
-**Data:** 2026-08-06
-**Sessão:** S04 — F-01: schema, RLS, RPCs e import
-**Versão:** `0.1.0` (primeira versão do projeto — a F-00 era scaffold sem banco)
+**Data:** 2026-08-07
+**Sessão:** S06 — reconciliação documental
+**Versão:** `0.1.0`
 **Atualizado por:** Claude Code (orquestrador)
+
+> **Nota de registro (S06).** A S05 entregou F-02 e F-03 mas fechou sem atualizar este arquivo:
+> o cabeçalho seguia dizendo "F-01 concluída, F-02 a iniciar" enquanto 12 commits de F-02/F-03
+> já estavam na `main`. O log da S05 abaixo foi **reconstruído a partir das mensagens de commit
+> e da árvore de código**, não escrito ao vivo — é fiel ao que está versionado, mas não registra
+> o que tenha sido decidido em conversa e não tenha deixado rastro no repositório.
 
 ---
 
 ## 📍 Fase atual
 
-**F-01 concluída. O banco existe e tem os 511 lugares.**
-Objetivo imediato: F-02 (admin) — bloqueada pelas duas pendências de painel (`OP-01`, `OP-02`).
+**F-00, F-01, F-02 e F-03 concluídas.** O produto tem admin funcional e lado público navegável.
+Objetivo imediato: **F-04 — filtros facetados**.
+
+Uma ressalva na F-03: o mapa está integrado, sincronizado com a lista e com os marcadores
+posicionados corretamente, mas **não desenha geometria nesta máquina** — `BL-29`, causa
+ambiental, provada fora do nosso código. Não bloqueia a F-04.
 
 ---
 
@@ -78,37 +88,92 @@ Objetivo imediato: F-02 (admin) — bloqueada pelas duas pendências de painel (
 - [x] `schema_migrations` saneado — versões realinhadas com os nomes de arquivo
 - [x] **Gate:** `npm run build` e `npm run lint` limpos
 
+### F-02 — Admin ✅ (S05)
+
+- [x] Lista de lugares com barra de filtros (`places.tsx`, `place-filter-bar.tsx`, `place-filters.ts`)
+- [x] Editor de lugar completo (`place-editor.tsx`) + regras de promoção a `published` (`publish-rules.ts`)
+- [x] Atribuição de tags com distinção visual de `suggested` × `curator` — RN-15 (`tag-picker.tsx`)
+- [x] Overview no lugar do dashboard: distribuição de tiers, progresso de curadoria, filas e desatualizados
+- [x] Quick-add mobile com geocoding Nominatim, sem chave — ADR-06 (`quick-add.tsx`, `use-geocode.ts`)
+- [x] Hooks `use-places`, `use-tags`, `use-tiers`
+- [x] 6 componentes shadcn adicionados: checkbox, dialog, select, switch, tabs, textarea
+- [x] **Tela dedicada de fila de revisão cortada** — as três filas viraram cartões no Overview que
+      linkam para a lista com o filtro aplicado. Uma tela própria seria uma quarta forma de olhar
+      os mesmos registros, com dois lugares para manter em sincronia
+
+### F-03 — Público ⚠️ (S05) — entregue, com o mapa mudo por causa ambiental
+
+- [x] Portão de cidade com cidades em pares e contagem (DP-02); empty state autoral
+- [x] Guia da cidade separando "Eat & drink" de "Everything else" (§7); ordem estrela → tier → nome;
+      `the_dish` lidera a linha quando existe
+- [x] Detalhe do lugar liderando pelo veredito, nunca pelo endereço; direções em botão
+- [x] `use-public-guide.ts` — leitura pública via anon key
+- [x] Mapa MapLibre sincronizado com a lista nos dois sentidos, **uma única seleção compartilhada**;
+      cor do pin codifica julgamento (âmbar+estrela, escuro para destination/experience, claro o resto)
+- [x] Tiles do OpenFreeMap — grátis, sem chave, mesma lógica do ADR-06
+- [x] Mapa em `lazy` + `Suspense` (`BL-25`): principal 699 kB (204 kB gzip), chunk do mapa carregado
+      só ao abrir uma cidade
+- [x] Caminho público verificado ponta a ponta com a anon key: 58 publicados, 93 tags (`Hype trap`
+      ausente — RN-14), `codes` negando com 42501 (RN-20)
+- [x] Corrigido de verdade no caminho: o enquadramento só roda após `load` e com container
+      dimensionado — `fitBounds` contra largura zero produzia zoom degenerado
+- [ ] ⚠️ **O mapa não desenha geometria nesta máquina** — `BL-29`. Não é o nosso código; ver Blockers
+
+### Sessão 06 — Reconciliação documental
+- [x] `docs/STATUS.md` e `docs/MICHAELINMAP_BIBLIA.md` alinhados com o estado real (F-02 e F-03 na `main`)
+- [x] `schema_migrations` reconferido via MCP: **3** migrations vivas, não 2 como este arquivo dizia
+- [x] **Gate reexecutado:** `npm run build` e `npm run lint` limpos
+
 ---
 
 ## 🔄 Em andamento
 
-Nada em execução. F-01 fechada e verificada.
+Nada em execução. F-03 fechada; só o `BL-29` fica em aberto, e é ambiental.
 
 ---
 
 ## ⏭️ Próxima ação
 
-**F-02 — Admin.** Nada mais bloqueia a escrita: a conta do curador existe e foi verificada.
+**F-04 — Filtros facetados.** Entrega: painel facetado, OR dentro / AND entre facetas (RN-16),
+contagem ao vivo com opção zerada **desabilitada, não escondida** (RN-17), filtro de área só em
+cidade com ~15+ lugares (RN-18), estado serializado na URL (RN-19) e empty state autoral (`BL-18`).
 
-Duas pendências operacionais menores, nenhuma bloqueante (`OP-01` e `OP-03` no BACKLOG): desabilitar o signup no painel e rodar o `git push`.
+O terreno já está preparado: a F-03 deixou **uma única seleção compartilhada** entre mapa e lista, e
+o mapa reenquadra sozinho quando o conjunto de lugares muda — exatamente o que o filtro vai acionar.
 
-Depois disso, a F-02 entrega: login dos 2 curadores, lista com filtros, editor de lugar, atribuição de tags, quick-add mobile, fila de revisão, distribuição de tiers e lista de desatualizados.
+**Duas filas de revisão têm dado esperando o Michael, não o CLI:** os 28 conflitos marcados em
+`source_guides` (`DP-08`) e as 145 tags `suggested` do import (`DP-09`). Ambas já têm superfície no
+Overview.
 
-**Duas filas de revisão já têm dado esperando:** os 28 conflitos marcados em `source_guides` (`DP-08`) e as 145 tags `suggested` do import (`DP-09`).
+**O que mais move o produto e não é código:** nenhum dos 58 publicados tem `the_dish` ou
+`curator_note`. O guia mostra os vereditos, mas não a voz.
 
 ---
 
 ## 🚫 Blockers
 
-Nenhum. A conta de curador existe e a autorização foi verificada — a F-02 pode começar e ser testada.
+**`BL-29` — o mapa não desenha geometria nesta máquina.** Marcadores aparecem e se posicionam
+certo; nenhum tile renderiza; zero erros no console.
 
-Nenhum. O `OP-03` fechou no fim da sessão — ver log.
+**Provado que não é o nosso código:** um mapa MapLibre puro, carregado de CDN numa página em branco,
+sem uma linha nossa, se comporta idêntico — `sourcedata:openmaptiles` fica `pending` para sempre,
+nunca `loaded`. Reproduz em Chrome, Firefox e Edge. Descartados com evidência medida no próprio
+navegador: WebGL (2.0, GPU AMD via ANGLE), Web Workers, rede da página (`fetch` do TileJSON traz
+19 kB e de um tile real 116 kB, ambos 200), style, sprite, fontes, coordenadas, canvas, CSS e as
+duas versões do MapLibre (6.2 e 5.24).
+
+**O que sobra:** algo nesta máquina interfere na rede feita de dentro do *worker* do MapLibre.
+Suspeitos: antivírus, filtro de endpoint, proxy de sistema. **Próximo passo é testar noutra máquina
+ou rede — ação do Edu, não do CLI. Nada a corrigir no repositório até lá.**
+
+**Não bloqueia a F-04:** o filtro opera sobre a lista e sobre o conjunto de marcadores, que
+funcionam. O que falta desenhar é o fundo do mapa.
 
 ---
 
 ## 📊 Estado do banco
 
-Lido via MCP no fim da S04.
+Reconferido via MCP na S06 (`list_tables`, `list_migrations`). RLS ligada nas 8 tabelas.
 
 | Tabela | Linhas | Observação |
 |---|---|---|
@@ -127,7 +192,11 @@ Distribuição de julgamento: estrela 22 (4,3%), não visitados 42, com tier 279
 
 ⚠️ **Nenhum dos 58 tem `the_dish` ou `curator_note`.** O guia está populado mas mudo: mostra os vereditos, não a voz. Escrever essas frases em 8-10 dos mais fortes é o que separa a demo de uma lista organizada — e é trabalho humano, não de CLI.
 
-Migrations: `20260806120000_f01_schema_rls_rpc`, `20260806120100_f01_seed_and_import`.
+Migrations vivas — **3**, não 2 como este arquivo dizia até a S06: `20260806120000_f01_schema_rls_rpc`,
+`20260806120100_f01_seed_and_import`, `20260806130000_f01_seed_curator`.
+
+A F-02 e a F-03 **não alteraram o schema** — são frontend sobre o banco da F-01. O `place_tags`
+continua com as 145 linhas `suggested` do import: a curadoria ainda não começou a escrever.
 
 ---
 
@@ -137,17 +206,106 @@ Migrations: `20260806120000_f01_schema_rls_rpc`, `20260806120100_f01_seed_and_im
 |---|---|---|---|
 | F-00 | Fundação | ✅ Concluída (S02) | ~0,5 |
 | F-01 | Schema + dados | ✅ Concluída (S04) | ~1 |
-| F-02 | Admin | ⬜ Próxima | ~2 |
-| F-03 | Público (city gate, mapa, lista, detalhe) | ⬜ | ~2 |
-| F-04 | Filtros facetados | ⬜ | ~1 |
+| F-02 | Admin | ✅ Concluída (S05) | ~1 |
+| F-03 | Público (city gate, mapa, lista, detalhe) | ⚠️ Concluída (S05) — mapa mudo por `BL-29` | ~1 |
+| F-04 | Filtros facetados | ⬜ **Próxima** | ~1 |
 | F-05 | Codes completo + Roulette | ⬜ | ~2 |
 | F-06 | Field reports | ⬜ | ~1,5 |
 
-Total estimado: ~10 sessões. A curadoria do Michael roda em paralelo a partir da F-02 — ver Bíblia §13.1.
+Total estimado: ~10 sessões — **quatro das sete features fechadas em 5 sessões de CLI**, à frente
+da estimativa. A curadoria do Michael roda em paralelo a partir da F-02 — ver Bíblia §13.1 — e
+segue sendo o caminho crítico real do projeto.
 
 ---
 
 ## 📝 Log de sessões
+
+### 2026-08-07 — S06: Reconciliação documental
+
+**O que foi feito:** o boot encontrou o STATUS afirmando "F-01 concluída, F-02 a iniciar" com F-02 e
+F-03 já commitadas na `main`. Este arquivo e a Bíblia foram realinhados com o real antes de qualquer
+código novo.
+
+**Divergências fechadas:**
+- STATUS dizia fase F-01/próxima F-02; o real são quatro features fechadas e F-04 como próxima
+- STATUS listava **2** migrations vivas; o MCP mostra **3** — a `20260806130000_f01_seed_curator`
+  estava aplicada desde a S04 e nunca entrou nesta lista
+- STATUS dizia que a F-02 estava "bloqueada por `OP-01` e `OP-02`"; o `OP-02` fechou na própria S04
+  e o `OP-01` é higiene, não bloqueio — o teste negativo da S04 já provou que conta fora da
+  allowlist é tratada como visitante
+- Bíblia seguia em "F-00 e F-01 concluídas" e não registrava o OpenFreeMap como fonte de tiles
+- `BL-25` no BACKLOG guardava o tamanho do chunk do mapa da época do MapLibre 6 (947 kB); com o v5,
+  que embute o worker no mesmo arquivo, são 1.030 kB (274 kB gzip)
+
+**Por que a S05 fechou sem atualizar o STATUS:** não sei — não estive nela. O log da S05 abaixo foi
+reconstruído das mensagens de commit, que são detalhadas o bastante para isso. Fica o registro de
+que é reconstrução, não relato ao vivo.
+
+**Gate reexecutado nesta máquina:** `npm run build` e `npm run lint` limpos.
+
+### 2026-08-06 — S05: F-02 (admin) e F-03 (público)
+
+> Entrada reconstruída na S06 a partir das mensagens de commit `b83ff78..29239c6`. Fiel ao que está
+> versionado; decisões tomadas em conversa que não deixaram rastro no repositório não aparecem aqui.
+
+**O que foi feito:** duas features inteiras. O admin saiu de placeholder para ferramenta de curadoria
+completa, e o lado público saiu do zero para navegável — portão de cidade, guia, detalhe e mapa.
+Nenhuma das duas tocou o schema: são frontend sobre o banco da F-01.
+
+**F-02 — Admin.** Lista com filtros, editor de lugar, atribuição de tags com `suggested` distinguido
+visualmente do que veio do curador (RN-15), Overview com distribuição de tiers ao vivo (RN-06) e
+quick-add mobile com geocoding Nominatim. Seis componentes shadcn entraram; nenhuma dependência npm
+nova.
+
+**Decisão de escopo: a tela dedicada de fila de revisão foi cortada.** As três filas — 28 conflitos
+de tier, tags sugeridas pendentes, 15 sem tipo — viraram cartões no Overview que linkam para a lista
+com o filtro já aplicado. Uma tela própria seria uma quarta forma de olhar os mesmos registros, com
+o custo de manter dois lugares em sincronia. Registrado em "Fora do MVP".
+
+**F-03 — Público.** O portão de cidade exibe cidades como pares com contagem (DP-02) — cidade de um
+lugar não é escondida, só é honesta sobre ser um lugar. O guia separa "Eat & drink" de "Everything
+else", porque o tipo é o segundo portão (§7) e parque estadual em lista de restaurante é ruído. O
+detalhe lidera pelo veredito, nunca pelo endereço; horário de funcionamento não existe por causa do
+ADR-06, e o botão de direções resolve — o app de mapas sabe, e sabe também se está aberto agora.
+
+**Lote de lançamento publicado, com aprovação do Edu:** os 58 lugares com estrela ou tier
+`destination` passaram de `unreviewed` a `published`. Não foi julgamento novo — tier e estrela vieram
+dos guias do próprio Michael e o import só não os tinha revelado. Verificado pela API pública com a
+anon key: o anônimo enxerga 58, não 511.
+
+**O mapa: quatro tentativas, um bug real corrigido e uma causa ambiental.**
+
+A investigação vale registro porque três dos quatro commits de fix foram becos, e o quarto encontrou
+um bug de verdade:
+
+1. `resize()` no `load` + `ResizeObserver` — o container é dimensionado depois que o mapa é
+   construído (unidade `vh`, wrapper sticky, e o mapa vem de dentro de um `lazy`). Correto de fazer,
+   não era a causa.
+2. `config.WORKER_URL` explícito — o MapLibre 6 monta a URL do worker em runtime por concatenação de
+   string, coisa que nenhum bundler enxerga, então o Rollup nunca emitia o arquivo. **Era um bug
+   real**, provado por o mapa voltar a requisitar as fontes (só o worker dispara isso). Ainda assim
+   os tiles não vieram.
+3. **`fitBounds` só depois de `load` e com container de largura real** — este é o achado que fica.
+   Enquadrar contra largura zero calcula um zoom degenerado, e o mapa nunca descobre de quais tiles
+   precisa; o `resize` posterior conserta o canvas mas não recalcula a câmera, então a visão ruim
+   ficava presa e os 52 marcadores de Austin apareciam amontoados num canto. Corrigido, os
+   marcadores passaram a se distribuir com a geografia real. **E o enquadramento roda uma vez por
+   conjunto de lugares (chave = ids), o que já deixa pronto o caminho da F-04.**
+4. Downgrade `maplibre-gl` 6.2.0 → 5.24.0, aprovado pelo Edu. O v5 entrega arquivo único com o
+   worker embutido, então as gambiarras do item 2 saíram. Não resolveu a renderização.
+
+**O diagnóstico final é que não há o que corrigir.** Um mapa MapLibre puro, de CDN, em página em
+branco e sem uma linha nossa, se comporta idêntico nos três navegadores. Registrado como `BL-29`
+com a lista inteira do que foi descartado com evidência, para a próxima sessão não refazer o mesmo
+caminho.
+
+**`BL-25` parcialmente resolvido.** O MapLibre levou o bundle único a 1.647 kB — peso demais para
+quem só abre o portão de cidade. O mapa virou `lazy` + `Suspense`: principal 699 kB (204 kB gzip),
+chunk do mapa carregado só ao abrir uma cidade, e a lista já é utilizável enquanto ele chega.
+
+**Aprendizado que vale além deste projeto:** três dos quatro fixes do mapa foram para o lugar errado
+porque a hipótese nunca foi testada fora do nosso código. O teste que encerrou a questão — MapLibre
+puro de CDN em página em branco — custa cinco minutos e deveria ter sido o primeiro, não o último.
 
 ### 2026-08-06 — S04: F-01 — schema, RLS, RPCs e import
 

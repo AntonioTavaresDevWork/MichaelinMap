@@ -1,7 +1,9 @@
 # Michaelin Map — Bíblia do Projeto
 
-**Versão:** 2.2 | **Data:** 2026-08-06 | **Autor:** Edu Mello
-**Status do projeto:** 🟢 F-00 e F-01 concluídas — schema vivo com os 511 lugares. F-02 (admin) a iniciar
+**Versão:** 2.3 | **Data:** 2026-08-07 | **Autor:** Edu Mello
+**Status do projeto:** 🟢 F-00 a F-03 concluídas — admin funcional e lado público navegável, com 58
+lugares publicados. F-04 (filtros) a iniciar. Uma ressalva: o mapa não desenha geometria nesta
+máquina por causa ambiental (`BL-29`), fora do nosso código
 
 > Fonte da verdade do Michaelin Map. O CLI lê este arquivo no boot de toda sessão.
 > Deriva do PRD v1.0 produzido no Claude Web (`docs/files/2026-08-05-michaelin-map-prd.md`),
@@ -14,6 +16,7 @@
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 2.3 | 2026-08-07 | F-02 e F-03 aplicadas (S05), registradas na S06. Fonte de tiles cravada: **OpenFreeMap** (§2, ADR-05). §13 ganha coluna de status. Tela dedicada de fila de revisão cortada (§13). Estado de publicação em §12 |
 | 2.2 | 2026-08-06 | Curadoria passa a ter **uma conta só** (§4, §9.4, §11). Consequência: `updated_by` não identifica pessoa |
 | 2.1 | 2026-08-06 | F-01 aplicada (S04). Correção de contagem: são **4** tiers, não 5 (§9.2). `Town` do CSV vira `area` (§8). ADR-06 emendado: `price_band` não é pré-sugerido |
 | 2.0.1 | 2026-08-06 | Correção factual: caminho da pasta local em §3 (S03). Sem mudança de escopo, schema ou regra |
@@ -49,7 +52,7 @@ Consequência para priorização: os **Codes**, o campo **story** e a voz escrit
 ```
 Frontend:     React + Vite + TypeScript (SPA, sem SSR)
 UI:           Tailwind CSS + shadcn/ui
-Mapa:         MapLibre GL  ← ver ADR-05
+Mapa:         MapLibre GL 5.x · tiles do OpenFreeMap  ← ver ADR-05
 Forms:        useState controlado, validação inline no onSubmit (sem react-hook-form/zod)
 Notificações: sonner — <Toaster richColors position="top-right" /> no App.tsx
 State:        React Query (server state) · Zustand se necessário para UI state
@@ -339,6 +342,15 @@ Visitantes que estiveram em um lugar respondem 2 ou 3 perguntas sorteadas que **
 
 511 lugares únicos, extraídos de 19 guias do Apple Maps. Números validados linha a linha contra o CSV master.
 
+**Estado de publicação (S05):** 58 `published`, 453 `unreviewed`. O lote de lançamento são os
+lugares com estrela ou tier `destination` — Austin 52, St. Augustine 3, Los Angeles 1, Mountain
+Home 1, Oxfordshire 1. Não foi julgamento novo: tier e estrela vieram dos guias do próprio Michael
+e o import só não os tinha revelado. Reversível com `UPDATE places SET status = 'unreviewed'`.
+
+⚠️ **Nenhum dos 58 tem `the_dish` ou `curator_note`.** O guia está populado mas mudo — mostra os
+vereditos, não a voz. Pela §1.1, é isso que separa o artefato de personalidade de uma lista
+organizada, e é trabalho humano, não de CLI.
+
 Tiers: destination 43, experience 36, fair 198, cool 30. Estrela 22. Não visitados 42. Apple IDs duplicados: zero. Coordenadas faltando: zero. Nomes homônimos: 9 (desambiguados por slug).
 
 **Três questões que exigem decisão do curador, não conserto silencioso do dev:**
@@ -355,17 +367,22 @@ Tiers: destination 43, experience 36, fair 198, cool 30. Estrela 22. Não visita
 
 Sete features. Ordem de dependência estrita: cada uma só começa com a anterior em build limpo.
 
-| # | Feature | Entrega | Sessões |
-|---|---|---|---|
-| **F-00** | Fundação | Vite + TS + Tailwind + shadcn/ui, client Supabase, tipos, roteamento, layout | ~0,5 |
-| **F-01** | Schema + dados | Migration do schema corrigido, seed (93 tags, 38 perguntas, 5 tiers), import dos 511 com `cuisine` e `price_band` pré-sugeridos | ~1 |
-| **F-02** | Admin | Login, lista com filtros, editor de lugar, atribuição de tags, quick-add mobile, Overview (distribuição de tiers, progresso de curadoria, filas, desatualizados) | ~2 |
-| **F-03** | Público | Portão de cidade, mapa MapLibre, lista sincronizada, detalhe do lugar | ~2 |
-| **F-04** | Filtros | Painel facetado, OR dentro / AND entre facetas, contagem ao vivo, opção zerada desabilitada, estado na URL, empty state autoral | ~1 |
-| **F-05** | Codes + Roulette | Codes completo (tema, estilo de mapa, pins, filtro pré-aplicado, destaques, type-anywhere no desktop, long-press no mobile) + Roulette | ~2 |
-| **F-06** | Field reports | 7 tipos de input, sorteio de 2-3 perguntas, agregado com n≥5, texto livre em fila, rate limit | ~1,5 |
+| # | Feature | Entrega | Sessões | Status |
+|---|---|---|---|---|
+| **F-00** | Fundação | Vite + TS + Tailwind + shadcn/ui, client Supabase, tipos, roteamento, layout | ~0,5 | ✅ S02 |
+| **F-01** | Schema + dados | Migration do schema corrigido, seed (93 tags, 38 perguntas, 5 tiers), import dos 511 com `cuisine` e `price_band` pré-sugeridos | ~1 | ✅ S04 |
+| **F-02** | Admin | Login, lista com filtros, editor de lugar, atribuição de tags, quick-add mobile, Overview (distribuição de tiers, progresso de curadoria, filas, desatualizados) | ~2 | ✅ S05 |
+| **F-03** | Público | Portão de cidade, mapa MapLibre, lista sincronizada, detalhe do lugar | ~2 | ⚠️ S05 — mapa mudo por `BL-29` |
+| **F-04** | Filtros | Painel facetado, OR dentro / AND entre facetas, contagem ao vivo, opção zerada desabilitada, estado na URL, empty state autoral | ~1 | ⬜ Próxima |
+| **F-05** | Codes + Roulette | Codes completo (tema, estilo de mapa, pins, filtro pré-aplicado, destaques, type-anywhere no desktop, long-press no mobile) + Roulette | ~2 | ⬜ |
+| **F-06** | Field reports | 7 tipos de input, sorteio de 2-3 perguntas, agregado com n≥5, texto livre em fila, rate limit | ~1,5 | ⬜ |
 
-Total estimado: **~10 sessões de CLI.**
+Total estimado: **~10 sessões de CLI.** Quatro features fechadas em 5 sessões.
+
+**Corte de escopo na F-02 (S05):** a tela dedicada de fila de revisão não foi construída. As três
+filas — conflitos de tier, tags sugeridas, lugares sem tipo — são cartões no Overview que linkam
+para a lista com o filtro aplicado. Uma tela própria seria uma quarta forma de olhar os mesmos
+registros, com dois lugares para manter em sincronia.
 
 ### 13.1 A curadoria roda em paralelo
 
@@ -439,6 +456,13 @@ Registro das exceções deliberadas ao framework Wise* e das escolhas que não d
 **ADR-04 — Sem GANTT, sem DOMAIN_QUESTIONS, sem spec por feature, sem pipeline de agentes.** O framework Wise* pressupõe SaaS com cliente e prestação de contas. Este projeto é pessoal, o PRD já cumpre o papel de spec, e o custo do processo superaria o do código. Mantidos: migrations versionadas, `STATUS.md`, `BACKLOG.md` e esta Bíblia. *Motivo: proporcionalidade.*
 
 **ADR-05 — MapLibre GL, não Google Maps.** Escolhido originalmente porque troca estilo de mapa em runtime, do que os Codes dependem. Mantido também por não cobrar por render. *Não substituir por embed do Google.*
+
+> **Emenda da v2.3 (F-03, S05):** a fonte de tiles é o **OpenFreeMap** — grátis e sem chave, mesma
+> lógica do ADR-06 de não depender de API cobrada. A versão em uso é a **5.x**, não a 6: o v5
+> entrega arquivo único com o worker embutido, enquanto o v6 monta a URL do worker em runtime por
+> concatenação de string, o que nenhum bundler enxerga e obrigava a um `config.WORKER_URL` manual.
+> O downgrade **não** resolveu a renderização — `BL-29` é ambiental, não de versão. Antes de mexer
+> no mapa, ler o `BL-29` no BACKLOG: o caminho já foi percorrido inteiro.
 
 **ADR-06 — Sem Google Places API.** O original hidratava os 511 lugares contra o Places para obter horário, telefone e faixa de preço. Cortado: horário resolve com o botão de direções, e **faixa de preço é julgamento do Michael, não do Google**. Geocoding do quick-add usa Nominatim/OSM. *Motivo: elimina uma API paga, uma chave, um script de hidratação e um NFR inteiro, sem perda relevante.*
 
