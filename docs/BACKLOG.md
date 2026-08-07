@@ -47,6 +47,8 @@ Encontradas ao cruzar PRD × `CLAUDE.md` do produto × `PLAN.md` × `schema.sql`
 | BL-21 | `npm audit` acusa 2 vulnerabilidades high em `react-router` (GHSA-qwww-vcr4-c8h2, CSRF bypass no **modo RSC**) | **Não se aplica**: SPA sem React Server Components. O "fix" seria downgrade major para 7.11.0. Revisar quando o advisory for atualizado |
 | BL-22 | Sem Vitest configurado | Entra quando houver lógica que justifique teste — provavelmente na F-04 (semântica AND/OR do filtro) |
 | BL-23 | Sem tema claro/escuro. O `sonner.tsx` do shadcn vinha atrelado a `next-themes` (pacote do Next.js); reescrito para seguir a preferência do SO | Os Codes assumem o controle do tema em runtime na F-05. `next-themes` segue instalado como dependência órfã — remover se nada passar a usá-lo |
+| BL-24 | `env.example` duplica `.env.example` (conteúdo idêntico, 215 bytes). Sobra do rename da S03 | Deletar — aguarda autorização do Edu. Enquanto existir, é um segundo arquivo de exemplo que pode divergir do canônico |
+| BL-25 | Bundle único de 543 kB (157 kB gzip) — o Vite avisa acima de 500 kB. Sem code-splitting | Aceitável para 2 usuários e um guia não-listado. Revisar se o MapLibre pesar no carregamento inicial da F-03 |
 
 ---
 

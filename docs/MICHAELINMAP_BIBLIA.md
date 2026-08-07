@@ -1,7 +1,7 @@
 # Michaelin Map — Bíblia do Projeto
 
-**Versão:** 2.0 | **Data:** 2026-08-06 | **Autor:** Edu Mello
-**Status do projeto:** 🟡 Fundação — escopo fechado, build não iniciado
+**Versão:** 2.0.1 | **Data:** 2026-08-06 | **Autor:** Edu Mello
+**Status do projeto:** 🟡 Fundação — F-00 concluída e verificada, F-01 a iniciar
 
 > Fonte da verdade do Michaelin Map. O CLI lê este arquivo no boot de toda sessão.
 > Deriva do PRD v1.0 produzido no Claude Web (`docs/files/2026-08-05-michaelin-map-prd.md`),
@@ -14,6 +14,7 @@
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 2.0.1 | 2026-08-06 | Correção factual: caminho da pasta local em §3 (S03). Sem mudança de escopo, schema ou regra |
 | 2.0 | 2026-08-06 | Bíblia preenchida a partir do PRD. Escopo do MVP fechado (7 features). Cortes: Google Places API, My Maps sync, Trip Builder, novelty interactions exceto Roulette, SEO/indexação. Schema corrigido (8 tabelas). Modelo de autorização definido (curator allowlist). |
 | 1.0 | — | Template Wise* vazio |
 
@@ -66,7 +67,7 @@ Deploy:       Vercel
 
 ```
 GitHub:        AdminFeedpro/MichaelinMap (privado)
-Pasta local:   C:\Users\EMello\SaaS\MichaelinMap
+Pasta local:   C:\Users\tomme\OneDrive\Documents\Projects\Michaelin Map
 Supabase ID:   woapimgpmlgqqvauckdy
 Supabase URL:  https://woapimgpmlgqqvauckdy.supabase.co
 Deploy:        Vercel — a configurar após a F-03

@@ -8,7 +8,7 @@
 ## 🗓️ Última atualização
 
 **Data:** 2026-08-06
-**Sessão:** S02 — Escopo e fundação documental
+**Sessão:** S03 — Destravamento de ambiente
 **Atualizado por:** Claude Code (orquestrador)
 
 ---
@@ -54,11 +54,21 @@ Objetivo imediato: F-00 (scaffold) e F-01 (schema + dados).
 - [x] `.env.example` + `.env.local` (publishable key; gitignored)
 - [x] **Gate:** `npm run build` e `npm run lint` limpos · dev server sobe e responde 200 em `/` e `/admin/login`
 
+### Sessão 03 — Destravamento de ambiente ✅
+- [x] `mcp.json` → `.mcp.json` — nome que o Claude Code lê e que o `.gitignore` já cobria
+- [x] `env.local.download` → `.env.local` — o arquivo existia com o nome quebrado pelo download
+- [x] `git init` + commit inicial `b6fef0c` na `main` (68 arquivos)
+- [x] Varredura de secrets no índice: limpo. `.mcp.json`, `.env.local` e `.claude/settings.local.json` confirmados ignorados
+- [x] Node.js 24.19.0 / npm 11.17.0 instalados · `npm install` (459 pacotes)
+- [x] **Gate reexecutado nesta máquina:** `npm run build` e `npm run lint` limpos
+- [x] Token do Supabase validado: projeto `ACTIVE_HEALTHY`, PostgreSQL 17.6.1, região us-west-2
+- [x] Caminho da pasta corrigido na Bíblia §3 e no `.claude/CLAUDE.md`
+
 ---
 
 ## 🔄 Em andamento
 
-Nada em execução. F-00 fechada; aguardando início da F-01.
+Nada em execução. F-00 fechada e verificada; aguardando início da F-01.
 
 ---
 
@@ -82,7 +92,7 @@ Checklist de correções a aplicar: `BL-01` a `BL-07` no BACKLOG.
 
 ## 🚫 Blockers
 
-Nenhum bloqueante.
+Nenhum bloqueante. Os dois da S03 (Node ausente, MCP não carregado) foram resolvidos.
 
 **Atenção operacional:** signup precisa ser desabilitado no painel Supabase antes da F-02, e as duas contas de curador (Michael e Edu) precisam existir em `auth.users` para popular a tabela `curators`. Registrar aqui quando feito.
 
@@ -90,7 +100,9 @@ Nenhum bloqueante.
 
 ## 📊 Estado do banco
 
-**Vazio.** 0 tabelas, 0 migrations. Confirmado via MCP em 2026-08-06.
+**Projeto de pé, conteúdo não reconfirmado.** `ACTIVE_HEALTHY`, PostgreSQL 17.6.1, us-west-2 — verificado via API de gestão em 2026-08-06 (S03). A contagem de tabelas e migrations não foi reconferida nesta sessão: o MCP só carrega no próximo boot. A última leitura direta (S02) deu **0 tabelas, 0 migrations**.
+
+**Primeira ação do próximo boot:** `list_tables` + `list_migrations` via MCP, antes de qualquer SQL.
 
 ---
 
@@ -111,6 +123,25 @@ Total estimado: ~10 sessões. A curadoria do Michael roda em paralelo a partir d
 ---
 
 ## 📝 Log de sessões
+
+### 2026-08-06 — S03: Destravamento de ambiente
+
+**O que foi feito:** a máquina de trabalho não estava pronta para a F-01 e o STATUS não registrava isso. Quatro divergências entre o registrado e o real, todas fechadas nesta sessão.
+
+**As divergências:**
+- **Repositório não existia.** A S01 registrou "repositório GitHub criado", mas não havia `.git` na pasta local. Nada estava versionado. Corrigido com `git init` + commit `b6fef0c`.
+- **MCP do Supabase não carregava.** A config estava em `mcp.json`; o Claude Code lê `.mcp.json`. O `.gitignore` também só cobria a versão com ponto — o arquivo com o access token estava exposto e teria entrado no primeiro commit. O rename resolveu as duas coisas.
+- **Node.js não estava no PATH.** O `winget` reportou o pacote como já instalado e, de fato, `C:\Program Files\nodejs` existia com o PATH de máquina apontando pra lá — o shell da sessão é que havia sido iniciado antes. Sem isso, nem `npm` nem o MCP (que roda via `npx`) funcionavam.
+- **`.env.local` ausente.** Existia como `env.local.download`, nome quebrado no download. O client Supabase valida env no import, então nada subia.
+
+**Consequência importante:** o gate "build + lint limpos" que a S02 registrou como cumprido **não era reproduzível** nesta máquina — sem `node_modules`, nenhum dos dois rodava. Foi reexecutado do zero nesta sessão e passou limpo, então a F-00 se sustenta. Mas o registro anterior era uma afirmação sem verificação possível.
+
+**Decisões tomadas:**
+- Identidade git configurada local ao repositório, não global
+- O commit inicial documenta no corpo que o gate não pôde rodar no momento em que foi criado — preferível a omitir
+- Estado do banco **não** foi reconfirmado: a validação por API de gestão foi bloqueada e não foi contornada. Fica como primeira ação do próximo boot, via MCP
+
+**Próxima sessão:** F-01 — Schema + dados. Reiniciar a sessão primeiro, para o `.mcp.json` carregar.
 
 ### 2026-08-06 — S02: Escopo e fundação documental
 

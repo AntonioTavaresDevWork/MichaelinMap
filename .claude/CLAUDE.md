@@ -8,7 +8,7 @@
 
 - **Nome:** Michaelin Map — guia de lugares curado por uma pessoa
 - **Natureza:** projeto pessoal do Edu Mello para o Michael. **Não é SaaS, não será monetizado, não tem cliente.**
-- **Pasta:** `C:\Users\EMello\SaaS\MichaelinMap`
+- **Pasta:** `C:\Users\tomme\OneDrive\Documents\Projects\Michaelin Map`
 - **Supabase:** ID `woapimgpmlgqqvauckdy` · URL `https://woapimgpmlgqqvauckdy.supabase.co`
 - **GitHub:** `AdminFeedpro/MichaelinMap` (privado)
 
