@@ -1,7 +1,7 @@
 # Michaelin Map — Bíblia do Projeto
 
-**Versão:** 2.0.1 | **Data:** 2026-08-06 | **Autor:** Edu Mello
-**Status do projeto:** 🟡 Fundação — F-00 concluída e verificada, F-01 a iniciar
+**Versão:** 2.1 | **Data:** 2026-08-06 | **Autor:** Edu Mello
+**Status do projeto:** 🟢 F-00 e F-01 concluídas — schema vivo com os 511 lugares. F-02 (admin) a iniciar
 
 > Fonte da verdade do Michaelin Map. O CLI lê este arquivo no boot de toda sessão.
 > Deriva do PRD v1.0 produzido no Claude Web (`docs/files/2026-08-05-michaelin-map-prd.md`),
@@ -14,6 +14,7 @@
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 2.1 | 2026-08-06 | F-01 aplicada (S04). Correção de contagem: são **4** tiers, não 5 (§9.2). `Town` do CSV vira `area` (§8). ADR-06 emendado: `price_band` não é pré-sugerido |
 | 2.0.1 | 2026-08-06 | Correção factual: caminho da pasta local em §3 (S03). Sem mudança de escopo, schema ou regra |
 | 2.0 | 2026-08-06 | Bíblia preenchida a partir do PRD. Escopo do MVP fechado (7 features). Cortes: Google Places API, My Maps sync, Trip Builder, novelty interactions exceto Roulette, SEO/indexação. Schema corrigido (8 tabelas). Modelo de autorização definido (curator allowlist). |
 | 1.0 | — | Template Wise* vazio |
@@ -173,6 +174,8 @@ Três níveis, todos derivados de coordenada com possibilidade de override manua
 
 **Áreas só existem onde a densidade justifica** — cerca de 15 entradas. Austin ganha bairros; Oxfordshire, com 3 lugares, não exibe controle de área nenhum. A hierarquia degrada em silêncio em vez de renderizar controle vazio.
 
+**De onde vem `area` (F-01):** a coluna `Town` do CSV traz o município real — Lockhart, Dripping Springs, San Marcos, New Braunfels. O import grava `Town` em `area` quando ele **difere** da cidade-portão, e null quando repete. Resultado: 107 dos 511 lugares têm área. É geografia derivada, não julgamento, então é reversível com um `UPDATE places SET area = NULL`.
+
 **Cidades atuais:** Austin 466, St. Augustine 15, Jacksonville 8, Los Angeles 4, Oxfordshire 3, Dallas–Fort Worth 3, Fernando de Noronha 2, Waco 2, mais oito singletons (London, Belton, Essex Junction, Mountain Home, Rochester, San Diego, Schertz, Seattle).
 
 **Singletons aparecem como pares** (DP-02 resolvida), com a contagem visível. Nenhuma cidade é privilegiada na interface.
@@ -229,7 +232,13 @@ Tier vira dado editável para atender DP-03 ("permitir renomear os tiers").
 | `sort_order` | int NOT NULL | ordem de exibição |
 | `active` | boolean NOT NULL | |
 
-Seed: `destination`, `experience`, `fair` (restaurant) · `cool`, `fair` (bar).
+Seed: **4 linhas** — `destination` e `experience` (`applies_to = {restaurant}`), `fair`
+(`{restaurant, bar}`) e `cool` (`{bar}`).
+
+> Correção da v2.1: versões anteriores diziam "5 tiers", contando `fair` duas vezes por
+> aparecer nas duas escalas da §6.2. Como `slug` é PK, `fair` é **uma** linha servindo os dois
+> tipos — que é exatamente para isso que `applies_to` é um array. Bate com `SEEDED_TIER_SLUGS`
+> em `src/types/index.ts` e com o valor único `Fair` do CSV.
 
 `applies_to` **orienta o admin, não restringe o banco** — o curador é a autoridade. Isso acomoda os 4 lugares fora do padrão nos dados atuais (§12).
 
@@ -428,7 +437,14 @@ Registro das exceções deliberadas ao framework Wise* e das escolhas que não d
 
 **ADR-05 — MapLibre GL, não Google Maps.** Escolhido originalmente porque troca estilo de mapa em runtime, do que os Codes dependem. Mantido também por não cobrar por render. *Não substituir por embed do Google.*
 
-**ADR-06 — Sem Google Places API.** O original hidratava os 511 lugares contra o Places para obter horário, telefone e faixa de preço. Cortado: horário resolve com o botão de direções, e **faixa de preço é julgamento do Michael, não do Google**. A pré-classificação de `cuisine` e `price_band` é feita pelo CLI na geração do seed, marcada como `suggested`. Geocoding do quick-add usa Nominatim/OSM. *Motivo: elimina uma API paga, uma chave, um script de hidratação e um NFR inteiro, sem perda relevante.*
+**ADR-06 — Sem Google Places API.** O original hidratava os 511 lugares contra o Places para obter horário, telefone e faixa de preço. Cortado: horário resolve com o botão de direções, e **faixa de preço é julgamento do Michael, não do Google**. Geocoding do quick-add usa Nominatim/OSM. *Motivo: elimina uma API paga, uma chave, um script de hidratação e um NFR inteiro, sem perda relevante.*
+
+> **Emenda da v2.1 (F-01, aprovada pelo Edu):** a redação original mandava pré-classificar
+> `cuisine` **e** `price_band` como `suggested`. Só `cuisine` foi. `price_band` é coluna de
+> `places`, e a §9.1 removeu `price_band_source` — não existe onde marcar que o valor é chute de
+> máquina, então um palpite ficaria indistinguível do veredito do curador num campo da camada de
+> julgamento. Sem Google Places, a única entrada seria o nome do lugar. `price_band` nasce null;
+> sugestão de preço, se vier, é affordance da UI do admin, não dado gravado no import.
 
 **ADR-07 — Não-listado (`noindex`).** O guia é público e sem senha, mas não é indexado por buscador. *Motivo: os field reports dependem de quem responde ter estado no lugar; os Codes pressupõem distribuição pessoal; e a decisão é reversível em minutos numa direção e lenta e incompleta na outra.* Reavaliar só se o Michael pedir. Consequência: nenhum trabalho de SEO no MVP.
 

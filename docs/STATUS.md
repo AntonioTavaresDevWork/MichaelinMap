@@ -8,15 +8,15 @@
 ## 🗓️ Última atualização
 
 **Data:** 2026-08-06
-**Sessão:** S03 — Destravamento de ambiente
+**Sessão:** S04 — F-01: schema, RLS, RPCs e import
 **Atualizado por:** Claude Code (orquestrador)
 
 ---
 
 ## 📍 Fase atual
 
-**Fundação — escopo fechado, build não iniciado.**
-Objetivo imediato: F-00 (scaffold) e F-01 (schema + dados).
+**F-01 concluída. O banco existe e tem os 511 lugares.**
+Objetivo imediato: F-02 (admin) — bloqueada pelas duas pendências de painel (`OP-01`, `OP-02`).
 
 ---
 
@@ -65,45 +65,63 @@ Objetivo imediato: F-00 (scaffold) e F-01 (schema + dados).
 - [x] Caminho da pasta corrigido na Bíblia §3 e no `.claude/CLAUDE.md`
 - [x] `env.example` duplicado removido (`BL-24` fechado) — `.env.example` é o único canônico
 
+### F-01 — Schema + dados ✅
+- [x] `20260806120000_f01_schema_rls_rpc.sql` — 8 tabelas, 3 constraints de julgamento, 8 índices, trigger `updated_at`, `is_curator()`, 14 policies, view `field_report_aggregates` com `security_invoker`, 2 RPCs. **12 GATEs inline passaram**
+- [x] `20260806120100_f01_seed_and_import.sql` — 4 tiers, 94 tags, 38 perguntas, code `DEMO`, 511 lugares, 145 tags sugeridas. **18 GATEs passaram**
+- [x] `BL-01` a `BL-08`, `BL-12` e `BL-13` fechados
+- [x] Import verificado por **checksum contra o CSV**: nome, slug, tipo, tier, estrela, visitado, país, cidade, área, coordenadas, endereço e `source_guides` — os 511 registros do banco são idênticos ao gerado da fonte
+- [x] Smoke de segurança com `SET ROLE anon`: vê 0 lugares, 93 tags (`Hype trap` oculto), 0 `place_tags`, zero acesso a `codes` e `curators`
+- [x] Smoke funcional das RPCs: code válido/minúsculo/inexistente, field report numérico → `published`, texto livre → `pending` truncado em 40 chars, duplicata bloqueada, resposta sem `value` rejeitada
+- [x] `schema_migrations` saneado — versões realinhadas com os nomes de arquivo
+- [x] **Gate:** `npm run build` e `npm run lint` limpos
+
 ---
 
 ## 🔄 Em andamento
 
-Nada em execução. F-00 fechada e verificada; aguardando início da F-01.
+Nada em execução. F-01 fechada e verificada.
 
 ---
 
 ## ⏭️ Próxima ação
 
-**F-01 — Schema + dados**
+**F-02 — Admin.** Mas antes, duas coisas que só o Edu faz, no painel Supabase (`OP-01` e `OP-02` no BACKLOG):
 
-1. Migration do schema corrigido: 8 tabelas (`places`, `tiers`, `tags`, `place_tags`, `curators`, `codes`, `questions`, `field_reports`), constraints, índices
-2. RLS conforme Bíblia §11 + função `is_curator()`
-3. RPCs `rpc_redeem_code()` e `rpc_submit_field_report()`
-4. View `field_report_aggregates` com `security_invoker = on`
-5. Seed: 5 tiers, 93 tags + `Hype trap` (admin-only), 38 perguntas — idempotente
-6. Import dos 511 lugares como `unreviewed`, com `cuisine` e `price_band` pré-sugeridos (`place_tags.source = 'suggested'`)
-7. Saneamento de `schema_migrations` pós-apply
+1. Desabilitar signup no projeto
+2. Criar as contas de Michael e Edu e inserir as duas linhas em `curators`
 
-**Gate de saída:** 511 linhas em `places`, 93+1 em `tags`, 38 em `questions`, 5 em `tiers`. Reaplicar o seed não duplica nada. Nenhum lugar visível pelo anon key (tudo `unreviewed`).
+Sem o passo 2 o admin não tem como ser testado: `is_curator()` retorna false para todo mundo e nenhuma escrita passa. É o primeiro item da próxima sessão.
 
-Checklist de correções a aplicar: `BL-01` a `BL-07` no BACKLOG.
+Depois disso, a F-02 entrega: login dos 2 curadores, lista com filtros, editor de lugar, atribuição de tags, quick-add mobile, fila de revisão, distribuição de tiers e lista de desatualizados.
+
+**Duas filas de revisão já têm dado esperando:** os 28 conflitos marcados em `source_guides` (`DP-08`) e as 145 tags `suggested` do import (`DP-09`).
 
 ---
 
 ## 🚫 Blockers
 
-Nenhum bloqueante. Os dois da S03 (Node ausente, MCP não carregado) foram resolvidos.
-
-**Atenção operacional:** signup precisa ser desabilitado no painel Supabase antes da F-02, e as duas contas de curador (Michael e Edu) precisam existir em `auth.users` para popular a tabela `curators`. Registrar aqui quando feito.
+Nenhum bloqueante para código. `OP-01` e `OP-02` bloqueiam o *teste* da F-02, não a escrita dela.
 
 ---
 
 ## 📊 Estado do banco
 
-**Projeto de pé, conteúdo não reconfirmado.** `ACTIVE_HEALTHY`, PostgreSQL 17.6.1, us-west-2 — verificado via API de gestão em 2026-08-06 (S03). A contagem de tabelas e migrations não foi reconferida nesta sessão: o MCP só carrega no próximo boot. A última leitura direta (S02) deu **0 tabelas, 0 migrations**.
+Lido via MCP no fim da S04.
 
-**Primeira ação do próximo boot:** `list_tables` + `list_migrations` via MCP, antes de qualquer SQL.
+| Tabela | Linhas | Observação |
+|---|---|---|
+| `places` | 511 | 100% `unreviewed` — nada visível ao público (RN-07) |
+| `tags` | 94 | 93 públicas + `Hype trap` admin-only |
+| `questions` | 38 | 4 com `requires_review` (as de texto livre) |
+| `tiers` | 4 | `destination`, `experience`, `fair`, `cool` |
+| `place_tags` | 145 | todas `source = 'suggested'` |
+| `codes` | 1 | `DEMO`, para smoke da RPC |
+| `curators` | 0 | ⚠️ vazia — ver `OP-02` |
+| `field_reports` | 0 | |
+
+Distribuição de julgamento: estrela 22 (4,3%), não visitados 42, com tier 279 (`fair` 182, `destination` 38, `experience` 30, `cool` 29), com área 107, 16 cidades.
+
+Migrations: `20260806120000_f01_schema_rls_rpc`, `20260806120100_f01_seed_and_import`.
 
 ---
 
@@ -112,8 +130,8 @@ Nenhum bloqueante. Os dois da S03 (Node ausente, MCP não carregado) foram resol
 | # | Feature | Status | Sessões |
 |---|---|---|---|
 | F-00 | Fundação | ✅ Concluída (S02) | ~0,5 |
-| F-01 | Schema + dados | ⬜ Próxima | ~1 |
-| F-02 | Admin | ⬜ | ~2 |
+| F-01 | Schema + dados | ✅ Concluída (S04) | ~1 |
+| F-02 | Admin | ⬜ Próxima | ~2 |
 | F-03 | Público (city gate, mapa, lista, detalhe) | ⬜ | ~2 |
 | F-04 | Filtros facetados | ⬜ | ~1 |
 | F-05 | Codes completo + Roulette | ⬜ | ~2 |
@@ -124,6 +142,27 @@ Total estimado: ~10 sessões. A curadoria do Michael roda em paralelo a partir d
 ---
 
 ## 📝 Log de sessões
+
+### 2026-08-06 — S04: F-01 — schema, RLS, RPCs e import
+
+**O que foi feito:** o banco saiu de zero tabelas para o schema inteiro com os 511 lugares dentro. Duas migrations, ambas versionadas em `supabase/migrations/`, ambas com rollback escrito em `supabase/rollbacks/`.
+
+**Cinco decisões cravadas antes de escrever SQL, todas aprovadas pelo Edu:**
+- **Import por SQL versionado**, não pelo `import-places.ts`. O script exigia service-role key no ambiente e a dependência `csv-parse`; o SQL gerado a partir do CSV fica auditável no repo e não pede chave nova. Os slugs saem da mesma função `slugify()` que está em `src/lib/utils.ts`, então batem com o frontend
+- **`price_band` não foi pré-sugerido.** O ADR-06 mandava pré-classificar `cuisine` e `price_band`, mas a §9.1 removeu `price_band_source` — não existe onde marcar que o valor é chute de máquina, e sem Google Places a única entrada seria o nome do lugar. Um palpite ficaria indistinguível do veredito do Michael num campo da camada de julgamento. ADR-06 emendado na Bíblia
+- **145 tags gravadas como `suggested`**, com autorização explícita (é camada de julgamento). Duas fontes só: a coluna `Tags` do CSV, que vem dos nomes dos guias do próprio Michael, e casamento inequívoco de palavra de cozinha no nome do lugar, restrito a tipos que servem comida
+- **`DEMO`** semeado para dar o que testar em `rpc_redeem_code()` antes da F-05
+- **`curators` nasce vazia** — `auth.users` tem zero contas
+
+**Duas divergências encontradas no meio do caminho:**
+- **São 4 tiers, não 5.** STATUS e Bíblia diziam 5 porque a tabela da §6.2 lista `fair` duas vezes, uma por escala. Como `slug` é PK, `fair` é uma linha com `applies_to = {restaurant, bar}` — que é para isso que a coluna é array. Confirmado por `SEEDED_TIER_SLUGS` no `src/types/index.ts` e pelo valor único `Fair` no CSV. Corrigido na Bíblia
+- **A coluna `Town` do CSV estava sendo descartada.** É o município real — Lockhart, Dripping Springs, San Marcos. Virou `area` onde difere da cidade-portão: 107 dos 511. É geografia derivada, não julgamento, e some com um `UPDATE`
+
+**O gate G6 pegou um bug real na primeira tentativa de aplicar.** A migration falhou porque `anon` tinha 4 privilégios de escrita sobrando em `public`. Causa: a view `field_report_aggregates` era criada **depois** do `REVOKE ALL ... FROM anon`, então herdava as default privileges do Supabase e nascia com INSERT, UPDATE, DELETE e TRUNCATE liberados. A migration inteira voltou atrás, o banco ficou intacto, os blocos foram reordenados e a segunda tentativa passou. Vale como evidência de que os GATEs inline pagam por si.
+
+**Verificação do import.** Como a migration de 155 kB não coube numa chamada de `apply_migration`, os 511 registros entraram por `execute_sql` em quatro blocos — o que introduz risco de erro silencioso de transcrição. Em vez de confiar, o conteúdo do banco foi comparado com o CSV por checksum md5 campo a campo: nome, slug, tipo, tier, estrela, visitado, país, cidade, área, coordenadas, endereço e `source_guides`. Todos batem. (A primeira rodada acusou divergência em `source_guides`, que era bug do script de verificação — o parser removia as aspas antes de ler o array. Os dados sempre estiveram certos.)
+
+**Próxima sessão:** F-02 — Admin. Primeiro `OP-01` e `OP-02` no painel, senão não há como testar escrita nenhuma.
 
 ### 2026-08-06 — S03: Destravamento de ambiente
 

@@ -5,19 +5,20 @@
 
 ---
 
-## 1. Correções técnicas a aplicar na F-01
+## 1. Correções técnicas da F-01 — ✅ todas fechadas (S04)
 
-Achados na auditoria do schema original (`docs/files/2026-08-05-supabase-schema.sql`). Todos já estão documentados na Bíblia §9 e §11 — esta lista é o checklist de execução.
+Achados na auditoria do schema original (`docs/files/2026-08-05-supabase-schema.sql`), aplicados
+na migration `20260806120000_f01_schema_rls_rpc.sql` e verificados pelos GATEs inline.
 
-| # | Achado | Severidade | Onde corrigir |
+| # | Achado | Severidade | Como ficou |
 |---|---|---|---|
-| BL-01 | `codes` com `SELECT` público (`using active = true`) permite a qualquer visitante listar todos os códigos secretos | 🔴 Alta | Revogar SELECT público; expor só via `rpc_redeem_code()` |
-| BL-02 | `field_reports` com `insert with check (true)` permite ao visitante gravar `status = 'published'` direto, furando o review-gate das 4 perguntas de texto livre | 🔴 Alta | Revogar INSERT público; entrar só por `rpc_submit_field_report()` com status derivado |
-| BL-03 | `auth.role() = 'authenticated'` dá escrita total a qualquer conta autenticada. Com signup aberto, um estranho vira curador | 🔴 Alta | Tabela `curators` + `is_curator()`; desabilitar signup no painel Supabase |
-| BL-04 | `apple_id` sem `UNIQUE`, mas `import-places.ts` faz `upsert(onConflict: 'apple_id')` — quebra em runtime | 🟡 Média | `UNIQUE (apple_id)` |
-| BL-05 | Seed não é idempotente: `questions` não tem constraint de unicidade, rodar 2× duplica as 38 perguntas | 🟡 Média | `ON CONFLICT DO NOTHING` com chave natural |
-| BL-06 | View `field_report_aggregates` sem `security_invoker` contorna o RLS | 🟡 Média | `with (security_invoker = on)` |
-| BL-07 | `place_tags` com `SELECT using (true)` vaza IDs de lugares não publicados e tags admin-only | 🟢 Baixa | Policy com `EXISTS` sobre place publicado + tag não-admin |
+| ✅ BL-01 | `codes` com `SELECT` público permitia a qualquer visitante listar todos os códigos secretos | 🔴 Alta | `codes` não tem nenhuma policy de SELECT, e `anon` não tem nem GRANT na tabela. Só `rpc_redeem_code()`, que responde `{"ok": false}` idêntico em toda falha para não virar oráculo |
+| ✅ BL-02 | `field_reports` com `insert with check (true)` deixava o visitante gravar `status = 'published'` direto | 🔴 Alta | Nenhuma policy de INSERT existe na tabela. Só `rpc_submit_field_report()`, que deriva o status de `questions.requires_review`. Default da coluna virou `pending` (fail closed) |
+| ✅ BL-03 | `auth.role() = 'authenticated'` dava escrita total a qualquer conta autenticada | 🔴 Alta | Tabela `curators` + `is_curator()` SECURITY DEFINER com `search_path` fixo. Falta desabilitar signup no painel — ver §7 |
+| ✅ BL-04 | `apple_id` sem `UNIQUE` quebrava o upsert do import | 🟡 Média | `UNIQUE (apple_id)`, verificado pelo GATE G12 |
+| ✅ BL-05 | Seed não idempotente: rodar 2× duplicava as 38 perguntas | 🟡 Média | `UNIQUE (prompt)` em `questions`; todo bloco do seed usa `ON CONFLICT DO NOTHING` por chave natural |
+| ✅ BL-06 | View `field_report_aggregates` sem `security_invoker` contornava o RLS | 🟡 Média | `WITH (security_invoker = on)`, verificado pelo GATE G8 |
+| ✅ BL-07 | `place_tags` com `SELECT using (true)` vazava IDs de lugares não publicados e tags admin-only | 🟢 Baixa | Policy com duplo `EXISTS` (place publicado **e** tag ativa não-admin). Anon vê 0 de 145 hoje |
 
 ---
 
@@ -27,12 +28,12 @@ Encontradas ao cruzar PRD × `CLAUDE.md` do produto × `PLAN.md` × `schema.sql`
 
 | # | Divergência | Resolução |
 |---|---|---|
-| BL-08 | `Hype trap` é citado no PRD §6.4 mas não existe nas 93 tags do seed | Criada em `character` com `admin_only = true` na F-01 |
+| ✅ BL-08 | `Hype trap` é citado no PRD §6.4 mas não existe nas 93 tags do seed | Criada em `character` com `admin_only = true` (S04). Anon enxerga 93 tags, não 94 |
 | BL-09 | PRD §9.10 descreve um primitivo `Collection` unificando codes, listas curadas e shortlist — não existe no schema | Shortlist saiu do MVP; `codes.highlighted_places` cobre o caso restante. Reabrir só se a shortlist voltar |
 | BL-10 | Trip Builder está no PRD §5 como in-scope v1, mas não aparece em nenhuma das 9 fases do `PLAN.md` | Fora do MVP (§4 abaixo) |
 | BL-11 | PRD diz "single-user authentication"; a curadoria é feita por duas pessoas | Allowlist de 2 curadores (Bíblia §11) |
-| BL-12 | A tag `Breakfast & brunch` do CSV não existe no vocabulário de 93 — o mais próximo é `Breakfast & Diner` (cuisine) e `Open for breakfast` (logistics) | Mapear no import da F-01 |
-| BL-13 | `Dallas–Fort Worth` no CSV usa travessão (en-dash), não hífen | Normalizar no import |
+| ✅ BL-12 | A tag `Breakfast & brunch` do CSV não existe no vocabulário de 93 | Mapeada para `cuisine/breakfast-diner` no import (S04). 54 lugares, `source = 'suggested'` |
+| ✅ BL-13 | `Dallas–Fort Worth` no CSV usa travessão (en-dash), não hífen | Normalizado para hífen no import (S04). GATE G10b garante que nenhum valor de cidade carrega en-dash |
 
 ---
 
@@ -48,6 +49,9 @@ Encontradas ao cruzar PRD × `CLAUDE.md` do produto × `PLAN.md` × `schema.sql`
 | BL-22 | Sem Vitest configurado | Entra quando houver lógica que justifique teste — provavelmente na F-04 (semântica AND/OR do filtro) |
 | BL-23 | Sem tema claro/escuro. O `sonner.tsx` do shadcn vinha atrelado a `next-themes` (pacote do Next.js); reescrito para seguir a preferência do SO | Os Codes assumem o controle do tema em runtime na F-05. `next-themes` segue instalado como dependência órfã — remover se nada passar a usá-lo |
 | BL-25 | Bundle único de 543 kB (157 kB gzip) — o Vite avisa acima de 500 kB. Sem code-splitting | Aceitável para 2 usuários e um guia não-listado. Revisar se o MapLibre pesar no carregamento inicial da F-03 |
+| BL-26 | As 4 tags de `logistics` marcadas `is_derived = true` (`Open late`, `Open Monday`, `Closes early`, `Open for breakfast`) seriam calculadas a partir de horário de funcionamento, que saiu com o ADR-06 | Não há automação por trás delas. Ficam no vocabulário como atribuíveis pelo curador. Decidir na F-02 se o admin ainda deve tratá-las de forma diferente, ou se `is_derived` vira campo morto |
+| BL-27 | A migration `20260806120100_f01_seed_and_import.sql` (155 kB) foi aplicada por `execute_sql` em blocos, não por `apply_migration` — o payload de 511 linhas era grande demais para uma chamada só | O arquivo em `supabase/migrations/` é o artefato de verdade e o `schema_migrations` foi saneado à mão para refletir isso. Conteúdo do banco conferido contra o CSV por checksum. Se surgir outro import em massa, usar o SQL Editor do painel |
+| BL-28 | `get_advisors(security)` acusa 8 WARN de "SECURITY DEFINER executável por anon/authenticated" | **Aceito, não é achado.** São `is_curator()` (as policies RLS precisam executá-la), as duas RPCs públicas por desenho (Bíblia §11), e `rls_auto_enable()` — um *event trigger* da plataforma Supabase que liga RLS em tabela nova no `public`. Como retorna `event_trigger`, não é invocável via PostgREST. Nenhuma delas expõe dado: as três nossas têm `search_path` fixo e filtram na saída. Reavaliar só se surgir RPC nova |
 
 ---
 
@@ -76,7 +80,8 @@ Cortado com motivo. Não repropor sem fato novo.
 |---|---|---|
 | DP-06 | O Michael quer aparecer no guia — rosto, perfil de gosto, página "about"? | Michael. Afeta copy e tom, não bloqueia build |
 | DP-07 | Notas de voz por lugar — alto valor de personalidade, escopo moderado | Michael. Candidata a fase futura |
-| DP-08 | Os 28 conflitos tier+não-visitado, os 15 sem classificação e os 4 fora do cruzamento tier×tipo | Michael, na fila de revisão do admin (F-02) |
+| DP-08 | Os 28 conflitos tier+não-visitado, os 15 sem classificação e os 4 fora do cruzamento tier×tipo | Michael, na fila de revisão do admin (F-02). Os 28 já estão marcados no banco: `'CONFLICT:TIER+UNVISITED' = ANY (source_guides)` |
+| DP-09 | As 145 tags `source = 'suggested'` gravadas no import precisam de confirmação ou rejeição | Michael, na F-02. O admin tem de distinguir visualmente de tag do curador (RN-15). Reverter tudo é `DELETE FROM place_tags WHERE source = 'suggested'` |
 
 ---
 
@@ -87,3 +92,14 @@ Cortado com motivo. Não repropor sem fato novo.
 | BL-18 | Copy autoral por combinação impossível de filtro — o momento exato em que o visitante iria embora, e o melhor lugar do produto para ter graça | F-04 |
 | BL-19 | Acessibilidade: filtros navegáveis por teclado, contraste suficiente em todos os temas de Code, informação do mapa disponível na lista para leitor de tela | F-04 e F-05 |
 | BL-20 | Semear as próprias respostas de field report para nada nascer em zero | F-06 |
+
+---
+
+## 7. Pendências operacionais no painel Supabase
+
+Não são código. Precisam de alguém logado no painel, e **bloqueiam a F-02**.
+
+| # | Item | Estado |
+|---|---|---|
+| OP-01 | Desabilitar signup no projeto Supabase | ⬜ Pendente. Enquanto estiver aberto, qualquer pessoa cria conta — o que não dá escrita nenhuma (a allowlist `curators` é que decide), mas cria contas órfãs |
+| OP-02 | Criar as contas de Michael e Edu em `auth.users` e inserir as duas linhas em `curators` | ⬜ Pendente. `auth.users` e `curators` estão vazias; até isso existir, `is_curator()` é false para todo mundo e **ninguém escreve nada** |
