@@ -31,7 +31,7 @@ Encontradas ao cruzar PRD × `CLAUDE.md` do produto × `PLAN.md` × `schema.sql`
 | ✅ BL-08 | `Hype trap` é citado no PRD §6.4 mas não existe nas 93 tags do seed | Criada em `character` com `admin_only = true` (S04). Anon enxerga 93 tags, não 94 |
 | BL-09 | PRD §9.10 descreve um primitivo `Collection` unificando codes, listas curadas e shortlist — não existe no schema | Shortlist saiu do MVP; `codes.highlighted_places` cobre o caso restante. Reabrir só se a shortlist voltar |
 | BL-10 | Trip Builder está no PRD §5 como in-scope v1, mas não aparece em nenhuma das 9 fases do `PLAN.md` | Fora do MVP (§4 abaixo) |
-| BL-11 | PRD diz "single-user authentication"; a curadoria é feita por duas pessoas | Allowlist de 2 curadores (Bíblia §11) |
+| ✅ BL-11 | PRD diz "single-user authentication"; a curadoria é feita por duas pessoas | **O PRD estava certo.** Decidido na S04: uma conta só (a do Michael), que o Edu também usa. A allowlist `curators` continua sendo o mecanismo — só que com uma linha |
 | ✅ BL-12 | A tag `Breakfast & brunch` do CSV não existe no vocabulário de 93 | Mapeada para `cuisine/breakfast-diner` no import (S04). 54 lugares, `source = 'suggested'` |
 | ✅ BL-13 | `Dallas–Fort Worth` no CSV usa travessão (en-dash), não hífen | Normalizado para hífen no import (S04). GATE G10b garante que nenhum valor de cidade carrega en-dash |
 
@@ -44,7 +44,7 @@ Encontradas ao cruzar PRD × `CLAUDE.md` do produto × `PLAN.md` × `schema.sql`
 | BL-14 | As 5 skills em `.claude/skills/` mantêm exemplos do WiseFacilities (`audit_log`, `capacidades`, `is_admin_atual()`) — objetos que não existem aqui | Adaptar aos objetos reais após a F-01, quando o schema existir. Risco atual: um agente inferir tabelas inexistentes |
 | BL-15 | `docs/GANTT-MichaelinMap.csv` e `docs/DOMAIN_QUESTIONS.md` estão preenchidos com o conteúdo-exemplo do template e não são mantidos neste projeto | ADR-04. Arquivos preservados mas fora de uso — não ler no boot, não atualizar |
 | BL-16 | `docs/files/CLAUDE.md` (vindo do Claude Web) coexiste com `.claude/CLAUDE.md` e diverge dele | `.claude/CLAUDE.md` é o canônico. O de `docs/files/` é material de origem |
-| BL-17 | Sem tabela de auditoria — apenas `places.updated_by` + `updated_at` | Proporcional a 2 curadores. Reabrir se a curadoria crescer |
+| BL-17 | Sem tabela de auditoria — apenas `places.updated_by` + `updated_at` | Com **uma** conta de curador (S04), `updated_by` é constante e não atribui edição a ninguém. `updated_at` continua útil (alimenta a lista de desatualizados da F-02). Reabrir só se surgir uma segunda conta |
 | BL-21 | `npm audit` acusa 2 vulnerabilidades high em `react-router` (GHSA-qwww-vcr4-c8h2, CSRF bypass no **modo RSC**) | **Não se aplica**: SPA sem React Server Components. O "fix" seria downgrade major para 7.11.0. Revisar quando o advisory for atualizado |
 | BL-22 | Sem Vitest configurado | Entra quando houver lógica que justifique teste — provavelmente na F-04 (semântica AND/OR do filtro) |
 | BL-23 | Sem tema claro/escuro. O `sonner.tsx` do shadcn vinha atrelado a `next-themes` (pacote do Next.js); reescrito para seguir a preferência do SO | Os Codes assumem o controle do tema em runtime na F-05. `next-themes` segue instalado como dependência órfã — remover se nada passar a usá-lo |
@@ -102,4 +102,5 @@ Não são código. Precisam de alguém logado no painel, e **bloqueiam a F-02**.
 | # | Item | Estado |
 |---|---|---|
 | OP-01 | Desabilitar signup no projeto Supabase | ⬜ Pendente. Enquanto estiver aberto, qualquer pessoa cria conta — o que não dá escrita nenhuma (a allowlist `curators` é que decide), mas cria contas órfãs |
-| OP-02 | Criar as contas de Michael e Edu em `auth.users` e inserir as duas linhas em `curators` | ⬜ Pendente. `auth.users` e `curators` estão vazias; até isso existir, `is_curator()` é false para todo mundo e **ninguém escreve nada** |
+| OP-02 | Criar **a** conta do Michael (`mikemyday@…`) em `auth.users`, com "Auto Confirm User" marcado, e inserir a linha em `curators` | ⬜ Pendente. É uma conta só, compartilhada com o Edu (Bíblia §4). Até existir, `is_curator()` é false para todo mundo e **ninguém escreve nada**. O INSERT em `curators` o CLI faz via MCP lendo o `user_id` de `auth.users` |
+| OP-03 | Criar o repositório `AdminFeedpro/MichaelinMap` no GitHub e adicionar o remote | ⬜ Pendente. O `git init` da S03 foi local e nunca teve remote; a S01 afirmou que o repo existia, o que não foi confirmado. `gh` não está instalado nesta máquina, então o CLI não consegue verificar nem criar |

@@ -85,12 +85,13 @@ Nada em execução. F-01 fechada e verificada.
 
 ## ⏭️ Próxima ação
 
-**F-02 — Admin.** Mas antes, duas coisas que só o Edu faz, no painel Supabase (`OP-01` e `OP-02` no BACKLOG):
+**F-02 — Admin.** Mas antes, o que só o Edu faz (`OP-01` a `OP-03` no BACKLOG):
 
-1. Desabilitar signup no projeto
-2. Criar as contas de Michael e Edu e inserir as duas linhas em `curators`
+1. Criar **a** conta do Michael (`mikemyday@…`) no painel, com "Auto Confirm User" marcado — é uma conta só, que o Edu também usa
+2. Desabilitar signup no projeto
+3. Criar o repo no GitHub e adicionar o remote — a `main` local está à frente e não tem para onde subir
 
-Sem o passo 2 o admin não tem como ser testado: `is_curator()` retorna false para todo mundo e nenhuma escrita passa. É o primeiro item da próxima sessão.
+Feito o passo 1, o CLI insere a linha em `curators` via MCP lendo o `user_id` de `auth.users`. Sem isso o admin não tem como ser testado: `is_curator()` retorna false para todo mundo e nenhuma escrita passa.
 
 Depois disso, a F-02 entrega: login dos 2 curadores, lista com filtros, editor de lugar, atribuição de tags, quick-add mobile, fila de revisão, distribuição de tiers e lista de desatualizados.
 
@@ -100,7 +101,9 @@ Depois disso, a F-02 entrega: login dos 2 curadores, lista com filtros, editor d
 
 ## 🚫 Blockers
 
-Nenhum bloqueante para código. `OP-01` e `OP-02` bloqueiam o *teste* da F-02, não a escrita dela.
+Nenhum bloqueante para código. `OP-02` bloqueia o *teste* da F-02, não a escrita dela.
+
+**`OP-03` — o repositório remoto não existe.** A S01 registrou "repositório GitHub criado"; a S03 descobriu que não havia `.git` local e criou um, mas sem remote. Agora ficou claro que o remote também nunca existiu: `git push` falha com `'origin' does not appear to be a git repository`. `gh` não está instalado, então o CLI não consegue verificar se `AdminFeedpro/MichaelinMap` existe nem criá-lo. **Dois commits de F-01 estão só nesta máquina.** É a terceira afirmação da S01 que não se sustentou — vale tratar o resto daquele registro com desconfiança.
 
 ---
 
@@ -162,7 +165,11 @@ Total estimado: ~10 sessões. A curadoria do Michael roda em paralelo a partir d
 
 **Verificação do import.** Como a migration de 155 kB não coube numa chamada de `apply_migration`, os 511 registros entraram por `execute_sql` em quatro blocos — o que introduz risco de erro silencioso de transcrição. Em vez de confiar, o conteúdo do banco foi comparado com o CSV por checksum md5 campo a campo: nome, slug, tipo, tier, estrela, visitado, país, cidade, área, coordenadas, endereço e `source_guides`. Todos batem. (A primeira rodada acusou divergência em `source_guides`, que era bug do script de verificação — o parser removia as aspas antes de ler o array. Os dados sempre estiveram certos.)
 
-**Próxima sessão:** F-02 — Admin. Primeiro `OP-01` e `OP-02` no painel, senão não há como testar escrita nenhuma.
+**Duas decisões tomadas no fim da sessão:**
+- **Uma conta de curador, não duas.** O Edu acessa pela conta do Michael. Fecha `BL-11` — o PRD, que dizia "single-user authentication", estava certo desde o começo. Não muda schema: `curators` só passa a ter uma linha. Custo aceito: `updated_by` deixa de dizer *quem* editou (`BL-17` atualizado)
+- **Push impossível:** não há remote. Ver Blockers e `OP-03`
+
+**Próxima sessão:** F-02 — Admin. Primeiro `OP-01` a `OP-03`, senão não há como testar escrita nem como versionar fora desta máquina.
 
 ### 2026-08-06 — S03: Destravamento de ambiente
 

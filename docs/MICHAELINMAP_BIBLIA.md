@@ -1,6 +1,6 @@
 # Michaelin Map — Bíblia do Projeto
 
-**Versão:** 2.1 | **Data:** 2026-08-06 | **Autor:** Edu Mello
+**Versão:** 2.2 | **Data:** 2026-08-06 | **Autor:** Edu Mello
 **Status do projeto:** 🟢 F-00 e F-01 concluídas — schema vivo com os 511 lugares. F-02 (admin) a iniciar
 
 > Fonte da verdade do Michaelin Map. O CLI lê este arquivo no boot de toda sessão.
@@ -14,6 +14,7 @@
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 2.2 | 2026-08-06 | Curadoria passa a ter **uma conta só** (§4, §9.4, §11). Consequência: `updated_by` não identifica pessoa |
 | 2.1 | 2026-08-06 | F-01 aplicada (S04). Correção de contagem: são **4** tiers, não 5 (§9.2). `Town` do CSV vira `area` (§8). ADR-06 emendado: `price_band` não é pré-sugerido |
 | 2.0.1 | 2026-08-06 | Correção factual: caminho da pasta local em §3 (S03). Sem mudança de escopo, schema ou regra |
 | 2.0 | 2026-08-06 | Bíblia preenchida a partir do PRD. Escopo do MVP fechado (7 features). Cortes: Google Places API, My Maps sync, Trip Builder, novelty interactions exceto Roulette, SEO/indexação. Schema corrigido (8 tabelas). Modelo de autorização definido (curator allowlist). |
@@ -82,9 +83,11 @@ Indexação:     noindex (não-listado) — ver ADR-07
 | Papel | Quem | Acesso |
 |---|---|---|
 | **Visitante** | Amigos e conhecidos do Michael | Somente leitura, sem conta, sem login. Recebe o link (e frequentemente um Code) diretamente do Michael |
-| **Curador** | Michael (dono do julgamento) e Edu (apoio na curadoria e no dev) | Login no admin. Duas contas, allowlist explícita. Não há signup |
+| **Curador** | Michael. O Edu opera pela **mesma conta** quando dá apoio | Login no admin. **Uma conta só**, em allowlist explícita. Não há signup |
 
 Não existe terceiro papel. Sem contribuidores, sem moderadores, sem submissões públicas — com a exceção estrita e não-avaliativa dos field reports (§10).
+
+**Conta única (decidido na S04).** O guia é do Michael; o Edu acessa pela conta dele quando precisa. Consequência a aceitar conscientemente: `places.updated_by` deixa de identificar **quem** editou — passa a registrar apenas que a edição veio de um curador logado. Como a atribuição entre os dois nunca foi o ponto (o julgamento é de uma pessoa só, por desenho — §1), o custo é baixo. Se um dia a curadoria virar de duas mãos de verdade, cria-se a segunda conta e `updated_by` volta a significar algo, sem mudança de schema.
 
 ---
 
@@ -258,7 +261,7 @@ Seed: 93 tags (37 cuisine, 14 occasion, 11 vibe, 11 logistics, 9 character, 7 fo
 
 `user_id` uuid PK → `auth.users` · `name` text · `created_at`.
 
-Duas linhas: Michael e Edu. Signup desabilitado no projeto Supabase.
+**Uma linha**, a conta do Michael, que o Edu também usa (§4). Signup desabilitado no projeto Supabase. O schema não muda se um dia forem duas — é só inserir a segunda linha.
 
 ### 9.5 `codes`
 
@@ -307,7 +310,7 @@ Visitantes que estiveram em um lugar respondem 2 ou 3 perguntas sorteadas que **
 |---|---|
 | **Modelo** | **Curator allowlist** — nem tenant-scoped nem RBAC. Ver ADR-01 |
 | **Função que resolve o caller** | `is_curator()` — `exists (select 1 from curators where user_id = auth.uid())`, STABLE SECURITY DEFINER |
-| **Auditoria** | Sem tabela de audit. `places.updated_by` + `updated_at` cobrem a necessidade real |
+| **Auditoria** | Sem tabela de audit. `places.updated_by` + `updated_at` registram *quando* — com conta única, não *quem* (§4) |
 | **Acesso anônimo** | Leitura de conteúdo publicado + escrita de field report **exclusivamente via RPC** |
 
 ### RLS por tabela
