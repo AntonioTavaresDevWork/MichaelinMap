@@ -1,9 +1,22 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeftIcon, MapPinIcon, StarIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { GuideFilterPanel } from '@/components/public/guide-filter-panel'
 import { usePublicVocabulary, usePublishedPlaces } from '@/hooks/use-public-guide'
+import {
+  applyGuideFilters,
+  buildFacetGroups,
+  buildGuideIndex,
+  EMPTY_FILTERS,
+  filtersFromParams,
+  filtersToParams,
+  hasActiveFilters,
+  toggleFacetValue,
+  type FacetKey,
+} from '@/lib/guide-filters'
 import { cn, formatNumber, slugify } from '@/lib/utils'
 import type { Place, PlaceType } from '@/types'
 
@@ -25,12 +38,17 @@ const GuideMap = lazy(() =>
 export function GuidePage() {
   const { citySlug } = useParams<{ citySlug: string }>()
   const places = usePublishedPlaces()
-  const { tiers } = usePublicVocabulary()
+  const { tiers, tags, placeTags } = usePublicVocabulary()
 
-  // One selection, shared by map and list. Never two (see CLAUDE.md); the same
-  // discipline the filter state will follow in F-04.
+  // One selection, shared by map and list. Never two (see CLAUDE.md) — and the
+  // filter below follows the same discipline: it lives in the URL, and both the
+  // list and the map read the one result of applying it.
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [panelOpen, setPanelOpen] = useState(false)
   const rowRefs = useRef(new globalThis.Map<string, HTMLLIElement>())
+
+  const [searchParams, setSearchParams] = useSearchParams()
+  const filters = useMemo(() => filtersFromParams(searchParams), [searchParams])
 
   const cityName = useMemo(
     () => (places.data ?? []).find((p) => p.city && slugify(p.city) === citySlug)?.city ?? null,
@@ -51,6 +69,38 @@ export function GuidePage() {
     [places.data, cityName],
   )
 
+  const index = useMemo(
+    () => buildGuideIndex(placeTags.data, tags.data),
+    [placeTags.data, tags.data],
+  )
+
+  const visible = useMemo(
+    () => applyGuideFilters(inCity, filters, index),
+    [inCity, filters, index],
+  )
+
+  const facetGroups = useMemo(
+    () => buildFacetGroups({ places: inCity, filters, index, tiers: tiers.data, tags: tags.data }),
+    [inCity, filters, index, tiers.data, tags.data],
+  )
+
+  const setFilters = useCallback(
+    (next: typeof filters) => {
+      // Replace rather than push: the back button should leave the city, not
+      // walk back through every checkbox. The URL stays shareable either way
+      // (RN-19).
+      setSearchParams(filtersToParams(next), { replace: true })
+    },
+    [setSearchParams],
+  )
+
+  const toggle = useCallback(
+    (facet: FacetKey, value: string) => setFilters(toggleFacetValue(filters, facet, value)),
+    [filters, setFilters],
+  )
+
+  const clear = useCallback(() => setFilters(EMPTY_FILTERS), [setFilters])
+
   const sections = useMemo(() => {
     /** Star first, then tier order, then name. The star crosses tiers (RN-03). */
     const rank = (a: Place, b: Place) => {
@@ -62,10 +112,10 @@ export function GuidePage() {
     }
 
     return [
-      { title: 'Eat & drink', places: inCity.filter((p) => EAT_AND_DRINK.includes(p.place_type)).sort(rank) },
-      { title: 'Everything else', places: inCity.filter((p) => !EAT_AND_DRINK.includes(p.place_type)).sort(rank) },
+      { title: 'Eat & drink', places: visible.filter((p) => EAT_AND_DRINK.includes(p.place_type)).sort(rank) },
+      { title: 'Everything else', places: visible.filter((p) => !EAT_AND_DRINK.includes(p.place_type)).sort(rank) },
     ].filter((section) => section.places.length > 0)
-  }, [inCity, tierOrder])
+  }, [visible, tierOrder])
 
   const select = useCallback((placeId: string | null) => setSelectedId(placeId), [])
 
@@ -74,6 +124,12 @@ export function GuidePage() {
     if (!selectedId) return
     rowRefs.current.get(selectedId)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
   }, [selectedId])
+
+  // A selection that the filter just excluded would leave the map highlighting
+  // a pin with no row beside it — one state, so it has to stay coherent.
+  useEffect(() => {
+    if (selectedId && !visible.some((place) => place.id === selectedId)) setSelectedId(null)
+  }, [visible, selectedId])
 
   if (places.isLoading) {
     return (
@@ -120,6 +176,22 @@ export function GuidePage() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_minmax(0,420px)]">
         <div className="order-2 lg:order-1">
+          <div className="mb-6">
+            <GuideFilterPanel
+              groups={facetGroups}
+              filters={filters}
+              resultCount={visible.length}
+              onToggle={toggle}
+              onClear={clear}
+              open={panelOpen}
+              onOpenChange={setPanelOpen}
+            />
+          </div>
+
+          {visible.length === 0 && (
+            <NothingMatches filtered={hasActiveFilters(filters)} onClear={clear} />
+          )}
+
           {sections.map((section) => (
             <section key={section.title} className="mb-8">
               <h2 className="font-heading text-sm uppercase tracking-wide text-muted-foreground">
@@ -148,11 +220,45 @@ export function GuidePage() {
         <div className="order-1 lg:order-2">
           <div className="h-[45vh] overflow-hidden rounded-lg border lg:sticky lg:top-6 lg:h-[calc(100vh-8rem)]">
             <Suspense fallback={<Skeleton className="size-full rounded-none" />}>
-              <GuideMap places={inCity} selectedId={selectedId} onSelect={select} />
+              <GuideMap places={visible} selectedId={selectedId} onSelect={select} />
             </Suspense>
           </div>
         </div>
       </div>
+    </div>
+  )
+}
+
+/**
+ * The impossible combination (BL-18).
+ *
+ * This is the exact moment a visitor would leave, so it is worth writing rather
+ * than shrugging with "no results". The joke also does the teaching: it explains
+ * why adding a filter narrows instead of widens (RN-16), which is the one thing
+ * a faceted panel never makes obvious on its own.
+ */
+function NothingMatches({ filtered, onClear }: { filtered: boolean; onClear: () => void }) {
+  if (!filtered) {
+    return (
+      <div className="rounded-lg border border-dashed px-6 py-12 text-center">
+        <p className="font-heading text-lg">Nothing here yet.</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          This city is on the map but not yet written up.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="rounded-lg border border-dashed px-6 py-12 text-center">
+      <p className="font-heading text-lg">Nothing is all of those things.</p>
+      <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
+        Michael has opinions, not miracles. Every filter you add is one more thing that has to be
+        true at the same time — let go of one and the guide comes back.
+      </p>
+      <Button variant="outline" size="sm" className="mt-5" onClick={onClear}>
+        Clear filters
+      </Button>
     </div>
   )
 }

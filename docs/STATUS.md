@@ -22,8 +22,8 @@
 
 ## 📍 Fase atual
 
-**F-00, F-01, F-02 e F-03 concluídas.** O produto tem admin funcional e lado público navegável.
-Objetivo imediato: **F-04 — filtros facetados**.
+**F-00 a F-04 concluídas.** O produto tem admin funcional, lado público navegável e filtro facetado.
+Objetivo imediato: **F-05 — Codes + Roulette**.
 
 Uma ressalva na F-03: o mapa está integrado, sincronizado com a lista e com os marcadores
 posicionados corretamente, mas **não desenha geometria nesta máquina** — `BL-29`, causa
@@ -124,6 +124,26 @@ ambiental, provada fora do nosso código. Não bloqueia a F-04.
 - [x] `schema_migrations` reconferido via MCP: **3** migrations vivas, não 2 como este arquivo dizia
 - [x] **Gate reexecutado:** `npm run build` e `npm run lint` limpos
 
+### F-04 — Filtros facetados ✅ (S06)
+
+- [x] `src/lib/guide-filters.ts` — objeto de filtro único, **OR dentro da faceta e AND entre facetas** (RN-16),
+      contagem ao vivo calculada contra as *outras* facetas ativas, serialização na URL (RN-19)
+- [x] `src/components/public/guide-filter-panel.tsx` — opção zerada **desabilitada, não escondida** (RN-17);
+      recolhível no telefone, sempre aberto no desktop
+- [x] Filtro alimenta lista e mapa a partir do mesmo estado; o mapa reenquadra sozinho ao filtrar
+- [x] Seleção que sai do resultado é limpa, para o mapa não destacar pin sem linha ao lado
+- [x] Área só em cidade acima do piso de densidade (RN-18)
+- [x] **Decisão de desenho:** faceta sem nenhuma opção populada não é renderizada. Não contraria a RN-17,
+      que governa a *opção* dentro da faceta — é o princípio da §8 ("degradar em silêncio em vez de
+      renderizar controle vazio") aplicado às demais facetas. Hoje seis das sete facetas de tag estão
+      vazias (`BL-30`); elas aparecem sozinhas conforme o Michael taggear, sem deploy
+- [x] Empty state autoral da combinação impossível (`BL-18` fechado)
+- [x] **Verificado por harness descartável: 27 checks contra o banco vivo pelo caminho anônimo**, o que
+      testa RLS e filtro juntos. Cobre OR/AND, contagem ao vivo, opção zerada desabilitada, opção
+      selecionada que zerou continuar clicável, round-trip da URL, piso de densidade da área e a
+      defesa em profundidade da RN-14
+- [x] **Gate:** `npm run build` e `npm run lint` limpos. Bundle principal 699 → 707 kB
+
 ---
 
 ## 🔄 Em andamento
@@ -134,12 +154,13 @@ Nada em execução. F-03 fechada; só o `BL-29` fica em aberto, e é ambiental.
 
 ## ⏭️ Próxima ação
 
-**F-04 — Filtros facetados.** Entrega: painel facetado, OR dentro / AND entre facetas (RN-16),
-contagem ao vivo com opção zerada **desabilitada, não escondida** (RN-17), filtro de área só em
-cidade com ~15+ lugares (RN-18), estado serializado na URL (RN-19) e empty state autoral (`BL-18`).
+**F-05 — Codes + Roulette.** Entrega: codes completo (tema, estilo de mapa, pins, filtro pré-aplicado,
+destaques, type-anywhere no desktop, long-press no mobile) e a Roulette.
 
-O terreno já está preparado: a F-03 deixou **uma única seleção compartilhada** entre mapa e lista, e
-o mapa reenquadra sozinho quando o conjunto de lugares muda — exatamente o que o filtro vai acionar.
+O terreno da F-04 já serve: `preset_filter` dos codes é o mesmo objeto que a URL serializa, então um
+code aplica um filtro reutilizando `filtersFromParams`. E o MapLibre foi escolhido justamente por
+trocar de estilo em runtime (ADR-05) — mas o `BL-29` significa que o efeito visual do tema de mapa
+**não é verificável nesta máquina**.
 
 **Duas filas de revisão têm dado esperando o Michael, não o CLI:** os 28 conflitos marcados em
 `source_guides` (`DP-08`) e as 145 tags `suggested` do import (`DP-09`). Ambas já têm superfície no
@@ -208,8 +229,8 @@ continua com as 145 linhas `suggested` do import: a curadoria ainda não começo
 | F-01 | Schema + dados | ✅ Concluída (S04) | ~1 |
 | F-02 | Admin | ✅ Concluída (S05) | ~1 |
 | F-03 | Público (city gate, mapa, lista, detalhe) | ⚠️ Concluída (S05) — mapa mudo por `BL-29` | ~1 |
-| F-04 | Filtros facetados | ⬜ **Próxima** | ~1 |
-| F-05 | Codes completo + Roulette | ⬜ | ~2 |
+| F-04 | Filtros facetados | ✅ Concluída (S06) | ~0,5 |
+| F-05 | Codes completo + Roulette | ⬜ **Próxima** | ~2 |
 | F-06 | Field reports | ⬜ | ~1,5 |
 
 Total estimado: ~10 sessões — **quatro das sete features fechadas em 5 sessões de CLI**, à frente
@@ -241,7 +262,33 @@ código novo.
 reconstruído das mensagens de commit, que são detalhadas o bastante para isso. Fica o registro de
 que é reconstrução, não relato ao vivo.
 
-**Gate reexecutado nesta máquina:** `npm run build` e `npm run lint` limpos.
+**Depois da reconciliação, a F-04 foi construída na mesma sessão** — ver abaixo.
+
+**F-04 — filtros facetados.** A decisão que define a feature foi tomada antes de escrever código, a
+partir do banco vivo: medindo o vocabulário real dos 58 publicados, seis das sete facetas de tag têm
+**zero** atribuições, `price_band` tem zero, e só 11 lugares carregam alguma tag. Construir o painel
+completo renderizaria cinco seções inteiras de checkbox cinza.
+
+Daí a regra nova: **faceta sem nenhuma opção populada não é renderizada.** Ela não contraria a RN-17,
+que governa a opção dentro da faceta e continua valendo — é a §8 ("degradar em silêncio em vez de
+renderizar controle vazio") aplicada além da área. O efeito é que o painel cresce sozinho conforme a
+curadoria avança, sem deploy, que é o ponto de tags serem dado e não código (RN-13).
+
+**Verificação.** A extensão do Chrome não estava conectada, então não houve inspeção visual. Em vez
+de afirmar sem olhar — o erro que a S05 registrou como aprendizado — a lógica foi verificada por um
+harness descartável que lê o guia **pelo caminho anônimo real** (PostgREST + anon key, RLS em vigor) e
+roda as funções de filtro sobre o resultado: 27 checks, todos passando. Testa RLS e filtro juntos, e
+inclui o caso adversarial da RN-14 (injetar uma atribuição de `Hype trap` e provar que ela não vira
+faceta nem entra no índice, mesmo se o RLS falhasse).
+
+Um dos checks passou inicialmente por cláusula de escape — nenhuma opção zerada existia nos dados, e
+a asserção da RN-17 não chegou a ser exercida. Forçado o caso (`cuisine=bbq` em Austin são dois
+`destination`, então os outros três tiers zeram) e a regra foi verificada de verdade, incluindo que a
+opção selecionada que esvaziou a lista continue clicável — senão o visitante não consegue desfazer.
+
+**O que fica registrado como dívida:** o harness é descartável, não suíte versionada. A próxima
+mudança no filtro não tem rede (`BL-22` atualizado). E as seis facetas dormentes viraram `BL-30` —
+não como bug, mas como o sintoma visível de que a curadoria é o caminho crítico.
 
 ### 2026-08-06 — S05: F-02 (admin) e F-03 (público)
 

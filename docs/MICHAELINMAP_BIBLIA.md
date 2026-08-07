@@ -1,9 +1,9 @@
 # Michaelin Map — Bíblia do Projeto
 
-**Versão:** 2.3 | **Data:** 2026-08-07 | **Autor:** Edu Mello
-**Status do projeto:** 🟢 F-00 a F-03 concluídas — admin funcional e lado público navegável, com 58
-lugares publicados. F-04 (filtros) a iniciar. Uma ressalva: o mapa não desenha geometria nesta
-máquina por causa ambiental (`BL-29`), fora do nosso código
+**Versão:** 2.4 | **Data:** 2026-08-07 | **Autor:** Edu Mello
+**Status do projeto:** 🟢 F-00 a F-04 concluídas — admin funcional, lado público navegável e filtro
+facetado, com 58 lugares publicados. F-05 (Codes + Roulette) a iniciar. Uma ressalva: o mapa não
+desenha geometria nesta máquina por causa ambiental (`BL-29`), fora do nosso código
 
 > Fonte da verdade do Michaelin Map. O CLI lê este arquivo no boot de toda sessão.
 > Deriva do PRD v1.0 produzido no Claude Web (`docs/files/2026-08-05-michaelin-map-prd.md`),
@@ -16,6 +16,7 @@ máquina por causa ambiental (`BL-29`), fora do nosso código
 
 | Versão | Data | O que mudou |
 |---|---|---|
+| 2.4 | 2026-08-07 | F-04 aplicada (S06). **RN-26 nova** (§14.4): faceta sem opção populada não é renderizada |
 | 2.3 | 2026-08-07 | F-02 e F-03 aplicadas (S05), registradas na S06. Fonte de tiles cravada: **OpenFreeMap** (§2, ADR-05). §13 ganha coluna de status. Tela dedicada de fila de revisão cortada (§13). Estado de publicação em §12 |
 | 2.2 | 2026-08-06 | Curadoria passa a ter **uma conta só** (§4, §9.4, §11). Consequência: `updated_by` não identifica pessoa |
 | 2.1 | 2026-08-06 | F-01 aplicada (S04). Correção de contagem: são **4** tiers, não 5 (§9.2). `Town` do CSV vira `area` (§8). ADR-06 emendado: `price_band` não é pré-sugerido |
@@ -373,8 +374,8 @@ Sete features. Ordem de dependência estrita: cada uma só começa com a anterio
 | **F-01** | Schema + dados | Migration do schema corrigido, seed (93 tags, 38 perguntas, 5 tiers), import dos 511 com `cuisine` e `price_band` pré-sugeridos | ~1 | ✅ S04 |
 | **F-02** | Admin | Login, lista com filtros, editor de lugar, atribuição de tags, quick-add mobile, Overview (distribuição de tiers, progresso de curadoria, filas, desatualizados) | ~2 | ✅ S05 |
 | **F-03** | Público | Portão de cidade, mapa MapLibre, lista sincronizada, detalhe do lugar | ~2 | ⚠️ S05 — mapa mudo por `BL-29` |
-| **F-04** | Filtros | Painel facetado, OR dentro / AND entre facetas, contagem ao vivo, opção zerada desabilitada, estado na URL, empty state autoral | ~1 | ⬜ Próxima |
-| **F-05** | Codes + Roulette | Codes completo (tema, estilo de mapa, pins, filtro pré-aplicado, destaques, type-anywhere no desktop, long-press no mobile) + Roulette | ~2 | ⬜ |
+| **F-04** | Filtros | Painel facetado, OR dentro / AND entre facetas, contagem ao vivo, opção zerada desabilitada, estado na URL, empty state autoral | ~1 | ✅ S06 |
+| **F-05** | Codes + Roulette | Codes completo (tema, estilo de mapa, pins, filtro pré-aplicado, destaques, type-anywhere no desktop, long-press no mobile) + Roulette | ~2 | ⬜ Próxima |
 | **F-06** | Field reports | 7 tipos de input, sorteio de 2-3 perguntas, agregado com n≥5, texto livre em fila, rate limit | ~1,5 | ⬜ |
 
 Total estimado: **~10 sessões de CLI.** Quatro features fechadas em 5 sessões.
@@ -428,6 +429,11 @@ Registrados em `docs/BACKLOG.md`, com o motivo de cada corte: Google Places API 
 - **RN-17** — Toda opção de filtro exibe contagem de resultado ao vivo. Opção que retornaria zero fica **desabilitada, não escondida**.
 - **RN-18** — O filtro de área só aparece em cidades com ~15 lugares ou mais.
 - **RN-19** — O estado do filtro serializa na URL. Qualquer visão é compartilhável.
+- **RN-26** — **Faceta sem nenhuma opção populada não é renderizada.** A RN-17 governa a *opção* dentro
+  de uma faceta e continua valendo integralmente; uma faceta inteira sem nada por trás é o caso que a
+  §8 já resolveu para área — degradar em silêncio em vez de renderizar controle vazio. Consequência
+  desejada: o painel cresce sozinho conforme a curadoria avança, sem deploy, porque tags são dado e
+  não código (RN-13). Registrada na F-04, quando seis das sete facetas de tag tinham zero atribuições.
 
 ### 14.5 Codes
 
