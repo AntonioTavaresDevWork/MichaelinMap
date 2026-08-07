@@ -73,6 +73,56 @@ export type PlaceEdit = Partial<
   >
 >
 
+/**
+ * Everything quick-add is allowed to set.
+ *
+ * No tier, no star, no dish, no note: capture is not judgment. A place caught
+ * on the street arrives as a pin with a name, and the verdict comes later in
+ * the editor, once he has actually eaten there.
+ */
+export interface NewPlace {
+  name: string
+  slug: string
+  place_type: Place['place_type']
+  city: string | null
+  area: string | null
+  country: string | null
+  address: string | null
+  lat: number | null
+  lng: number | null
+  visited: boolean
+}
+
+/** First free slug for a name, disambiguating homonyms the way the import did. */
+export function nextFreeSlug(base: string, taken: Set<string>): string {
+  if (!taken.has(base)) return base
+  let n = 2
+  while (taken.has(`${base}-${n}`)) n += 1
+  return `${base}-${n}`
+}
+
+export function useCreatePlace() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (place: NewPlace): Promise<Place> => {
+      const { data: auth } = await supabase.auth.getUser()
+
+      const { data, error } = await supabase
+        .from('places')
+        // status defaults to `unreviewed` (RN-07) and is deliberately not sent:
+        // nothing captured on the street is public until it has been reviewed.
+        .insert({ ...place, source: 'manual', updated_by: auth.user?.id ?? null })
+        .select('*')
+        .single()
+
+      if (error) throw error
+      return data as Place
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: placesKey }),
+  })
+}
+
 export function useUpdatePlace() {
   const queryClient = useQueryClient()
 

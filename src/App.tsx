@@ -10,6 +10,7 @@ import { LoginPage } from '@/pages/admin/login'
 import { PlacesPage } from '@/pages/admin/places'
 import { PlaceEditorPage } from '@/pages/admin/place-editor'
 import { OverviewPage } from '@/pages/admin/overview'
+import { QuickAddPage } from '@/pages/admin/quick-add'
 import { AdminPlaceholder } from '@/pages/admin/placeholder'
 import { NotFoundPage } from '@/pages/not-found'
 
@@ -31,6 +32,7 @@ export default function App() {
             <Route index element={<PlacesPage />} />
             <Route path="place/:slug" element={<PlaceEditorPage />} />
             <Route path="overview" element={<OverviewPage />} />
+            <Route path="new" element={<QuickAddPage />} />
             <Route
               path="review"
               element={
