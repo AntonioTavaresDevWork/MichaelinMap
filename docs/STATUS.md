@@ -382,7 +382,8 @@ duas telas dentro.
 boot desta sessão conferiu com `git fetch` e a `main` local está idêntica à `origin/main` — os três
 commits da S07 estão no GitHub. Corrigido abaixo.
 
-**Commit:** `5aa2b96`.
+**Commit da F-06:** `5aa2b96`. A sessão não terminou aí — seguiu por mais seis commits, registrados
+abaixo; o hash de fechamento da S08 está no fim desta entrada.
 
 **Ainda na S08, depois da F-06: a faceta de rating saiu do filtro público**, por decisão do Edu. Ele
 escolheu o alcance mais estreito dos três que apresentei — só a faceta; os selos `Destination`,
@@ -476,6 +477,12 @@ variáveis está na conversa da sessão; o `.env.local` tem os valores e não va
 Os 8 avisos de `SECURITY DEFINER` são o `BL-28`, já aceito e reavaliado. Apareceu um aviso novo,
 `auth_leaked_password_protection` desligado — toca a senha da conta do curador, não o visitante, e
 resolve-se com um toggle no painel junto do `OP-01`.
+
+**A S08 fechou em `aa3cf73`**, e não em `5aa2b96` como esta entrada dizia — aquele é o commit da
+F-06, e depois dele vieram seis: `0868505` (registro), `c899458` (faceta de rating), `7f1dd41`
+(`BL-29` rebaixado), `aa6e362` (RN-31), `08791bb` (28 cuisines) e `aa3cf73` (preparo da Vercel).
+Todos na `main` e no GitHub, conferido com `fetch` na S09. O conteúdo dos seis sempre esteve narrado
+aqui; era só o hash que apontava para o meio da sessão.
 
 ### 2026-08-07 — S07: F-05 — Codes e Roulette
 
