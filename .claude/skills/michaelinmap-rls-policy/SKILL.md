@@ -1,36 +1,36 @@
 ---
 name: michaelinmap-rls-policy
-description: Padrões de RLS policy no Michaelin Map. Modelo curator allowlist via is_curator(), sem multi-tenant e sem capabilities. Verificação obrigatória com JWT simulado nos dois sentidos. Use ao escrever, revisar ou refatorar Row Level Security policies em qualquer tabela do projeto.
+description: RLS policy patterns in Michaelin Map. The curator allowlist model through is_curator(), with no multi-tenancy and no capabilities. Mandatory verification with simulated JWTs in both directions. Use when writing, reviewing or refactoring Row Level Security policies on any table in the project.
 ---
 
-# Padrão de RLS Policy — Michaelin Map
+# RLS Policy Pattern — Michaelin Map
 
-> Exemplos são as policies **reais** aplicadas em `20260806120000_f01_schema_rls_rpc.sql`.
-> Validar contra o banco vivo via MCP antes de escrever policy nova.
+> The examples are the **real** policies applied in `20260806120000_f01_schema_rls_rpc.sql`.
+> Validate against the live database through MCP before writing a new policy.
 
-## Modelo de autorização: curator allowlist
+## Authorization model: curator allowlist
 
-**Não é tenant-scoped e não é capability-RBAC** (ADR-01). Não existe `company_id`, não existe
-`has_capacidade()`, não existe `is_superadmin()`. Há um guia, um curador e visitantes anônimos.
+**Not tenant-scoped and not capability-RBAC** (ADR-01). There is no `company_id`, no
+`has_capacidade()`, no `is_superadmin()`. There is one guide, one curator and anonymous visitors.
 
-O predicado de escrita é sempre o mesmo:
+The write predicate is always the same:
 
 ```sql
-CREATE POLICY <tabela>_curator_all ON public.<tabela>
+CREATE POLICY <table>_curator_all ON public.<table>
   FOR ALL TO authenticated
   USING (public.is_curator())
   WITH CHECK (public.is_curator());
 ```
 
-A leitura pública varia por tabela e é o que exige pensamento.
+Public reading varies per table, and that is the part that demands thought.
 
 ```sql
-CREATE POLICY <tabela>_public_select ON public.<tabela>
+CREATE POLICY <table>_public_select ON public.<table>
   FOR SELECT TO anon, authenticated
-  USING (<predicado de publicação>);
+  USING (<publication predicate>);
 ```
 
-## `is_curator()` — por que é SECURITY DEFINER
+## `is_curator()` — why it is SECURITY DEFINER
 
 ```sql
 CREATE OR REPLACE FUNCTION public.is_curator()
@@ -42,27 +42,27 @@ AS $$
 $$;
 ```
 
-`curators` não tem policy de SELECT público. Uma função `SECURITY INVOKER` lendo essa tabela de
-dentro de uma policy enxergaria **zero linhas sempre** — e todo mundo seria negado. Direitos de
-definer contornam o RLS nessa única consulta, que é exatamente o propósito.
+`curators` has no public SELECT policy. A `SECURITY INVOKER` function reading that table from inside
+a policy would see **zero rows, always** — and everyone would be denied. Definer rights bypass RLS
+for that single query, which is exactly the purpose.
 
-`SET search_path` é obrigatório: sem ele, um schema malicioso no `search_path` do caller pode
-sequestrar a função.
+`SET search_path` is mandatory: without it, a malicious schema on the caller's `search_path` can
+hijack the function.
 
-## Mapa de leitura pública (Bíblia §11)
+## Public reading map (bible §11)
 
-| Tabela | SELECT público | Observação |
+| Table | Public SELECT | Note |
 |---|---|---|
-| `places` | `status = 'published'` | RN-07 — nada nasce visível |
+| `places` | `status = 'published'` | RN-07 — nothing is born visible |
 | `tiers` | `active = true` | |
-| `tags` | `active = true AND admin_only = false` | RN-14 — `Hype trap` some do público |
-| `place_tags` | duplo `EXISTS`: place publicado **E** tag ativa não-admin | vazava id de lugar não publicado |
-| `codes` | **nenhum** | RN-20 — só via `rpc_redeem_code()` |
+| `tags` | `active = true AND admin_only = false` | RN-14 — `Hype trap` disappears from the public |
+| `place_tags` | double `EXISTS`: published place **AND** active non-admin tag | it used to leak the id of an unpublished place |
+| `codes` | **none** | RN-20 — only through `rpc_redeem_code()` |
 | `questions` | `active = true` | |
-| `field_reports` | `status = 'published'` | INSERT só via RPC |
-| `curators` | **nenhum** | quem está na allowlist não é dado público |
+| `field_reports` | `status = 'published'` | INSERT only through the RPC |
+| `curators` | **none** | who is on the allowlist is not public data |
 
-O caso de `place_tags` merece atenção — é o padrão para toda tabela de junção:
+The `place_tags` case deserves attention — it is the pattern for every junction table:
 
 ```sql
 USING (
@@ -74,73 +74,73 @@ USING (
 )
 ```
 
-Um `USING (true)` numa tabela de junção vaza a **existência** das linhas dos dois lados, mesmo
-que as tabelas-pai estejam protegidas.
+A `USING (true)` on a junction table leaks the **existence** of the rows on both sides, even when the
+parent tables are protected.
 
-## Grants de tabela são a segunda tranca
+## Table grants are the second lock
 
-RLS é o portão real, mas o Supabase concede acesso amplo ao `anon` por default. Estreitar:
+RLS is the real gate, but Supabase grants broad access to `anon` by default. Narrow it:
 
 ```sql
 REVOKE ALL ON ALL TABLES IN SCHEMA public FROM anon;
 GRANT SELECT ON public.places, public.tiers, … TO anon;
 ```
 
-⚠️ **Este bloco tem de ser o último da migration.** Default privileges são aplicadas no momento
-da criação do objeto — revogar antes de criar a view deixa a view com tudo liberado. Foi assim
-que a primeira aplicação da F-01 falhou. Detalhe na skill `michaelinmap-migration`.
+⚠️ **This block has to be the last one in the migration.** Default privileges are applied at the
+moment an object is created — revoking before creating the view leaves the view fully exposed. That
+is how F-01's first apply failed. Details in the `michaelinmap-migration` skill.
 
-## Verificação obrigatória — JWT simulado, nos DOIS sentidos
+## Mandatory verification — simulated JWT, in BOTH directions
 
-Não aceite policy sem este teste. Inspeção visual não pega furo de autorização; foi testando o
-lado negativo que se comprovou o fechamento do `BL-03`.
+Do not accept a policy without this test. Visual inspection does not catch an authorization hole; it
+was by testing the negative side that `BL-03` was proven closed.
 
 ```sql
 BEGIN;
--- lado positivo: o curador
+-- positive side: the curator
 SELECT set_config('request.jwt.claims',
-  json_build_object('sub', (SELECT id FROM auth.users WHERE email = '<curador>'),
+  json_build_object('sub', (SELECT id FROM auth.users WHERE email = '<curator>'),
                     'role','authenticated')::text, true);
 SET LOCAL ROLE authenticated;
 SELECT public.is_curator(), (SELECT count(*) FROM public.places);
 ROLLBACK;
 
 BEGIN;
--- lado negativo: autenticado FORA da allowlist
+-- negative side: authenticated but OUTSIDE the allowlist
 SELECT set_config('request.jwt.claims',
   '{"sub":"00000000-0000-0000-0000-000000000001","role":"authenticated"}', true);
 SET LOCAL ROLE authenticated;
 SELECT public.is_curator(), (SELECT count(*) FROM public.places);
-WITH t AS (UPDATE public.places SET website = 'x' WHERE slug = '<algum>' RETURNING 1)
-SELECT count(*) AS linhas_escritas FROM t;   -- tem de ser 0
+WITH t AS (UPDATE public.places SET website = 'x' WHERE slug = '<some slug>' RETURNING 1)
+SELECT count(*) AS rows_written FROM t;   -- must be 0
 ROLLBACK;
 
 BEGIN;
--- lado anônimo
+-- anonymous side
 SET LOCAL ROLE anon;
 SELECT (SELECT count(*) FROM public.places), (SELECT count(*) FROM public.tags);
 ROLLBACK;
 ```
 
-Resultado esperado na F-01: curador vê 511 lugares e escreve; autenticado-fora-da-lista e anon
-veem 0 lugares, 93 tags (não 94) e escrevem 0 linhas.
+Expected result as of F-01: the curator sees 511 places and writes; authenticated-outside-the-list
+and anon see 0 places, 93 tags (not 94) and write 0 rows.
 
-> **Escrever sempre em coluna fora da camada de julgamento** no teste (`website` serve).
-> Nunca usar `tier`, `starred`, `the_dish`, `curator_note`, `story` ou `last_visited`, mesmo
-> dentro de transação revertida.
+> **Always write to a column outside the judgment layer** in the test (`website` works fine).
+> Never use `tier`, `starred`, `the_dish`, `curator_note`, `story` or `last_visited`, even inside a
+> rolled-back transaction.
 
-## Regras invioláveis
+## Inviolable rules
 
-- RLS habilitado em **todas** as tabelas. GATE inline que falhe se alguma tabela tiver RLS ligado e zero policies
-- Escrita passa por `is_curator()`. **Nunca** `auth.role() = 'authenticated'` — com signup aberto, isso dá escrita total a um estranho (era o furo do schema original)
-- `codes` nunca ganha SELECT público (RN-20). `field_reports` nunca ganha policy de INSERT (RN-23)
-- Toda função `SECURITY DEFINER` tem `SET search_path`
-- GRANT/REVOKE só em migration, nunca via dashboard
-- Acesso anônimo de **escrita** só via RPC `SECURITY DEFINER`, com o status derivado no servidor
-- Views que leem tabela sob RLS: `WITH (security_invoker = on)`, senão a view contorna o RLS
+- RLS enabled on **every** table. An inline gate that fails if any table has RLS on and zero policies
+- Writing goes through `is_curator()`. **Never** `auth.role() = 'authenticated'` — with signup open, that grants full write access to a stranger (it was the original schema's hole)
+- `codes` never gets a public SELECT (RN-20). `field_reports` never gets an INSERT policy (RN-23)
+- Every `SECURITY DEFINER` function has `SET search_path`
+- GRANT/REVOKE only in a migration, never through the dashboard
+- Anonymous **write** access only through a `SECURITY DEFINER` RPC, with the status derived on the server
+- Views reading a table under RLS: `WITH (security_invoker = on)`, otherwise the view bypasses RLS
 
-## Referências
+## References
 
-- Policies reais: `supabase/migrations/20260806120000_f01_schema_rls_rpc.sql` BLOCK 05
-- Grants: mesmo arquivo, BLOCK 07 · GATEs de autorização: BLOCK 09 (G2 a G7)
-- Modelo declarado: Bíblia §11
+- The real policies: `supabase/migrations/20260806120000_f01_schema_rls_rpc.sql` BLOCK 05
+- Grants: same file, BLOCK 07 · Authorization gates: BLOCK 09 (G2 through G7)
+- The declared model: bible §11

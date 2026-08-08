@@ -1,46 +1,46 @@
 ---
 name: michaelinmap-migration
-description: Convenções de migration SQL no Michaelin Map. BEGIN/COMMIT explícito, blocos numerados, comentários WHY, GATEs inline de validação, bloco de GRANT sempre por último, saneamento manual de schema_migrations após apply via MCP, verificação por checksum em import de massa. Use ao escrever ou aplicar qualquer migration Supabase no projeto.
+description: SQL migration conventions in Michaelin Map. Explicit BEGIN/COMMIT, numbered blocks, WHY comments, inline validation gates, the GRANT block always last, manual sanitizing of schema_migrations after applying through MCP, checksum verification for bulk imports. Use when writing or applying any Supabase migration in the project.
 ---
 
-# Padrão de Migration — Michaelin Map
+# Migration Pattern — Michaelin Map
 
-> Referência local aprovada: `supabase/migrations/20260806120000_f01_schema_rls_rpc.sql`
-> (schema + RLS + RPCs, 12 GATEs) e `20260806120100_f01_seed_and_import.sql` (seed + import
-> de 511 linhas, 18 GATEs). Comentários de SQL em **inglês** (ADR-02).
+> Approved local reference: `supabase/migrations/20260806120000_f01_schema_rls_rpc.sql`
+> (schema + RLS + RPCs, 12 gates) and `20260806120100_f01_seed_and_import.sql` (seed + import of
+> 511 rows, 18 gates). SQL comments in **English** (ADR-02).
 
-## Estrutura do arquivo
+## File structure
 
 ```
-supabase/migrations/YYYYMMDDNNNNNN_<descricao>.sql
+supabase/migrations/YYYYMMDDNNNNNN_<description>.sql
 
 BEGIN;
 
 -- ====================================================================
--- F-<NN> — <Título>
+-- F-<NN> — <Title>
 --
 -- Version: 1.0
--- Requires: <migration anterior, se houver>
+-- Requires: <the previous migration, if any>
 -- Backlog items closed here: BL-XX..BL-YY
 -- ====================================================================
 
 -- BLOCK 01 — Tables
 -- BLOCK 02 — Indexes
 -- ...
--- BLOCK NN-1 — Table grants        <- SEMPRE o penúltimo
--- BLOCK NN   — Validation gates    <- SEMPRE o último
+-- BLOCK NN-1 — Table grants        <- ALWAYS second to last
+-- BLOCK NN   — Validation gates    <- ALWAYS last
 
 COMMIT;
 ```
 
-## Regras invioláveis
+## Inviolable rules
 
-**BEGIN/COMMIT explícitos.** Migration atômica: um GATE que falha derruba tudo e o banco fica
-intacto. Isso já pagou — ver "O caso do G6" abaixo.
+**Explicit BEGIN/COMMIT.** An atomic migration: a failing gate brings everything down and the
+database stays intact. This has already paid for itself — see "The G6 case" below.
 
-**Blocos numerados**, cada um com um cabeçalho dizendo o que faz.
+**Numbered blocks**, each with a header saying what it does.
 
-**Comentários WHY, não WHAT.** Sintaxe é trivial, intenção não:
+**WHY comments, not WHAT.** Syntax is trivial, intent is not:
 
 ```sql
 -- WHY ON DELETE RESTRICT: dropping a tier row would silently erase the judgment
@@ -48,7 +48,7 @@ intacto. Isso já pagou — ver "O caso do G6" abaixo.
 tier text REFERENCES public.tiers(slug) ON UPDATE CASCADE ON DELETE RESTRICT,
 ```
 
-**Sem hardcode de UUID.** Resolver por subquery na chave natural:
+**No hardcoded UUIDs.** Resolve through a subquery on the natural key:
 
 ```sql
 INSERT INTO public.curators (user_id, name)
@@ -56,33 +56,33 @@ SELECT id, 'Michael' FROM auth.users WHERE email = 'mikemyday@mikecofone.com'
 ON CONFLICT (user_id) DO NOTHING;
 ```
 
-**Idempotência por chave natural.** Todo seed usa `ON CONFLICT … DO NOTHING` sobre uma UNIQUE
-real. Se a tabela não tem chave natural, a migration **cria uma** — foi o motivo de
-`questions.prompt` ganhar UNIQUE (BL-05).
+**Idempotency through a natural key.** Every seed uses `ON CONFLICT … DO NOTHING` over a real
+UNIQUE. If the table has no natural key, the migration **creates one** — that is why
+`questions.prompt` gained a UNIQUE (BL-05).
 
-**Enum novo:** Postgres não permite usar valor novo de enum na mesma transação do `ADD VALUE`.
-Separar em migrations distintas. (Este projeto usa CHECK constraint em vez de enum — mais fácil
-de evoluir.)
+**A new enum value:** Postgres does not allow using a new enum value in the same transaction as the
+`ADD VALUE`. Split into separate migrations. (This project uses CHECK constraints instead of enums —
+easier to evolve.)
 
-**SAVEPOINT/ROLLBACK TO não é gramática válida dentro de `DO $$ … $$`.** Smoke inline tem de ser
-read-only. Para validar mutação, ver "Smoke que precisa reverter" abaixo.
+**SAVEPOINT/ROLLBACK TO is not valid grammar inside `DO $$ … $$`.** An inline smoke test has to be
+read-only. To validate a mutation, see "A smoke test that has to roll back" below.
 
-## O bloco de GRANT é sempre o último — lição que custou um apply
+## The GRANT block is always last — a lesson that cost an apply
 
-**Default privileges do Supabase são aplicadas no momento da criação do objeto.** Um
-`REVOKE ALL … FROM anon` colocado antes de um `CREATE VIEW` não protege a view: ela nasce depois,
-herdando GRANT completo.
+**Supabase default privileges are applied at the moment an object is created.** A
+`REVOKE ALL … FROM anon` placed before a `CREATE VIEW` does not protect that view: it is born
+afterwards, inheriting a full GRANT.
 
-Foi exatamente o que reprovou a primeira aplicação da F-01. O GATE de privilégios acusou
-`anon holds 4 write grant(s) in public` — INSERT, UPDATE, DELETE e TRUNCATE na view
-`field_report_aggregates`, criada dois blocos depois do REVOKE. A migration inteira voltou
-atrás, os blocos foram trocados de ordem e a segunda tentativa passou.
+That is exactly what failed F-01's first apply. The privilege gate reported
+`anon holds 4 write grant(s) in public` — INSERT, UPDATE, DELETE and TRUNCATE on the
+`field_report_aggregates` view, created two blocks after the REVOKE. The whole migration rolled
+back, the blocks were reordered, and the second attempt passed.
 
-**Regra: criar todos os objetos primeiro; revogar e conceder no penúltimo bloco.**
+**Rule: create every object first; revoke and grant in the second-to-last block.**
 
-## GATEs de validação inline
+## Inline validation gates
 
-5-20 GATEs antes do COMMIT. Falha dispara EXCEPTION → rollback total → crash visível.
+5-20 gates before the COMMIT. A failure raises an EXCEPTION → total rollback → a visible crash.
 
 ```sql
 DO $GATES$
@@ -96,92 +96,92 @@ BEGIN
 END $GATES$;
 ```
 
-**GATEs que valem em qualquer migration que mexa em RLS ou grants** — estes pegam o que revisão
-visual não pega:
+**Gates worth having in any migration touching RLS or grants** — these catch what a visual review
+does not:
 
 ```sql
--- privilégio de escrita sobrando para anon
+-- leftover write privileges for anon
 SELECT count(*) INTO v_count FROM information_schema.role_table_grants
 WHERE grantee = 'anon' AND table_schema = 'public'
   AND privilege_type IN ('INSERT','UPDATE','DELETE','TRUNCATE');
 
--- tabela com RLS ligado e zero policies (trancada por acidente)
+-- a table with RLS on and zero policies (locked by accident)
 SELECT count(*) INTO v_count FROM pg_class c
 JOIN pg_namespace n ON n.oid = c.relnamespace
 WHERE n.nspname = 'public' AND c.relrowsecurity = true
   AND NOT EXISTS (SELECT 1 FROM pg_policy p WHERE p.polrelid = c.oid);
 
--- SECURITY DEFINER sem search_path fixo
+-- SECURITY DEFINER without a fixed search_path
 SELECT count(*) INTO v_count FROM pg_proc p
 JOIN pg_namespace n ON n.oid = p.pronamespace
 WHERE n.nspname = 'public' AND p.prosecdef = true
   AND (p.proconfig IS NULL OR NOT EXISTS (
     SELECT 1 FROM unnest(p.proconfig) cfg WHERE cfg LIKE 'search_path=%'));
 
--- view que lê tabela sob RLS precisa de security_invoker
+-- a view reading a table under RLS needs security_invoker
 SELECT (c.reloptions @> ARRAY['security_invoker=on']) INTO v_bool
 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
 WHERE n.nspname = 'public' AND c.relname = '<view>';
 ```
 
-E um GATE de integridade do julgamento, em qualquer migration que toque `places`:
+Plus a judgment-integrity gate, in any migration touching `places`:
 
 ```sql
 SELECT count(*) INTO v_count FROM public.places
 WHERE the_dish IS NOT NULL OR curator_note IS NOT NULL OR story IS NOT NULL
    OR last_visited IS NOT NULL OR price_band IS NOT NULL;
--- numa migration de import, tem de ser 0
+-- in an import migration, this has to be 0
 ```
 
-## Aplicação via Supabase MCP
+## Applying through the Supabase MCP server
 
-`mcp__supabase__apply_migration` **reescreve o `version`** com o timestamp dele. Saneamento
-manual obrigatório depois:
+`mcp__supabase__apply_migration` **rewrites the `version`** with its own timestamp. Manual
+sanitizing afterwards is mandatory:
 
 ```sql
-DELETE FROM supabase_migrations.schema_migrations WHERE version = '<TIMESTAMP_REESCRITO>';
+DELETE FROM supabase_migrations.schema_migrations WHERE version = '<REWRITTEN_TIMESTAMP>';
 INSERT INTO supabase_migrations.schema_migrations (version, name, statements)
-VALUES ('<TIMESTAMP_DO_ARQUIVO>', '<nome_sem_extensao>',
-        ARRAY['-- see supabase/migrations/<arquivo>.sql']);
+VALUES ('<TIMESTAMP_FROM_THE_FILENAME>', '<name_without_extension>',
+        ARRAY['-- see supabase/migrations/<file>.sql']);
 ```
 
-Validar depois: entrada nova existe, divergente sumiu, `version` cai cronologicamente entre
-predecessor e sucessor.
+Validate afterwards: the new entry exists, the divergent one is gone, and `version` falls
+chronologically between its predecessor and successor.
 
-**Quem aplica: sempre o orquestrador (CLI#1).** Executor escreve, nunca aplica.
+**Who applies: always the orchestrator (CLI#1).** The executor writes, never applies.
 
-### Limite de payload
+### Payload limit
 
-`apply_migration` **não engole arquivo grande** — 155 kB (511 linhas de INSERT) não passou.
-Opções, em ordem de preferência:
+`apply_migration` **will not swallow a large file** — 155 kB (511 INSERT rows) did not go through.
+Options, in order of preference:
 
-1. Quebrar em migrations menores, se o conteúdo permitir
-2. SQL Editor do painel: cola o arquivo inteiro, BEGIN/COMMIT funciona nativamente
-3. `execute_sql` em blocos, com o arquivo completo versionado no repo como artefato de verdade
-   e `schema_migrations` preenchido à mão
+1. Split into smaller migrations, if the content allows it
+2. The dashboard SQL Editor: paste the whole file, BEGIN/COMMIT works natively
+3. `execute_sql` in blocks, with the complete file versioned in the repo as the real artifact and
+   `schema_migrations` filled in by hand
 
-**Se usar 2 ou 3 para carga de massa, verificação por checksum contra a fonte é obrigatória.**
-Transcrição em blocos corrompe em silêncio — um endereço trocado não dispara erro nenhum.
+**If you use option 2 or 3 for a bulk load, checksum verification against the source is mandatory.**
+Transcription in blocks corrupts silently — a swapped address raises no error at all.
 
 ```sql
--- no banco: hash por linha, agregado em ordem de hash (independe de collation)
-WITH r AS (SELECT md5(col1||'|'||coalesce(col2,'')||'|'||…) AS h FROM public.<tabela>)
+-- in the database: hash per row, aggregated in hash order (collation-independent)
+WITH r AS (SELECT md5(col1||'|'||coalesce(col2,'')||'|'||…) AS h FROM public.<table>)
 SELECT md5(string_agg(h, '' ORDER BY h)) FROM r;
 ```
 
-O mesmo cálculo roda num script local sobre a fonte e os dois md5 têm de bater. Detalhes:
+The same computation runs in a local script over the source and the two md5s have to match. Details:
 
-- **Ordenar por hash, não por chave textual.** `ORDER BY` no Postgres usa a collation do banco;
-  `sort()` do JS usa code point. Ordens diferentes → hashes diferentes com dados idênticos
-- **`numeric(p,s)::text` sempre traz `s` casas.** No script, `Number(v).toFixed(s)`
-- Se der divergência, comparar por **grupo de campos** para localizar antes de suspeitar do dado.
-  Na F-01 a primeira divergência era bug do script de verificação, não do banco
+- **Order by the hash, not by a text key.** `ORDER BY` in Postgres uses the database's collation;
+  JS `sort()` uses code points. Different orders → different hashes with identical data
+- **`numeric(p,s)::text` always brings `s` decimal places.** In the script, `Number(v).toFixed(s)`
+- If there is a divergence, compare **by group of fields** to localize it before suspecting the data.
+  In F-01 the first divergence was a bug in the verification script, not in the database
 
-## Smoke que precisa reverter
+## A smoke test that has to roll back
 
-`execute_sql` do MCP devolve **só o resultado do último statement**. Para um smoke que muta e
-precisa voltar atrás, um `DO` block que termina em `RAISE EXCEPTION` com os resultados na
-mensagem resolve as duas coisas: devolve tudo e reverte.
+The MCP's `execute_sql` returns **only the result of the last statement**. For a smoke test that
+mutates and needs to roll back, a `DO` block ending in `RAISE EXCEPTION` with the results in the
+message solves both problems at once: it returns everything and it reverts.
 
 ```sql
 DO $SMOKE$
@@ -195,24 +195,24 @@ BEGIN
 END $SMOKE$;
 ```
 
-O erro que volta **é** o relatório, e nada persiste.
+The error that comes back **is** the report, and nothing persists.
 
 ## Rollback
 
-Toda migration tem arquivo em `supabase/rollbacks/` (**não** em `migrations/`, senão
-`supabase db push` aplica). Nome: `<timestamp+1>_<descricao>_rollback.sql`.
+Every migration has a file in `supabase/rollbacks/` (**not** in `migrations/`, or `supabase db push`
+will apply it). Name: `<timestamp+1>_<description>_rollback.sql`.
 
-Rollback de dados que possam ter sido curados leva aviso e consulta de verificação no topo:
+A rollback of data that may have been curated carries a warning and a verification query at the top:
 
 ```sql
--- ⚠️ Só seguro antes de o curador ter trabalhado. Verificar primeiro:
+-- ⚠️ Only safe before the curator has worked. Check first:
 --   SELECT count(*) FROM place_tags WHERE source = 'curator';
 --   SELECT count(*) FROM places WHERE the_dish IS NOT NULL OR curator_note IS NOT NULL;
-DELETE FROM public.place_tags WHERE source = 'suggested';   -- só palpite de máquina
+DELETE FROM public.place_tags WHERE source = 'suggested';   -- machine guesses only
 ```
 
-## Antes de escrever qualquer SQL
+## Before writing any SQL
 
-**Schema vivo primeiro.** `list_tables` + `list_migrations` via MCP. Convenção não substitui
-introspecção — coluna "óbvia" pode não existir. Este projeto usa `status`, não `deleted_at`
-(ADR-03), e não tem `company_id` (ADR-01).
+**Live schema first.** `list_tables` + `list_migrations` through MCP. Convention is not a substitute
+for introspection — an "obvious" column may not exist. This project uses `status`, not `deleted_at`
+(ADR-03), and has no `company_id` (ADR-01).

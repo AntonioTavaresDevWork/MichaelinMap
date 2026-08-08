@@ -1,99 +1,99 @@
 ---
 name: michaelinmap-naming
-description: Convenções de nomes no Michaelin Map. DB snake_case, frontend camelCase, componentes PascalCase, arquivos kebab-case, formato en-US de número/data/moeda. Use ao nomear tabela, coluna, RPC, componente, hook, arquivo, ou ao formatar valores numéricos/datas/moeda na UI.
+description: Naming conventions in Michaelin Map. DB snake_case, frontend camelCase, PascalCase components, kebab-case files, en-US number/date/currency formatting. Use when naming a table, column, RPC, component, hook or file, or when formatting numeric/date/currency values in the UI.
 ---
 
-# Convenções de Nomes — Michaelin Map
+# Naming Conventions — Michaelin Map
 
-> Exemplos são objetos **reais** deste banco. Se um nome citado aqui não existir mais,
-> valide contra o schema vivo via MCP antes de usar.
+> The examples are **real** objects from this database. If a name cited here no longer exists,
+> validate against the live schema through MCP before using it.
 
-## Tabela resumo
+## Summary table
 
-| Camada | Convenção | Exemplos reais |
+| Layer | Convention | Real examples |
 |---|---|---|
-| Tabelas DB | `snake_case` (plural) | `places`, `tags`, `place_tags`, `field_reports`, `curators` |
-| Colunas DB | `snake_case` | `place_type`, `apple_id`, `source_guides`, `admin_only`, `requires_review` |
-| Funções/RPCs SQL | `snake_case`, prefixo `rpc_` quando exposta ao client | `rpc_redeem_code`, `rpc_submit_field_report`, `is_curator`, `touch_updated_at` |
-| Variáveis frontend TS | `camelCase` | `placeId`, `selectedTags`, `cityGate` |
-| Componentes React | `PascalCase` | `PlaceCard`, `FilterPanel`, `ProtectedRoute` |
-| Hooks | `camelCase` com prefixo `use` | `useSession`, `usePlaces`, `useFilterState` |
-| Arquivos (todos) | `kebab-case` | `place-card.tsx`, `use-session.ts`, `admin-layout.tsx` |
-| Tipos TS | `PascalCase` | `Place`, `Tag`, `FieldReport`, `PlaceType` |
-| Constantes | `UPPER_SNAKE_CASE` | `SEEDED_TIER_SLUGS` |
+| DB tables | `snake_case` (plural) | `places`, `tags`, `place_tags`, `field_reports`, `curators` |
+| DB columns | `snake_case` | `place_type`, `apple_id`, `source_guides`, `admin_only`, `requires_review` |
+| SQL functions/RPCs | `snake_case`, `rpc_` prefix when exposed to the client | `rpc_redeem_code`, `rpc_submit_field_report`, `is_curator`, `touch_updated_at` |
+| Frontend TS variables | `camelCase` | `placeId`, `selectedTags`, `cityGate` |
+| React components | `PascalCase` | `PlaceCard`, `FilterPanel`, `ProtectedRoute` |
+| Hooks | `camelCase` with a `use` prefix | `useSession`, `usePlaces`, `useFilterState` |
+| Files (all of them) | `kebab-case` | `place-card.tsx`, `use-session.ts`, `admin-layout.tsx` |
+| TS types | `PascalCase` | `Place`, `Tag`, `FieldReport`, `PlaceType` |
+| Constants | `UPPER_SNAKE_CASE` | `SEEDED_TIER_SLUGS` |
 
-> ⚠️ Arquivo de componente é **kebab-case** (`place-card.tsx`), NÃO `PlaceCard.tsx`. Erro comum.
+> ⚠️ A component file is **kebab-case** (`place-card.tsx`), NOT `PlaceCard.tsx`. Common mistake.
 
-## Conversão DB ↔ Frontend
+## DB ↔ frontend conversion
 
-O cliente Supabase JS **não** converte snake_case → camelCase. A conversão, quando existir,
-acontece **na fronteira de acesso a dados** — no hook — e não espalhada pelos componentes.
+The Supabase JS client does **not** convert snake_case → camelCase. The conversion, where it exists,
+happens **at the data-access boundary** — in the hook — and is not scattered through the components.
 
-**Regra prática deste projeto:** tipo populado por `select('*')` direto, sem mapeamento
-explícito, é nomeado em `snake_case`, igual ao banco. É o que `src/types/index.ts` faz:
+**This project's practical rule:** a type populated by a direct `select('*')`, with no explicit
+mapping, is named in `snake_case`, exactly like the database. That is what `src/types/index.ts` does:
 
 ```typescript
 export interface Place {
-  place_type: PlaceType   // não placeType — vem cru do select('*')
+  place_type: PlaceType   // not placeType — it comes raw from select('*')
   apple_id: string | null
   source_guides: string[] | null
 }
 ```
 
-Declarar `placeType` quando o banco devolve `place_type` resulta em `undefined` em runtime,
-silenciosamente.
+Declaring `placeType` when the database returns `place_type` results in `undefined` at runtime,
+silently.
 
-## Formato en-US — números, datas, moeda
+## en-US format — numbers, dates, currency
 
-**ADR-02: o produto é em inglês e usa formato en-US.** O guia é de Austin e o público é
-anglófono. Nada de formato brasileiro na UI.
+**ADR-02: the product is in English and uses en-US formatting.** The guide covers Austin and the
+audience is English-speaking. No Brazilian formatting in the UI.
 
-| Tipo | Formato | Exemplo |
+| Type | Format | Example |
 |---|---|---|
-| Número | Vírgula milhar, ponto decimal | `1,234,567.89` |
-| Data UI | `MM/DD/YYYY` | `08/06/2026` |
-| Data + hora UI | `MM/DD/YYYY h:mm a` | `08/06/2026 2:30 PM` |
-| Data DB | ISO 8601 TIMESTAMPTZ | `2026-08-06T17:30:00Z` |
-| Moeda | `$` prefixo, 2 decimais | `$1,234.56` |
-| Faixa de preço | `$` a `$$$$` | `$$` |
+| Number | Comma thousands, period decimal | `1,234,567.89` |
+| Date in UI | `MM/DD/YYYY` | `08/06/2026` |
+| Date + time in UI | `MM/DD/YYYY h:mm a` | `08/06/2026 2:30 PM` |
+| Date in DB | ISO 8601 TIMESTAMPTZ | `2026-08-06T17:30:00Z` |
+| Currency | `$` prefix, 2 decimals | `$1,234.56` |
+| Price band | `$` to `$$$$` | `$$` |
 
-Use `Intl.NumberFormat('en-US', …)` e `Intl.DateTimeFormat('en-US', …)`. Os formatadores já
-existem em `src/lib/utils.ts` — usar os de lá antes de escrever outro.
+Use `Intl.NumberFormat('en-US', …)` and `Intl.DateTimeFormat('en-US', …)`. The formatters already
+exist in `src/lib/utils.ts` — use those before writing another one.
 
-> **Idioma por superfície:** UI, tags, perguntas, mensagens de erro e copy em **inglês**.
-> Conversa com o Edu, Bíblia, STATUS e BACKLOG em **PT-BR**. Comentário de código e nome de
-> variável em **inglês**.
+> **Language by surface:** UI, tags, questions, error messages and copy in **English**. Everything
+> written into this repository — bible, STATUS, BACKLOG, code comments, variable names — in
+> **English** too, since the ADR-02 amendment in S09. The conversation with Edu stays in PT-BR.
 
-## Prefixos semânticos
+## Semantic prefixes
 
-| Prefixo | Uso | Exemplo neste projeto |
+| Prefix | Use | Example in this project |
 |---|---|---|
-| `rpc_` | Função SQL exposta ao client via `supabase.rpc()` | `rpc_redeem_code` |
-| `is_` | Função booleana | `is_curator` |
-| `touch_` | Trigger function que carimba timestamp | `touch_updated_at` |
-| `use` | Hook React | `useSession` |
+| `rpc_` | SQL function exposed to the client through `supabase.rpc()` | `rpc_redeem_code` |
+| `is_` | Boolean function | `is_curator` |
+| `touch_` | Trigger function that stamps a timestamp | `touch_updated_at` |
+| `use` | React hook | `useSession` |
 
-Prefixos do template Wise* que **não se aplicam aqui**: `has_` (não há capabilities),
-`get_user_company_id` e afins (não há multi-tenant — ADR-01).
+Wise* template prefixes that **do not apply here**: `has_` (there are no capabilities),
+`get_user_company_id` and the like (there is no multi-tenancy — ADR-01).
 
-## Vocabulário do domínio — usar os termos certos
+## Domain vocabulary — use the right terms
 
-Confundir estes termos gera bug e confunde o Michael:
+Confusing these terms produces bugs and confuses Michael:
 
-| Termo | O que é | O que NÃO é |
+| Term | What it is | What it is NOT |
 |---|---|---|
-| **tier** | `destination`, `experience`, `fair`, `cool`. Dado editável, não constante | Não é a estrela |
-| **starred** | Honraria que **cruza** os tiers, 22 de 511 | Não é um tier a mais (RN-03) |
-| **visited** | `false` = Try List | Não é `status` |
-| **status** | `unreviewed \| published \| closed \| hidden` | Não é soft delete por `deleted_at` (ADR-03) |
-| **facet** | Agrupamento de tags: `cuisine`, `vibe`, `character`… | Não é a tag |
-| **area** | Município ou bairro dentro da cidade-portão | Não é a cidade |
+| **tier** | `destination`, `experience`, `fair`, `cool`. Editable data, not a constant | Not the star |
+| **starred** | An honor that **crosses** the tiers, 22 of 511 | Not one more tier (RN-03) |
+| **visited** | `false` = Try List | Not `status` |
+| **status** | `unreviewed \| published \| closed \| hidden` | Not a soft delete through `deleted_at` (ADR-03) |
+| **facet** | A grouping of tags: `cuisine`, `vibe`, `character`… | Not the tag |
+| **area** | The municipality or neighborhood inside the gate city | Not the city |
 
-## Anti-padrões — não fazer
+## Anti-patterns — do not do this
 
-- ❌ Formato brasileiro na UI: `1.234,56`, `22/05/2026`, `R$` — viola o ADR-02
-- ❌ Misturar idiomas num identificador: `lugarName` (escolher `placeName`)
-- ❌ Camelizar sigla inteira: `bbqTag` ✅, `bBQTag` ❌
-- ❌ Plural inconsistente: tabela DB sempre plural (`places`), componente singular (`PlaceCard`)
-- ❌ Formatação manual: `value.toFixed(2)` para moeda — use `Intl.NumberFormat`
-- ❌ Inventar `company_id` ou qualquer coluna de tenant — não existe (ADR-01)
+- ❌ Brazilian formatting in the UI: `1.234,56`, `22/05/2026`, `R$` — violates ADR-02
+- ❌ Mixing languages in one identifier: `lugarName` (pick `placeName`)
+- ❌ Camel-casing an entire acronym: `bbqTag` ✅, `bBQTag` ❌
+- ❌ Inconsistent plurals: a DB table is always plural (`places`), a component singular (`PlaceCard`)
+- ❌ Manual formatting: `value.toFixed(2)` for currency — use `Intl.NumberFormat`
+- ❌ Inventing `company_id` or any tenant column — it does not exist (ADR-01)

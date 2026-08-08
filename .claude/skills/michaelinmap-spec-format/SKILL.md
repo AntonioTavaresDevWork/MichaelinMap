@@ -1,88 +1,93 @@
 ---
 name: michaelinmap-spec-format
-description: NÃO USADA no Michaelin Map — o ADR-04 dispensa spec por feature; o PRD em docs/files/ cumpre o papel. Mantida só como referência do template Wise* caso o projeto volte atrás. Não invocar para escrever spec neste projeto.
+description: NOT USED in Michaelin Map — ADR-04 dispenses with per-feature specs; the PRD in docs/files/ fills that role. Kept only as a reference to the Wise* template in case the project ever reverses that. Do not invoke it to write a spec in this project.
 ---
 
-> # ⚠️ Esta skill não vale para o Michaelin Map
+> # ⚠️ This skill does not apply to Michaelin Map
 >
-> **O ADR-04 (Bíblia §15) dispensa spec por feature neste projeto.** Não existe `docs/specs/`,
-> não há pipeline de agentes e o PRD original em `docs/files/` cumpre o papel de spec. A Bíblia
-> é a fonte da verdade; decisões novas vão para lá, pendências para `docs/BACKLOG.md`.
+> **ADR-04 (bible §15) dispenses with per-feature specs in this project.** There is no `docs/specs/`,
+> there is no agent pipeline, and the original PRD in `docs/files/` fills the role of a spec. The
+> bible is the source of truth; new decisions go there, pending items go to `docs/BACKLOG.md`.
 >
-> O conteúdo abaixo é o template Wise* original, **preservado apenas como referência** caso o
-> projeto cresça a ponto de justificar spec formal. Ele descreve objetos do WiseFacilities que
-> **não existem aqui** (`audit_log`, `capacidades`, multi-tenant). Não seguir.
+> The content below is the original Wise* template, **preserved only as a reference** in case the
+> project ever grows enough to justify a formal spec. It describes WiseFacilities objects that **do
+> not exist here** (`audit_log`, `capacidades`, multi-tenancy). Do not follow it.
+>
+> Two housekeeping notes from S09: the body below was full of mojibake (`LocalizaÃ§Ã£o`,
+> `EntregÃ¡veis`) inherited from the template's original encoding, repaired while translating; and
+> the references to sibling skills used the old `wise-*` names, corrected to `michaelinmap-*`.
 
-# Formato de Spec Técnica — Wise* (template não aplicado neste projeto)
+# Technical Spec Format — Wise* (a template not applied in this project)
 
-## LocalizaÃ§Ã£o
+## Location
 
-`docs/specs/F-<NUMERO>-<slug>-spec.md`
+`docs/specs/F-<NUMBER>-<slug>-spec.md`
 
-## EntregÃ¡veis da spec
+## Spec deliverables
 
-> Os entregÃ¡veis marcados **[Modelo B]** sÃ³ se aplicam a projetos com substrato Capability-RBAC.
-> Em projeto **Modelo A (tenant-scoped)**, declare-os "N/A neste projeto" e nÃ£o force conteÃºdo.
-> Os demais sÃ£o universais. (O modelo Ã© declarado na BÃ­blia â€” ver skill `MICHAELINMAP-rls-policy`.)
+> The deliverables marked **[Model B]** only apply to projects built on a Capability-RBAC substrate.
+> In a **Model A (tenant-scoped)** project, declare them "N/A in this project" and do not force
+> content. The rest are universal. (The model is declared in the bible — see the
+> `michaelinmap-rls-policy` skill.)
 
-Toda spec de feature tÃ©cnica entrega:
+Every technical feature spec delivers:
 
-1. **Schema** â€” tabelas novas, alteraÃ§Ãµes em existentes (ADD COLUMN, FK, indexes)
-2. **Seed** â€” dados iniciais (configs, dados de referÃªncia; cargos/capabilities se Modelo B)
-3. **AlteraÃ§Ãµes na tabela de auditoria** â€” colunas novas com DEFAULT quando aplicÃ¡vel (schema da tabela de auditoria conforme declarado na BÃ­blia â€” `audit_log` padrÃ£o ou outra)
-4. **[Modelo B] CatÃ¡logo de capabilities** â€” capabilities NOW + forward-looking se a feature antecipa F-XX futura
-5. **[Modelo B] Matriz cargo Ã— capacidade** â€” quais cargos ganham quais capabilities
-6. **FunÃ§Ãµes de autorizaÃ§Ã£o** â€” novas funÃ§Ãµes SQL ou alteraÃ§Ãµes ([Modelo B]: `has_capacidade` etc.; [Modelo A]: helpers de tenant/escopo)
-7. **Refactor de funÃ§Ãµes existentes** â€” `is_superadmin`, helpers de sessÃ£o/tenant, etc.
-8. **Policies (DROP + CREATE)** â€” todas as RLS afetadas, com snippet canÃ´nico no topo + exceÃ§Ãµes explicitadas
-9. **RPCs SECURITY DEFINER** â€” todas com auditoria (na tabela declarada), validaÃ§Ãµes, REVOKE/GRANT
-10. **MudanÃ§as de comportamento absorvidas (MC-NN)** â€” quando a feature corrige interpretaÃ§Ã£o anterior (referenciar BÃ­blia Â§X.Y)
-11. **Migration plan em fases** â€” Fase 1 (refactor preservando coexistÃªncia) + Fase N (cleanup, drop de legado)
-12. **Smoke tests** â€” ST-01 a ST-NN, executÃ¡veis via UI ou SQL, cada um com critÃ©rio de aceite
+1. **Schema** — new tables, changes to existing ones (ADD COLUMN, FK, indexes)
+2. **Seed** — initial data (configs, reference data; roles/capabilities if Model B)
+3. **Changes to the audit table** — new columns with a DEFAULT where applicable (the audit table's schema is whatever the bible declares — the standard `audit_log` or another)
+4. **[Model B] Capability catalog** — capabilities NOW plus forward-looking ones if the feature anticipates a future F-XX
+5. **[Model B] Role × capability matrix** — which roles gain which capabilities
+6. **Authorization functions** — new SQL functions or changes ([Model B]: `has_capacidade` and the like; [Model A]: tenant/scope helpers)
+7. **Refactoring of existing functions** — `is_superadmin`, session/tenant helpers, and so on
+8. **Policies (DROP + CREATE)** — every affected RLS policy, with the canonical snippet at the top plus explicit exceptions
+9. **SECURITY DEFINER RPCs** — all of them with auditing (in the declared table), validations, REVOKE/GRANT
+10. **Absorbed behavior changes (MC-NN)** — when the feature corrects a previous interpretation (referencing bible §X.Y)
+11. **A phased migration plan** — Phase 1 (refactor while preserving coexistence) + Phase N (cleanup, dropping legacy)
+12. **Smoke tests** — ST-01 through ST-NN, executable through the UI or SQL, each with an acceptance criterion
 
-## Estrutura de cabeÃ§alho
+## Header structure
 
 ```markdown
-# F-<NUMERO> â€” <TÃ­tulo> â€” Spec TÃ©cnica
+# F-<NUMBER> — <Title> — Technical Spec
 
-| Campo | Valor |
+| Field | Value |
 |---|---|
-| Status | Draft / Aprovada / Em apply / Em produÃ§Ã£o |
-| VersÃ£o | 1.0 |
-| Investigation | docs/specs/F-<NUMERO>-investigation.md |
-| DecisÃ£o arquitetural | ADR-XXX se houver |
-| Aprovada por | Edu, <data> |
-| Aplicada em | <data ou pendente> |
+| Status | Draft / Approved / Applying / In production |
+| Version | 1.0 |
+| Investigation | docs/specs/F-<NUMBER>-investigation.md |
+| Architectural decision | ADR-XXX if there is one |
+| Approved by | Edu, <date> |
+| Applied on | <date or pending> |
 
-## SumÃ¡rio executivo
-<3-5 linhas: o que a feature faz, por que existe, escopo>
+## Executive summary
+<3-5 lines: what the feature does, why it exists, its scope>
 
-## Â§1 â€” Schema
+## §1 — Schema
 ...
 
-## Â§2 â€” Seed
+## §2 — Seed
 ...
 
-(seguir as 12 seÃ§Ãµes)
+(follow all 12 sections)
 ```
 
-## Regras
+## Rules
 
-- **Investigation antes de spec.** Toda spec Ã© precedida por `F-<NUMERO>-investigation.md` (estado atual, gaps, riscos). Sem investigation, spec Ã© chute.
-- **Smoke tests numerados.** ST-01, ST-02, etc. Cada um: ator + aÃ§Ã£o + resultado esperado. Independentes (nÃ£o dependem de ordem).
-- **MudanÃ§as de comportamento explicitadas.** Se a spec corrige policy/RPC que hoje funciona de jeito X e vai funcionar de jeito Y, registrar em Â§10 com justificativa. Sem isso, vira "alteraÃ§Ã£o silenciosa nÃ£o autorizada".
-- **DPs blocking resolvidas.** Spec sÃ³ nasce com todas as DPs marcadas BLOCKING no investigation respondidas pelo Edu.
+- **Investigation before spec.** Every spec is preceded by `F-<NUMBER>-investigation.md` (current state, gaps, risks). Without an investigation, a spec is guesswork.
+- **Numbered smoke tests.** ST-01, ST-02, and so on. Each one: actor + action + expected result. Independent (they do not depend on order).
+- **Behavior changes made explicit.** If the spec corrects a policy or RPC that today works one way and will work another, record it in §10 with a justification. Without that, it becomes "an unauthorized silent change".
+- **Blocking DPs resolved.** A spec is only born once every DP marked BLOCKING in the investigation has been answered by Edu.
 
-## PrÃ©-handoff para Data Architect
+## Pre-handoff to the Data Architect
 
-Spec sÃ³ vai pro pipeline depois de aprovada por Edu (via orquestrador). AprovaÃ§Ã£o verifica:
+A spec only enters the pipeline after Edu approves it (through the orchestrator). Approval verifies:
 
-- Todos os entregÃ¡veis aplicÃ¡veis presentes (os marcados [Modelo B] sÃ£o "N/A" em projeto Modelo A)
-- Snippet canÃ´nico de RLS conferido (skill `wise-rls-policy`)
-- RPCs no padrÃ£o (skill `wise-rpc`)
-- Migration plan respeita estratÃ©gia de coexistÃªncia (skill `wise-migration`)
+- Every applicable deliverable is present (the ones marked [Model B] are "N/A" in a Model A project)
+- The canonical RLS snippet has been checked (the `michaelinmap-rls-policy` skill)
+- The RPCs follow the pattern (the `michaelinmap-rpc` skill)
+- The migration plan respects the coexistence strategy (the `michaelinmap-migration` skill)
 
-## ReferÃªncias
+## References
 
-- Exemplo canÃ´nico de origem: WiseFacilities `docs/specs/F-RBAC-v2-spec.md` (14 seÃ§Ãµes, todas as 12 obrigatÃ³rias cobertas) + `F-RBAC-v2-investigation.md`.
-- No projeto novo: apontar aqui a primeira spec aprovada como referÃªncia local.
+- Canonical example of origin: WiseFacilities `docs/specs/F-RBAC-v2-spec.md` (14 sections, all 12 mandatory ones covered) + `F-RBAC-v2-investigation.md`.
+- In a new project: point here to the first approved spec as the local reference.
