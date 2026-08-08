@@ -8,7 +8,7 @@
 Execute in this order:
 
 1. `.claude/CLAUDE.md` — rules, stack, conventions and language
-2. `docs/MICHAELINMAP_BIBLIA.md` — domain, judgment model, schema, business rules, ADRs, scope
+2. `docs/MICHAELINMAP_BIBLE.md` — domain, judgment model, schema, business rules, ADRs, scope
 3. `docs/STATUS.md` — current state, next action, session log
 4. `docs/BACKLOG.md` — pending items, scope cuts, open decisions
 5. `src/types/index.ts` — types (from F-00 onward)

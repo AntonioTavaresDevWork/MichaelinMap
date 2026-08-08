@@ -4,7 +4,7 @@ BEGIN;
 -- F-01 — Schema, RLS, RPCs
 --
 -- Version: 1.0
--- Source of truth: docs/MICHAELINMAP_BIBLIA.md §9 (schema) and §11 (authz)
+-- Source of truth: docs/MICHAELINMAP_BIBLE.md §9 (schema) and §11 (authz)
 -- Backlog items closed here: BL-01..BL-07
 --
 -- This migration creates the whole database surface. The companion migration

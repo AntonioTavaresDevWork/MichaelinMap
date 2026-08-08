@@ -44,7 +44,7 @@ the orchestrator knows that. If a fact about the schema is missing, ask rather t
 | Write `.sql`, `.ts`, `.tsx`, `.md` | Apply migrations through `mcp__supabase__apply_migration` |
 | Use `mcp__supabase__execute_sql` **read-only** (SELECT, schema introspection, listing policies) | Any DDL through `execute_sql` |
 | Use `mcp__supabase__list_tables`, `list_migrations`, `get_logs` | `git commit/push/tag` **without explicit authorization in the briefing** |
-| Read any doc or previous migration | Edit `docs/STATUS.md` or `docs/MICHAELINMAP_BIBLIA.md` (unless acting as technical-writer with authorization) |
+| Read any doc or previous migration | Edit `docs/STATUS.md` or `docs/MICHAELINMAP_BIBLE.md` (unless acting as technical-writer with authorization) |
 | Check the live schema before generating SQL | Decide scope, change requirements, redesign |
 
 **Why:** parallel instances do not inherit the orchestrator's MCP access or context. Assigning DDL to the

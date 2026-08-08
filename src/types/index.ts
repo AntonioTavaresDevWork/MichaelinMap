@@ -4,7 +4,7 @@
  * Field names are snake_case because these objects are populated by direct
  * `select('*')` queries; supabase-js does not convert casing. See CLAUDE.md.
  *
- * Mirrors the schema documented in docs/MICHAELINMAP_BIBLIA.md §9.
+ * Mirrors the schema documented in docs/MICHAELINMAP_BIBLE.md §9.
  */
 
 export type PlaceType =

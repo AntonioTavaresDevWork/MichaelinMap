@@ -28,7 +28,7 @@ only the session's operational model.
 Run in this order before any action. `.claude/init.md` is the canonical checklist; this is the summary.
 
 1. `.claude/CLAUDE.md` — rules, stack, conventions (loads automatically)
-2. `docs/MICHAELINMAP_BIBLIA.md` — the product's source of truth (changelog at the top)
+2. `docs/MICHAELINMAP_BIBLE.md` — the product's source of truth (changelog at the top)
 3. `docs/STATUS.md` — current state, recorded next action, session log
 4. `docs/BACKLOG.md` — consolidated pending items (technical debt, UX, open decisions)
 5. `src/types/index.ts` — the types

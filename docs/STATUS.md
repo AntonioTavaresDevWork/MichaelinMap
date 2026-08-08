@@ -1,7 +1,7 @@
 # Michaelin Map — STATUS
 
 > Updated at the end of every development session.
-> Read at boot, alongside `.claude/CLAUDE.md`, `docs/MICHAELINMAP_BIBLIA.md` and `docs/BACKLOG.md`.
+> Read at boot, alongside `.claude/CLAUDE.md`, `docs/MICHAELINMAP_BIBLE.md` and `docs/BACKLOG.md`.
 
 ---
 
@@ -41,7 +41,7 @@ the verdicts, not the voice.
 - [x] Scope reassessment: overengineering cuts agreed with Edu
 - [x] 5 pending decisions resolved (DP-01 through DP-05)
 - [x] 8 ADRs recorded
-- [x] `docs/MICHAELINMAP_BIBLIA.md` v2.0 written
+- [x] `docs/MICHAELINMAP_BIBLE.md` v2.0 written
 - [x] `docs/BACKLOG.md` populated (20 items)
 - [x] `docs/STATUS.md` corrected — the previous version claimed "setup complete" with an empty database
 - [x] Skills renamed `wise-*` → `michaelinmap-*`; BOM removed from the frontmatter (it prevented the parser from reading the descriptions)
@@ -114,7 +114,7 @@ the verdicts, not the voice.
 - [ ] ⚠️ **The map draws no geometry on this machine** — `BL-29`. It is not our code; see Blockers
 
 ### Session 06 — Documentary reconciliation
-- [x] `docs/STATUS.md` and `docs/MICHAELINMAP_BIBLIA.md` aligned with the real state (F-02 and F-03 on `main`)
+- [x] `docs/STATUS.md` and `docs/MICHAELINMAP_BIBLE.md` aligned with the real state (F-02 and F-03 on `main`)
 - [x] `schema_migrations` re-checked through MCP: **3** live migrations, not 2 as this file claimed
 - [x] **Gate re-run:** `npm run build` and `npm run lint` clean
 

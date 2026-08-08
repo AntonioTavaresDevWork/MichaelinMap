@@ -2,7 +2,7 @@
 
 > Read at the start of EVERY session. Non-negotiable rules for this project.
 > **Canonical location:** `.claude/CLAUDE.md`.
-> Product source of truth: `docs/MICHAELINMAP_BIBLIA.md`.
+> Product source of truth: `docs/MICHAELINMAP_BIBLE.md`.
 
 ## Project identity
 
@@ -38,7 +38,7 @@ Amended in S09, when the project was being prepared to change hands (ADR-02 in t
 | File | Purpose |
 |---|---|
 | `README.md` | Entry point for a human: setup, architecture, handover checklist |
-| `docs/MICHAELINMAP_BIBLIA.md` | Source of truth: domain, schema, business rules, ADRs, scope |
+| `docs/MICHAELINMAP_BIBLE.md` | Source of truth: domain, schema, business rules, ADRs, scope |
 | `docs/STATUS.md` | Current state, next action, session log |
 | `docs/BACKLOG.md` | Single home for every pending item. Read at boot alongside STATUS |
 | `docs/files/` | Origin material from Claude Web (PRD, PLAN, schema, seed, CSV). Reference, **not** source of truth |
