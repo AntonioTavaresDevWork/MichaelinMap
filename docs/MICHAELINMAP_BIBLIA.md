@@ -1,216 +1,221 @@
-# Michaelin Map — Bíblia do Projeto
+# Michaelin Map — Project Bible
 
-**Versão:** 2.6 | **Data:** 2026-08-07 | **Autor:** Edu Mello
-**Status do projeto:** 🟢 **As sete features do MVP estão fechadas.** Admin funcional, lado público
-navegável, filtro facetado, Codes, Roulette e Field reports, com 58 lugares publicados. O caminho
-crítico agora é inteiramente humano: a voz do curador e a taggeação (§13.1)
+**Version:** 2.9 | **Date:** 2026-08-08 | **Author:** Edu Mello
+**Project status:** 🟢 **All seven MVP features are closed.** Working admin, navigable public side,
+faceted filter, Codes, Roulette and field reports, with 58 published places. The critical path is now
+entirely human: the curator's voice and the tagging (§13.1)
 
-> Fonte da verdade do Michaelin Map. O CLI lê este arquivo no boot de toda sessão.
-> Deriva do PRD v1.0 produzido no Claude Web (`docs/files/2026-08-05-michaelin-map-prd.md`),
-> com o escopo reduzido e as correções técnicas acordadas na Sessão 02.
+> Source of truth for Michaelin Map. The CLI reads this file at the boot of every session.
+> Derived from PRD v1.0 produced in Claude Web (`docs/files/2026-08-05-michaelin-map-prd.md`),
+> with the scope reduction and the technical corrections agreed in Session 02.
 >
-> **Idioma:** este documento e toda a documentação interna estão em PT-BR.
-> **O produto — UI, conteúdo, tags, mensagens — é integralmente em inglês.**
+> **Language:** this document, and everything else written into this repository, is in English —
+> see ADR-02, amended in S09. The product has always been in English.
 
 ## Changelog
 
-| Versão | Data | O que mudou |
+| Version | Date | What changed |
 |---|---|---|
-| 2.8 | 2026-08-07 | **RN-31 nova** (§14.3): tag `suggested` não aparece em superfície pública nenhuma até o curador confirmar. §12 registra o fato que motivou — as 145 atribuições são todas da máquina e nenhuma é do Michael |
-| 2.7 | 2026-08-07 | **A faceta de rating saiu do filtro público** por decisão do Edu (S08). **RN-30 nova** (§14.4). O tier continua existindo inteiro — rotula o lugar na lista e no detalhe, ordena a lista, colore o pin e é do curador; o que saiu é o eixo de navegação e o parâmetro `tier` da URL. §6 ganha a distinção entre julgamento e eixo de navegação |
-| 2.6 | 2026-08-07 | F-06 aplicada (S08), sem tocar o schema — **o MVP fechou**. **RN-29 nova** (§14.6): a pergunta de acompanhamento (`judgment_prompt`) é escolha fechada, nunca texto livre. §10 ganha como a semeadura do curador funciona na prática |
-| 2.5 | 2026-08-07 | F-05 aplicada (S07), sem tocar o schema. **RN-27 e RN-28 novas** (§14.5): o preset de um code semeia o painel uma vez e nunca sobrescreve a URL; o resgate é revalidado no servidor a cada carga. §13 ganha a nota de que a F-01 já entregara a tabela inteira |
-| 2.4 | 2026-08-07 | F-04 aplicada (S06). **RN-26 nova** (§14.4): faceta sem opção populada não é renderizada |
-| 2.3 | 2026-08-07 | F-02 e F-03 aplicadas (S05), registradas na S06. Fonte de tiles cravada: **OpenFreeMap** (§2, ADR-05). §13 ganha coluna de status. Tela dedicada de fila de revisão cortada (§13). Estado de publicação em §12 |
-| 2.2 | 2026-08-06 | Curadoria passa a ter **uma conta só** (§4, §9.4, §11). Consequência: `updated_by` não identifica pessoa |
-| 2.1 | 2026-08-06 | F-01 aplicada (S04). Correção de contagem: são **4** tiers, não 5 (§9.2). `Town` do CSV vira `area` (§8). ADR-06 emendado: `price_band` não é pré-sugerido |
-| 2.0.1 | 2026-08-06 | Correção factual: caminho da pasta local em §3 (S03). Sem mudança de escopo, schema ou regra |
-| 2.0 | 2026-08-06 | Bíblia preenchida a partir do PRD. Escopo do MVP fechado (7 features). Cortes: Google Places API, My Maps sync, Trip Builder, novelty interactions exceto Roulette, SEO/indexação. Schema corrigido (8 tabelas). Modelo de autorização definido (curator allowlist). |
-| 1.0 | — | Template Wise* vazio |
+| 2.9 | 2026-08-08 | **ADR-02 amended: the internal documentation moved from Portuguese to English**, by Edu's decision, because a handover to someone who may not read Portuguese became likely. This bible, STATUS, BACKLOG, `CLAUDE.md`, the skills, the agents and the boot prompts were translated. Also fixed: the header still read v2.6 while the changelog had already recorded 2.7 and 2.8 |
+| 2.8 | 2026-08-07 | **New RN-31** (§14.3): a `suggested` tag appears on no public surface until the curator confirms it. §12 records the fact that motivated it — all 145 assignments are the machine's and none is Michael's |
+| 2.7 | 2026-08-07 | **The rating facet left the public filter** by Edu's decision (S08). **New RN-30** (§14.4). The tier still exists in full — it labels the place in the list and in the detail view, orders the list, colors the pin and belongs to the curator; what left is the navigation axis and the `tier` URL parameter. §6 gains the distinction between judgment and navigation axis |
+| 2.6 | 2026-08-07 | F-06 applied (S08) without touching the schema — **the MVP closed**. **New RN-29** (§14.6): the follow-up question (`judgment_prompt`) is a closed choice, never free text. §10 gains how the curator's seeding works in practice |
+| 2.5 | 2026-08-07 | F-05 applied (S07) without touching the schema. **New RN-27 and RN-28** (§14.5): a code's preset seeds the panel once and never overwrites the URL; the redemption is revalidated on the server on every load. §13 gains the note that F-01 had already delivered the whole table |
+| 2.4 | 2026-08-07 | F-04 applied (S06). **New RN-26** (§14.4): a facet with no populated option is not rendered |
+| 2.3 | 2026-08-07 | F-02 and F-03 applied (S05), recorded in S06. Tile source settled: **OpenFreeMap** (§2, ADR-05). §13 gains a status column. Dedicated review-queue screen cut (§13). Publication state in §12 |
+| 2.2 | 2026-08-06 | Curation moves to **a single account** (§4, §9.4, §11). Consequence: `updated_by` does not identify a person |
+| 2.1 | 2026-08-06 | F-01 applied (S04). Count correction: there are **4** tiers, not 5 (§9.2). The CSV's `Town` becomes `area` (§8). ADR-06 amended: `price_band` is not pre-suggested |
+| 2.0.1 | 2026-08-06 | Factual correction: local folder path in §3 (S03). No change to scope, schema or rules |
+| 2.0 | 2026-08-06 | Bible filled in from the PRD. MVP scope closed (7 features). Cuts: Google Places API, My Maps sync, Trip Builder, novelty interactions except Roulette, SEO/indexing. Schema corrected (8 tables). Authorization model defined (curator allowlist). |
+| 1.0 | — | Empty Wise* template |
 
 ---
 
-## 1. Visão geral
+## 1. Overview
 
-**O que é:** um guia de lugares — restaurantes, bares, food trucks, lojas, hotéis, parques e atrações — curado por uma única pessoa. Cada entrada carrega um selo de qualidade explícito e um conjunto de tags que descreve não só o que o lugar *é*, mas para que ele *serve*.
+**What it is:** a guide to places — restaurants, bars, food trucks, shops, hotels, parks and attractions — curated by a single person. Every entry carries an explicit quality verdict and a set of tags describing not only what the place *is*, but what it *is for*.
 
-**Contexto:** projeto pessoal, sem fins comerciais. O Michael é um amigo do Edu que frequenta muitos lugares e é constantemente procurado por conhecidos pedindo sugestão. O Michaelin Map é o ambiente onde ele compartilha essas experiências com o círculo próximo.
+**Context:** a personal project with no commercial purpose. Michael is a friend of Edu's who goes to a lot of places and is constantly asked for recommendations. Michaelin Map is where he shares those experiences with his close circle.
 
-**Problema que resolve:** o Michael acumulou 511 lugares salvos em 19 guias do Apple Maps. Compartilhar isso é quase inútil — um mapa de pins transmite coordenadas e nada mais. O valor não está nos pins, está no julgamento: qual lugar vale a viagem, qual é famoso e decepcionante, qual prato único justifica um restaurante mediano. Nada disso sobrevive ao compartilhamento de um link.
+**The problem it solves:** Michael accumulated 511 places saved across 19 Apple Maps guides. Sharing that is nearly useless — a map of pins transmits coordinates and nothing else. The value is not in the pins, it is in the judgment: which place is worth the trip, which one is famous and disappointing, which single dish justifies a mediocre restaurant. None of that survives sharing a link.
 
-**Foco do MVP:** tornar o julgamento transmissível. Um visitante abre o link, escolhe uma cidade, filtra pelo que precisa e chega a uma decisão.
+**MVP focus:** make the judgment transmissible. A visitor opens the link, picks a city, filters by what they need, and reaches a decision.
 
-**O que NÃO é:** não é SaaS, não é multi-tenant, não será monetizado, não terá clientes. Não é Yelp — não há avaliação de terceiros, nota média, comentários ou conta de visitante.
+**What it is NOT:** not a SaaS, not multi-tenant, will not be monetized, will have no customers. Not Yelp — there are no third-party ratings, no average score, no comments, no visitor accounts.
 
-**Visão de longo prazo:** nenhuma. O projeto termina quando o Michael estiver usando e os amigos dele também.
+**Long-term vision:** none. The project is finished when Michael is using it and his friends are too.
 
-### 1.1 O contexto de demonstração
+### 1.1 The demonstration context
 
-Uma condição de sucesso declarada no PRD: mostrar o guia para uma pessoa específica deve fazer essa pessoa se sentir mais próxima do Michael. Isso reposiciona o produto — ele é um **artefato de personalidade** cujo conteúdo é julgamento e voz, com a utilidade servindo de veículo. Não é um utilitário que por acaso tem graça.
+A success condition stated in the PRD: showing the guide to a specific person should make that person feel closer to Michael. That repositions the product — it is an **artifact of personality** whose content is judgment and voice, with usefulness serving as the vehicle. It is not a utility that happens to be charming.
 
-Consequência para priorização: os **Codes**, o campo **story** e a voz escrita do curador importam mais do que sofisticação incremental de filtro.
+Consequence for prioritization: the **Codes**, the **story** field and the curator's written voice matter more than incremental filter sophistication.
 
 ---
 
 ## 2. Stack
 
 ```
-Frontend:     React + Vite + TypeScript (SPA, sem SSR)
+Frontend:     React + Vite + TypeScript (SPA, no SSR)
 UI:           Tailwind CSS + shadcn/ui
-Mapa:         MapLibre GL 5.x · tiles do OpenFreeMap  ← ver ADR-05
-Forms:        useState controlado, validação inline no onSubmit (sem react-hook-form/zod)
-Notificações: sonner — <Toaster richColors position="top-right" /> no App.tsx
-State:        React Query (server state) · Zustand se necessário para UI state
+Map:          MapLibre GL 5.x · OpenFreeMap tiles  ← see ADR-05
+Forms:        controlled useState, inline validation in onSubmit (no react-hook-form/zod)
+Notifications: sonner — <Toaster richColors position="top-right" /> in App.tsx
+State:        React Query (server state) · Zustand if UI state needs it
 Routing:      React Router DOM
-Ícones:       lucide-react
+Icons:        lucide-react
 Backend/DB:   Supabase (PostgreSQL 17 + Auth)
-Server-side:  Supabase Edge Functions (Deno) — apenas se necessário
-Geocoding:    Nominatim / OpenStreetMap (grátis, sem chave)  ← ver ADR-06
+Server-side:  Supabase Edge Functions (Deno) — only if needed
+Geocoding:    Nominatim / OpenStreetMap (free, no key)  ← see ADR-06
 Deploy:       Vercel
 ```
 
-**Fora da stack, por decisão:** Google Places API (ADR-06), TanStack Table (lista simples resolve), SSR/pré-render (ADR-07).
+**Outside the stack, by decision:** Google Places API (ADR-06), TanStack Table (a simple list is enough), SSR/pre-rendering (ADR-07).
 
 ---
 
-## 3. Repositório e infraestrutura
+## 3. Repository and infrastructure
 
 ```
-GitHub:        AntonioTavaresDevWork/MichaelinMap (privado) — conta do Edu
-Pasta local:   C:\Users\tomme\OneDrive\Documents\Projects\Michaelin Map
+GitHub:        AntonioTavaresDevWork/MichaelinMap (private) — Edu's account
+Local folder:  C:\Users\tomme\OneDrive\Documents\Projects\Michaelin Map
 Supabase ID:   woapimgpmlgqqvauckdy
 Supabase URL:  https://woapimgpmlgqqvauckdy.supabase.co
-Deploy:        Vercel — a configurar após a F-03
-Indexação:     noindex (não-listado) — ver ADR-07
+Deploy:        Vercel — to be configured after F-03
+Indexing:      noindex (unlisted) — see ADR-07
 ```
 
+> Both the database and the hosting are expected to move to a company organization when the project
+> changes hands. The `README.md` handover section documents what travels with the repository and what
+> does not — including the fact that auth accounts do not, and that no migration publishes a place.
+
 ---
 
-## 4. Usuários
+## 4. Users
 
-| Papel | Quem | Acesso |
+| Role | Who | Access |
 |---|---|---|
-| **Visitante** | Amigos e conhecidos do Michael | Somente leitura, sem conta, sem login. Recebe o link (e frequentemente um Code) diretamente do Michael |
-| **Curador** | Michael. O Edu opera pela **mesma conta** quando dá apoio | Login no admin. **Uma conta só**, em allowlist explícita. Não há signup |
+| **Visitor** | Michael's friends and acquaintances | Read only, no account, no login. Receives the link (and frequently a Code) directly from Michael |
+| **Curator** | Michael. Edu operates from the **same account** when giving support | Login to the admin. **A single account**, on an explicit allowlist. There is no signup |
 
-Não existe terceiro papel. Sem contribuidores, sem moderadores, sem submissões públicas — com a exceção estrita e não-avaliativa dos field reports (§10).
+There is no third role. No contributors, no moderators, no public submissions — with the strict and non-evaluative exception of field reports (§10).
 
-**Conta única (decidido na S04).** O guia é do Michael; o Edu acessa pela conta dele quando precisa. Consequência a aceitar conscientemente: `places.updated_by` deixa de identificar **quem** editou — passa a registrar apenas que a edição veio de um curador logado. Como a atribuição entre os dois nunca foi o ponto (o julgamento é de uma pessoa só, por desenho — §1), o custo é baixo. Se um dia a curadoria virar de duas mãos de verdade, cria-se a segunda conta e `updated_by` volta a significar algo, sem mudança de schema.
+**Single account (decided in S04).** The guide is Michael's; Edu uses his account when needed. A consequence to accept consciously: `places.updated_by` no longer identifies **who** edited — it only records that the edit came from a logged-in curator. Since attribution between the two was never the point (the judgment belongs to one person by design — §1), the cost is low. If curation ever genuinely becomes four-handed, the second account is created and `updated_by` means something again, with no schema change.
 
 ---
 
-## 5. Modelo de domínio
+## 5. Domain model
 
 ```
 tiers ──< places >── place_tags >── tags
                 │
                 └──< field_reports >── questions
 
-curators (allowlist de escrita)
-codes (transformações de interface, independentes de places, com destaques opcionais)
+curators (write allowlist)
+codes (interface transformations, independent of places, with optional highlights)
 ```
 
-- `places` é a entidade central. Tudo orbita nela.
-- `tiers` é vocabulário editável, não constante de código (RN-12).
-- `codes` referencia places apenas por um array de destaques — sem FK rígida.
+- `places` is the central entity. Everything orbits it.
+- `tiers` is editable vocabulary, not a code constant (RN-12).
+- `codes` references places only through an array of highlights — no rigid FK.
 
 ---
 
-## 6. O modelo de julgamento
+## 6. The judgment model
 
-O coração do produto. Não foi desenhado — foi **engenharia reversa dos 19 guias do Michael**, que já codificavam um sistema consistente.
+The heart of the product. It was not designed — it was **reverse-engineered from Michael's 19 guides**, which already encoded a consistent system.
 
-### 6.1 A evidência
+### 6.1 The evidence
 
-Entre 511 lugares, os três guias de restaurante — Designation (43), Experience Spots (36), Fair Restaurants (156) — têm sobreposição **exatamente zero**. Exclusividade mútua perfeita em 235 lugares não é acidente: é uma escala.
+Across 511 places, the three restaurant guides — Designation (43), Experience Spots (36), Fair Restaurants (156) — overlap **exactly zero**. Perfect mutual exclusivity across 235 places is not an accident: it is a scale.
 
-Michael's Top Faves (22) cruza os três tiers (8/9/2) e tem sobreposição zero com a Try List. Logo, não é um quarto tier — é uma honraria aplicada *por cima* de um tier, nunca concedida a um lugar não visitado.
+Michael's Top Faves (22) crosses all three tiers (8/9/2) and has zero overlap with the Try List. So it is not a fourth tier — it is an honor applied *on top of* a tier, and never granted to a place that has not been visited.
 
-Cool Bars (31) e Fair Bars (46) compartilham exatamente um lugar: uma segunda escala, paralela, de dois níveis, para bares.
+Cool Bars (31) and Fair Bars (46) share exactly one place: a second, parallel, two-level scale for bars.
 
-### 6.2 O modelo
+### 6.2 The model
 
-| Camada | Campo | Valores | Regra |
+| Layer | Field | Values | Rule |
 |---|---|---|---|
-| **Tier** | `places.tier` | Restaurantes: `destination`, `experience`, `fair` · Bares: `cool`, `fair` | No máximo um. Null para tipos não avaliados e não visitados |
-| **Estrela** | `places.starred` | boolean | Cruza os tiers. 22 de 511 (4%). A honraria escassa do topo |
-| **Status de visita** | `places.visited` | boolean | `false` = Try List. Não pode ter tier nem estrela |
+| **Tier** | `places.tier` | Restaurants: `destination`, `experience`, `fair` · Bars: `cool`, `fair` | At most one. Null for unrated types and unvisited places |
+| **Star** | `places.starred` | boolean | Crosses the tiers. 22 out of 511 (4%). The scarce honor at the top |
+| **Visit status** | `places.visited` | boolean | `false` = Try List. Cannot carry a tier or a star |
 
-`destination` e `experience` **não são 1º e 2º lugar** — são dois topos paralelos acima de `fair` (DP-01 resolvida: "não faz diferença"). A interface os exibe em ordem fixa, mas a copy nunca afirma superioridade de um sobre o outro.
+`destination` and `experience` are **not first and second place** — they are two parallel summits above `fair` (DP-01 resolved: "it makes no difference"). The interface displays them in a fixed order, but the copy never claims one is superior to the other.
 
-> **Julgamento não é o mesmo que eixo de navegação (S08).** O tier continua sendo tudo o que esta
-> seção descreve: o curador atribui, o selo aparece na linha da lista e na página do lugar, a ordem
-> da lista o obedece e a cor do pin o reflete. O que ele **não** é mais é uma faceta pela qual o
-> visitante filtra — ver RN-30. A distinção importa porque o tier segue insubstituível como dado, e
-> nada aqui em §6 mudou.
+> **Judgment is not the same thing as a navigation axis (S08).** The tier remains everything this
+> section describes: the curator assigns it, the badge appears in the list row and on the place page,
+> the list order obeys it and the pin color reflects it. What it is **no longer** is a facet the
+> visitor filters by — see RN-30. The distinction matters because the tier remains irreplaceable as
+> data, and nothing in §6 changed.
 
-Ambas as restrições são garantidas por constraint de banco, não por lógica de aplicação. A disciplina do curador vira garantia do schema.
+Both constraints are guaranteed by database constraints, not by application logic. The curator's discipline becomes a schema guarantee.
 
-### 6.3 Escassez
+### 6.3 Scarcity
 
-`destination` e `starred` precisam permanecer escassos, ou a escala não significa nada. O admin exibe a distribuição ao vivo para que a inflação seja visível. Meta: estrela abaixo de 5% dos lugares publicados.
+`destination` and `starred` need to stay scarce, or the scale means nothing. The admin displays the live distribution so that inflation is visible. Target: stars below 5% of published places.
 
-### 6.4 Veredito negativo
+### 6.4 The negative verdict
 
-A taxonomia mantém **Hype trap** para lugares famosos, lotados e decepcionantes. Veredito negativo é o que torna o positivo crível. Por decisão do curador, é **admin-only** — visível na curadoria, invisível ao público (RN-14).
+The taxonomy keeps **Hype trap** for places that are famous, crowded and disappointing. A negative verdict is what makes the positive ones credible. By the curator's decision it is **admin-only** — visible in curation, invisible to the public (RN-14).
 
 ---
 
-## 7. Tipos de lugar
+## 7. Place types
 
-O guia não é só restaurante. Cerca de noventa entradas não-gastronômicas convivem com as demais.
+The guide is not only restaurants. Around ninety non-food entries live alongside the rest.
 
-| Tipo | `place_type` | n | Tem tier |
+| Type | `place_type` | n | Has a tier |
 |---|---|---|---|
-| Restaurant | `restaurant` | 273 | Sim — 3 tiers |
-| Bar | `bar` | 91 | Sim — 2 tiers |
-| Outdoors & attraction | `outdoors` | 65 | Não |
-| Food truck | `food_truck` | 23 | Não |
-| Dessert | `dessert` | 16 | Não |
-| Grocery | `grocery` | 14 | Não |
-| Hotel | `hotel` | 6 | Não |
-| Winery | `winery` | 5 | Não |
-| Shop | `shop` | 3 | Não |
+| Restaurant | `restaurant` | 273 | Yes — 3 tiers |
+| Bar | `bar` | 91 | Yes — 2 tiers |
+| Outdoors & attraction | `outdoors` | 65 | No |
+| Food truck | `food_truck` | 23 | No |
+| Dessert | `dessert` | 16 | No |
+| Grocery | `grocery` | 14 | No |
+| Hotel | `hotel` | 6 | No |
+| Winery | `winery` | 5 | No |
+| Shop | `shop` | 3 | No |
 | Unclassified | `unclassified` | 15 | — |
 
-**O tipo de lugar é o segundo portão**, junto com a cidade. "Onde eu como" e "o que eu faço" são sessões diferentes; misturar um parque estadual no resultado de um filtro de restaurante é ruído. Tipos sem tier ainda carregam a estrela, que passa a ser o sinal de qualidade deles.
+**Place type is the second gate**, alongside the city. "Where I eat" and "what I do" are different sections; mixing a state park into the result of a restaurant filter is noise. Types without a tier still carry the star, which becomes their quality signal.
 
 ---
 
-## 8. Geografia
+## 8. Geography
 
-Três níveis, todos derivados de coordenada com possibilidade de override manual.
+Three levels, all derived from coordinates with the possibility of a manual override.
 
-| Nível | Campo | Cardinalidade | Papel |
+| Level | Field | Cardinality | Role |
 |---|---|---|---|
-| País | `country` | Exatamente 1 | Agrupamento apenas |
-| Cidade / metrô | `city` | Exatamente 1 | **O portão primário** |
-| Bairro / área | `area` | 0 ou 1 | Null abaixo do limiar de densidade |
+| Country | `country` | Exactly 1 | Grouping only |
+| City / metro | `city` | Exactly 1 | **The primary gate** |
+| Neighborhood / area | `area` | 0 or 1 | Null below the density threshold |
 
-**Cidade é portão, não filtro.** Ninguém navega todos os lugares do planeta. O visitante escolhe a cidade primeiro e todas as outras facetas operam dentro dela.
+**The city is a gate, not a filter.** Nobody browses every place on the planet. The visitor picks the city first and every other facet operates inside it.
 
-**Áreas só existem onde a densidade justifica** — cerca de 15 entradas. Austin ganha bairros; Oxfordshire, com 3 lugares, não exibe controle de área nenhum. A hierarquia degrada em silêncio em vez de renderizar controle vazio.
+**Areas only exist where density justifies them** — around 15 entries. Austin gets neighborhoods; Oxfordshire, with 3 places, displays no area control at all. The hierarchy degrades silently instead of rendering an empty control.
 
-**De onde vem `area` (F-01):** a coluna `Town` do CSV traz o município real — Lockhart, Dripping Springs, San Marcos, New Braunfels. O import grava `Town` em `area` quando ele **difere** da cidade-portão, e null quando repete. Resultado: 107 dos 511 lugares têm área. É geografia derivada, não julgamento, então é reversível com um `UPDATE places SET area = NULL`.
+**Where `area` comes from (F-01):** the CSV's `Town` column carries the real municipality — Lockhart, Dripping Springs, San Marcos, New Braunfels. The import writes `Town` into `area` when it **differs** from the gate city, and null when it repeats. Result: 107 of the 511 places have an area. It is derived geography, not judgment, so it is reversible with an `UPDATE places SET area = NULL`.
 
-**Cidades atuais:** Austin 466, St. Augustine 15, Jacksonville 8, Los Angeles 4, Oxfordshire 3, Dallas–Fort Worth 3, Fernando de Noronha 2, Waco 2, mais oito singletons (London, Belton, Essex Junction, Mountain Home, Rochester, San Diego, Schertz, Seattle).
+**Current cities:** Austin 466, St. Augustine 15, Jacksonville 8, Los Angeles 4, Oxfordshire 3, Dallas-Fort Worth 3, Fernando de Noronha 2, Waco 2, plus eight singletons (London, Belton, Essex Junction, Mountain Home, Rochester, San Diego, Schertz, Seattle).
 
-**Singletons aparecem como pares** (DP-02 resolvida), com a contagem visível. Nenhuma cidade é privilegiada na interface.
+**Singletons appear as pairs** (DP-02 resolved), with the count visible. No city is privileged in the interface.
 
 ---
 
-## 9. Schema do banco
+## 9. Database schema
 
-Oito tabelas. O SQL detalhado vive em `supabase/migrations/`; esta seção é a referência rápida e **documenta as correções feitas sobre o schema original** do PRD.
+Eight tables. The detailed SQL lives in `supabase/migrations/`; this section is the quick reference and **documents the corrections made to the PRD's original schema**.
 
 ### 9.1 `places`
 
-| Coluna | Tipo | Obs |
+| Column | Type | Notes |
 |---|---|---|
 | `id` | uuid PK | default `gen_random_uuid()` |
 | `name` | text NOT NULL | |
-| `slug` | text UNIQUE | gerado; desambiguado com sufixo quando há homônimo |
-| `place_type` | text NOT NULL | default `unclassified`; CHECK na lista da §7 |
+| `slug` | text UNIQUE | generated; disambiguated with a suffix when there is a namesake |
+| `place_type` | text NOT NULL | default `unclassified`; CHECK against the §7 list |
 | `tier` | text | **FK → `tiers(slug)`** |
 | `starred` | boolean NOT NULL | default false |
 | `visited` | boolean NOT NULL | default true; `false` = Try List |
@@ -218,379 +223,403 @@ Oito tabelas. O SQL detalhado vive em `supabase/migrations/`; esta seção é a 
 | `country` / `city` / `area` | text | §8 |
 | `lat` / `lng` | numeric(10,7) | |
 | `address` | text | |
-| `website` | text | manual, opcional |
-| `price_band` | text | `$` a `$$$$` — **julgamento do curador**, não derivado |
-| `the_dish` | text | ⚠️ camada de julgamento |
-| `curator_note` | text | ⚠️ camada de julgamento |
-| `story` | text | ⚠️ camada de julgamento — "por que isso importa pra mim" |
-| `last_visited` | date | ⚠️ camada de julgamento |
-| `apple_id` | text **UNIQUE** | correção: era sem UNIQUE e o import quebrava |
-| `source_guides` | text[] | nomes dos guias Apple originais, auditoria |
+| `website` | text | manual, optional |
+| `price_band` | text | `$` to `$$$$` — **the curator's judgment**, not derived |
+| `the_dish` | text | ⚠️ judgment layer |
+| `curator_note` | text | ⚠️ judgment layer |
+| `story` | text | ⚠️ judgment layer — "why this matters to me" |
+| `last_visited` | date | ⚠️ judgment layer |
+| `apple_id` | text **UNIQUE** | correction: it had no UNIQUE and the import broke |
+| `source_guides` | text[] | names of the original Apple guides, for auditing |
 | `source` | text | `apple_csv \| manual` |
-| `created_at` / `updated_at` | timestamptz | `updated_at` via trigger |
-| `updated_by` | uuid | FK → `auth.users`; quem editou por último |
+| `created_at` / `updated_at` | timestamptz | `updated_at` through a trigger |
+| `updated_by` | uuid | FK → `auth.users`; who edited last |
 
 **Constraints:**
-- `tier_requires_visit` — lugar não visitado não pode ter tier
-- `star_requires_visit` — lugar não visitado não pode ter estrela
-- `published_needs_city` — lugar publicado precisa de cidade
+- `tier_requires_visit` — an unvisited place cannot have a tier
+- `star_requires_visit` — an unvisited place cannot have a star
+- `published_needs_city` — a published place needs a city
 
-**Removidos do schema original** (sem fonte de dados após o corte do Google Places): `google_place_id`, `phone`, `hours`, `geo_source`, `price_band_source`, `mymaps_feature_id`, `first_synced_at`, `last_seen_in_sync`.
+**Removed from the original schema** (no data source after the Google Places cut): `google_place_id`, `phone`, `hours`, `geo_source`, `price_band_source`, `mymaps_feature_id`, `first_synced_at`, `last_seen_in_sync`.
 
-### 9.2 `tiers` — nova
+### 9.2 `tiers` — new
 
-Tier vira dado editável para atender DP-03 ("permitir renomear os tiers").
+The tier becomes editable data to satisfy DP-03 ("allow renaming the tiers").
 
-| Coluna | Tipo | Obs |
+| Column | Type | Notes |
 |---|---|---|
-| `slug` | text PK | estável; o código só depende disto |
-| `label` | text NOT NULL | rótulo público, editável no admin |
-| `applies_to` | text[] NOT NULL | tipos de lugar que o admin sugere para este tier |
-| `sort_order` | int NOT NULL | ordem de exibição |
+| `slug` | text PK | stable; the code depends only on this |
+| `label` | text NOT NULL | public label, editable in the admin |
+| `applies_to` | text[] NOT NULL | place types the admin suggests for this tier |
+| `sort_order` | int NOT NULL | display order |
 | `active` | boolean NOT NULL | |
 
-Seed: **4 linhas** — `destination` e `experience` (`applies_to = {restaurant}`), `fair`
-(`{restaurant, bar}`) e `cool` (`{bar}`).
+Seed: **4 rows** — `destination` and `experience` (`applies_to = {restaurant}`), `fair`
+(`{restaurant, bar}`) and `cool` (`{bar}`).
 
-> Correção da v2.1: versões anteriores diziam "5 tiers", contando `fair` duas vezes por
-> aparecer nas duas escalas da §6.2. Como `slug` é PK, `fair` é **uma** linha servindo os dois
-> tipos — que é exatamente para isso que `applies_to` é um array. Bate com `SEEDED_TIER_SLUGS`
-> em `src/types/index.ts` e com o valor único `Fair` do CSV.
+> Correction from v2.1: earlier versions said "5 tiers", counting `fair` twice because it appears in
+> both scales in §6.2. Since `slug` is the PK, `fair` is **one** row serving both types — which is
+> exactly what `applies_to` being an array is for. It matches `SEEDED_TIER_SLUGS` in
+> `src/types/index.ts` and the single `Fair` value in the CSV.
 
-`applies_to` **orienta o admin, não restringe o banco** — o curador é a autoridade. Isso acomoda os 4 lugares fora do padrão nos dados atuais (§12).
+`applies_to` **guides the admin, it does not restrict the database** — the curator is the authority. That accommodates the 4 places that fall outside the pattern in the current data (§12).
 
 ### 9.3 `tags` / `place_tags`
 
-Vocabulário facetado e controlado. Criação de tag por texto livre é desabilitada por design.
+A controlled, faceted vocabulary. Creating a tag from free text is disabled by design.
 
-`tags`: `id`, `facet` (`cuisine | format | occasion | vibe | logistics | dietary | character`), `label`, `slug`, `is_derived`, **`admin_only`** (novo — RN-14), `sort_order`, `active`. UNIQUE `(facet, slug)`.
+`tags`: `id`, `facet` (`cuisine | format | occasion | vibe | logistics | dietary | character`), `label`, `slug`, `is_derived`, **`admin_only`** (new — RN-14), `sort_order`, `active`. UNIQUE `(facet, slug)`.
 
-`place_tags`: `place_id`, `tag_id` (PK composta), **`source`** (novo — `curator | suggested`), `created_at`.
+`place_tags`: `place_id`, `tag_id` (composite PK), **`source`** (new — `curator | suggested`), `created_at`.
 
-`source = 'suggested'` marca as tags de `cuisine` e `price_band` que o CLI pré-classifica no import (ADR-06). O curador vê o que veio da máquina e o que veio dele.
+`source = 'suggested'` marks the `cuisine` and `price_band` tags the CLI pre-classifies during the import (ADR-06). The curator sees what came from the machine and what came from him.
 
-Seed: 93 tags (37 cuisine, 14 occasion, 11 vibe, 11 logistics, 9 character, 7 format, 4 dietary) + `Hype trap` em `character` com `admin_only = true`.
+Seed: 93 tags (37 cuisine, 14 occasion, 11 vibe, 11 logistics, 9 character, 7 format, 4 dietary) + `Hype trap` in `character` with `admin_only = true`.
 
 ### 9.4 `curators`
 
 `user_id` uuid PK → `auth.users` · `name` text · `created_at`.
 
-**Uma linha**, a conta do Michael, que o Edu também usa (§4). Signup desabilitado no projeto Supabase. O schema não muda se um dia forem duas — é só inserir a segunda linha.
+**One row**, Michael's account, which Edu also uses (§4). Signup disabled in the Supabase project. The schema does not change if there are ever two — it is just a second row.
 
 ### 9.5 `codes`
 
-Sem alteração estrutural: `id`, `code` (UNIQUE, maiúsculo), `label`, `message`, `theme` jsonb, `pin_style` jsonb, `preset_filter` jsonb, `highlighted_places` uuid[], `starts_at`, `ends_at`, `active`, `created_at`.
+No structural change: `id`, `code` (UNIQUE, uppercase), `label`, `message`, `theme` jsonb, `pin_style` jsonb, `preset_filter` jsonb, `highlighted_places` uuid[], `starts_at`, `ends_at`, `active`, `created_at`.
 
-**Correção de RLS:** a tabela perde o SELECT público. Ver §11 e RN-20.
+**RLS correction:** the table loses its public SELECT. See §11 and RN-20.
 
 ### 9.6 `questions` / `field_reports`
 
-`questions`: `id`, `prompt`, `input_type` (`number | color | slider | single_choice | yes_no | compound | text_short`), `unit_label`, `options` jsonb, `slider_labels` jsonb, `judgment_prompt`, `requires_review`, `weight`, `active`. Seed: 38 perguntas.
+`questions`: `id`, `prompt`, `input_type` (`number | color | slider | single_choice | yes_no | compound | text_short`), `unit_label`, `options` jsonb, `slider_labels` jsonb, `judgment_prompt`, `requires_review`, `weight`, `active`. Seed: 38 questions.
 
 `field_reports`: `id`, `place_id`, `question_id`, `answer` jsonb, `judgment`, `status` (`published | pending | rejected`), `session_hash`, `submitted_at`.
 
-**Correção de RLS:** INSERT direto pelo público é revogado; entra só pela RPC `rpc_submit_field_report` (RN-21).
+**RLS correction:** direct INSERT by the public is revoked; the only way in is the `rpc_submit_field_report` RPC (RN-21).
 
-View `field_report_aggregates` — agrega respostas publicadas, oculta abaixo de n=5. **Correção:** criada com `security_invoker = on`, senão a view contorna o RLS.
+View `field_report_aggregates` — aggregates published answers, hidden below n=5. **Correction:** created with `security_invoker = on`, otherwise the view bypasses RLS.
 
-### 9.7 Índices
+### 9.7 Indexes
 
 ```sql
 places(city) where status = 'published'
 places(place_type) · places(tier) · places(status) · places(lat, lng)
 field_reports(place_id) where status = 'published'
 field_reports(session_hash, submitted_at)   -- rate limit
-place_tags(tag_id)                          -- filtro reverso
+place_tags(tag_id)                          -- reverse filter
 ```
 
 ---
 
 ## 10. Field reports
 
-Visitantes que estiveram em um lugar respondem 2 ou 3 perguntas sorteadas que **não carregam nenhuma informação sobre qualidade** — temperatura da comida em Fahrenheit, cor da cadeira, distância até o corpo d'água mais próximo, pé-direito medido em mãos.
+Visitors who have been to a place answer 2 or 3 randomly drawn questions that **carry no information about quality whatsoever** — food temperature in Fahrenheit, the color of the chair, the distance to the nearest body of water, ceiling height measured in hands.
 
-**O absurdo é estrutural, não decorativo.** Comentário convencional achataria o tier do curador em "mais uma opinião". Perguntas em um eixo ortogonal não competem com o julgamento dele. Participação sem diluição.
+**The absurdity is structural, not decorative.** A conventional comment would flatten the curator's tier into "one more opinion". Questions on an orthogonal axis do not compete with his judgment. Participation without dilution.
 
-- Entradas são **restritas** — número, cor, slider, escolha, sim/não, composta. Isso também elimina a carga de moderação.
-- **4 das 38 perguntas** aceitam texto livre porque o espaço de resposta é ilimitado. Limitadas a 40 caracteres, entram como `pending` e só vão ao ar com aprovação do curador.
-- **O agregado é a feature**, renderizado com seriedade científica impassível e oculto abaixo de 5 respostas. O curador semeia as próprias respostas para nada nascer em zero.
-- Uma pergunta — *the dish you would order again* — é o único ponto em que a resposta do visitante informa o julgamento do curador, e aparece destacada no admin.
+- Inputs are **restricted** — number, color, slider, choice, yes/no, compound. That also eliminates the moderation load.
+- **4 of the 38 questions** accept free text because the answer space is unbounded. Limited to 40 characters, they enter as `pending` and only go live with the curator's approval.
+- **The aggregate is the feature**, rendered with deadpan scientific seriousness and hidden below 5 answers. The curator seeds his own answers so that nothing is born at zero.
+- One question — *the dish you would order again* — is the only point at which a visitor's answer informs the curator's judgment, and it appears highlighted in the admin.
 
-**Como o sorteio funciona (F-06).** As 2-3 perguntas saem de um sorteio **semeado em
-`lugar + navegador`**, não de `Math.random()`. Semeado, elas não trocam debaixo do dedo de quem está
-respondendo e sobrevivem a um reload; por variarem entre pessoas, duas que estiveram na mesma mesa
-recebem perguntas diferentes — que é o que faz um agregado acumular em vez de todo mundo responder
-a mesma coisa.
+**How the draw works (F-06).** The 2-3 questions come from a draw **seeded on place + browser**, not
+from `Math.random()`. Being seeded, they do not change under the finger of whoever is answering and
+they survive a reload; by varying between people, two who sat at the same table get different
+questions — which is what makes an aggregate accumulate instead of everyone answering the same thing.
 
-**Como a semeadura funciona (F-06, BL-20).** O admin tem uma superfície onde o curador responde as
-próprias perguntas para um lugar, e essas respostas entram **publicadas na hora** — a fila de
-revisão existe para separar o texto de um estranho do guia, e o curador é a pessoa a quem essa fila
-obedece. Duas consequências que valem estar escritas: semear **não revela agregado nenhum** (o n=5 é
-por lugar × pergunta, e uma pessoa honestamente dá uma resposta só), e os valores são **digitados por
-quem esteve no lugar** — nada aqui é gerado, porque um pé-direito inventado seria indistinguível de
-um medido num painel que reporta com uma casa decimal.
+**How seeding works (F-06, BL-20).** The admin has a surface where the curator answers the questions
+himself for a place, and those answers enter **published immediately** — the review queue exists to
+keep a stranger's text out of the guide, and the curator is the person that queue answers to. Two
+consequences worth writing down: seeding **reveals no aggregate at all** (n=5 is per place × question,
+and one person honestly gives one answer), and the values are **typed by someone who was there** —
+nothing here is generated, because an invented ceiling height would be indistinguishable from a
+measured one on a panel that reports to one decimal place.
 
 ---
 
-## 11. Modelo de autorização
+## 11. Authorization model
 
-| Campo | Valor |
+| Field | Value |
 |---|---|
-| **Modelo** | **Curator allowlist** — nem tenant-scoped nem RBAC. Ver ADR-01 |
-| **Função que resolve o caller** | `is_curator()` — `exists (select 1 from curators where user_id = auth.uid())`, STABLE SECURITY DEFINER |
-| **Auditoria** | Sem tabela de audit. `places.updated_by` + `updated_at` registram *quando* — com conta única, não *quem* (§4) |
-| **Acesso anônimo** | Leitura de conteúdo publicado + escrita de field report **exclusivamente via RPC** |
+| **Model** | **Curator allowlist** — neither tenant-scoped nor RBAC. See ADR-01 |
+| **Function resolving the caller** | `is_curator()` — `exists (select 1 from curators where user_id = auth.uid())`, STABLE SECURITY DEFINER |
+| **Auditing** | No audit table. `places.updated_by` + `updated_at` record *when* — with a single account, not *who* (§4) |
+| **Anonymous access** | Reading published content + writing a field report **exclusively through an RPC** |
 
-### RLS por tabela
+### RLS per table
 
-| Tabela | SELECT público | Escrita |
+| Table | Public SELECT | Writing |
 |---|---|---|
-| `places` | `status = 'published'` | curador |
-| `tiers` | `active = true` | curador |
-| `tags` | `active AND NOT admin_only` | curador |
-| `place_tags` | só de place publicado e tag não-admin (via EXISTS) | curador |
-| `codes` | **nenhum** — só via `rpc_redeem_code()` | curador |
-| `questions` | `active = true` | curador |
-| `field_reports` | `status = 'published'` | INSERT só via `rpc_submit_field_report()`; resto curador |
-| `curators` | nenhum | curador |
+| `places` | `status = 'published'` | curator |
+| `tiers` | `active = true` | curator |
+| `tags` | `active AND NOT admin_only` | curator |
+| `place_tags` | only for a published place and a non-admin tag (through EXISTS) | curator |
+| `codes` | **none** — only through `rpc_redeem_code()` | curator |
+| `questions` | `active = true` | curator |
+| `field_reports` | `status = 'published'` | INSERT only through `rpc_submit_field_report()`; the rest curator |
+| `curators` | none | curator |
 
-### RPCs expostas ao client
+### RPCs exposed to the client
 
-| RPC | O que faz |
+| RPC | What it does |
 |---|---|
-| `rpc_redeem_code(p_code text)` | Recebe um código, devolve o efeito se existir, estiver ativo e dentro da janela de datas. Retorna vazio caso contrário. Impede a enumeração de códigos |
-| `rpc_submit_field_report(...)` | Valida que o lugar está publicado e a pergunta ativa; **deriva o status a partir de `questions.requires_review`** (o visitante não escolhe); trunca texto em 40 caracteres; aplica rate limit por `session_hash` |
+| `rpc_redeem_code(p_code text)` | Takes a code, returns its effect if it exists, is active and is inside the date window. Returns empty otherwise. Prevents code enumeration |
+| `rpc_submit_field_report(...)` | Validates that the place is published and the question active; **derives the status from `questions.requires_review`** (the visitor does not choose); truncates text at 40 characters; applies a rate limit per `session_hash` |
 
 ---
 
-## 12. Estado atual dos dados
+## 12. Current state of the data
 
-511 lugares únicos, extraídos de 19 guias do Apple Maps. Números validados linha a linha contra o CSV master.
+511 unique places, extracted from 19 Apple Maps guides. Numbers validated line by line against the master CSV.
 
-**Estado de publicação (S05):** 58 `published`, 453 `unreviewed`. O lote de lançamento são os
-lugares com estrela ou tier `destination` — Austin 52, St. Augustine 3, Los Angeles 1, Mountain
-Home 1, Oxfordshire 1. Não foi julgamento novo: tier e estrela vieram dos guias do próprio Michael
-e o import só não os tinha revelado. Reversível com `UPDATE places SET status = 'unreviewed'`.
+**Publication state (S05):** 58 `published`, 453 `unreviewed`. The launch batch is the places with a
+star or the `destination` tier — Austin 52, St. Augustine 3, Los Angeles 1, Mountain Home 1,
+Oxfordshire 1. It was not new judgment: tier and star came from Michael's own guides and the import
+simply had not revealed them. Reversible with `UPDATE places SET status = 'unreviewed'`.
 
-⚠️ **Nenhum dos 58 tem `the_dish` ou `curator_note`.** O guia está populado mas mudo — mostra os
-vereditos, não a voz. Pela §1.1, é isso que separa o artefato de personalidade de uma lista
-organizada, e é trabalho humano, não de CLI.
+> **That batch is not in any migration** (`BL-35`, found in S09). It came from an ad-hoc `UPDATE` and
+> lives only in the live database, so a rebuild against an empty project returns 511 unreviewed
+> places and a public guide that renders empty while looking healthy. The criterion above is the
+> whole recipe; it is worth turning into a versioned migration.
 
-Tiers: destination 43, experience 36, fair 198, cool 30. Estrela 22. Não visitados 42. Apple IDs duplicados: zero. Coordenadas faltando: zero. Nomes homônimos: 9 (desambiguados por slug).
+⚠️ **None of the 58 has `the_dish` or `curator_note`.** The guide is populated but mute — it shows the
+verdicts, not the voice. Per §1.1, that is what separates an artifact of personality from an organized
+list, and it is human work, not CLI work.
 
-**Três questões que exigem decisão do curador, não conserto silencioso do dev:**
+Tiers: destination 43, experience 36, fair 198, cool 30. Stars 22. Unvisited 42. Duplicate Apple IDs: zero. Missing coordinates: zero. Namesakes: 9 (disambiguated by slug).
 
-1. **28 conflitos** — lugares com tier *e* Try List, ou seja, avaliados sem terem sido visitados. O import derruba o tier e sinaliza; cada um precisa que o Michael confirme que esteve lá ou concorde que o tier era aspiracional.
-2. **15 sem classificação** — treze são exclusivos da Try List, salvos sem categoria; dois são de Fernando de Noronha, um deles um aeroporto e provavelmente não uma recomendação.
-3. **4 fora do cruzamento tier × tipo** — Grocery com `fair` (2) e `destination` (1), Bar com `experience` (1), Outdoors com `fair` (1). Não são bloqueados pelo banco (§9.2), mas o admin sinaliza.
+**Three questions that require the curator's decision, not a silent fix by the dev:**
 
-**As 93 tags nascem vazias.** A coluna `Tags` do CSV traz apenas 5 valores distintos (Breakfast & brunch 54, Rooftop 14, Night out 3, Vacation 2, Food truck 1), derivados dos nomes dos guias. Taggear 511 lugares é o gargalo real do projeto — ver §13.1.
+1. **28 conflicts** — places with a tier *and* on the Try List, that is, rated without having been visited. The import drops the tier and flags them; each one needs Michael to confirm he was there or to agree the tier was aspirational.
+2. **15 unclassified** — thirteen are exclusive to the Try List, saved without a category; two are in Fernando de Noronha, one of them an airport and probably not a recommendation.
+3. **4 outside the tier × type crossing** — Grocery with `fair` (2) and `destination` (1), Bar with `experience` (1), Outdoors with `fair` (1). The database does not block them (§9.2), but the admin flags them.
 
-> **Medido na S08, e é pior do que "gargalo".** Das atribuições existentes, **zero** são do
-> curador — todas são `suggested`, produzidas por máquina. Dos 58 publicados, 11 tinham alguma tag e
-> **nenhum** tem `the_dish`. Só 21 das 94 tags foram usadas alguma vez. Ou seja: a curadoria que a
-> §13.1 descreve como "rodando em paralelo desde a F-02" **não começou**. O Edu não pode substituí-la
-> — ele nunca esteve em nenhum desses lugares; a lista é do Michael, e o julgamento também.
+**The 93 tags are born empty.** The CSV's `Tags` column carries only 5 distinct values (Breakfast & brunch 54, Rooftop 14, Night out 3, Vacation 2, Food truck 1), derived from guide names. Tagging 511 places is the project's real bottleneck — see §13.1.
+
+> **Measured in S08, and it is worse than "bottleneck".** Of the existing assignments, **zero** are
+> the curator's — all are `suggested`, produced by machine. Of the 58 published, 11 had some tag and
+> **none** has `the_dish`. Only 21 of the 94 tags have ever been used. In other words: the curation
+> that §13.1 describes as "running in parallel since F-02" **has not started**. Edu cannot substitute
+> for it — he has never been to any of these places; the list is Michael's, and so is the judgment.
 >
-> Isso não invalida o guia: `tier` e `starred` **são** julgamento do Michael, vieram dos 19 guias
-> dele, cobrem os 58 publicados e sustentam a lista, a ordem e o mapa. O que falta é a voz —
-> `the_dish` e `curator_note` —, e a §1.1 diz que é ela que separa o artefato de personalidade de uma
-> lista organizada. É trabalho humano de dez frases, não de quinhentas tags.
+> This does not invalidate the guide: `tier` and `starred` **are** Michael's judgment, they came from
+> his 19 guides, they cover the 58 published places and they carry the list, the order and the map.
+> What is missing is the voice — `the_dish` and `curator_note` — and §1.1 says the voice is what
+> separates an artifact of personality from an organized list. It is ten sentences of human work, not
+> five hundred tags.
 >
-> **Ainda na S08, 28 cuisines novas entraram como `suggested`** (migration
-> `20260807140000`), cobrindo os publicados de comida que não tinham nenhuma — de 45 sem cuisine
-> para 17. Não é curadoria: é fila de aprovação, invisível ao visitante pela RN-31 até o Michael
-> confirmar. Total de sugestões pendentes: **173**. Os 17 restantes são os que nem nome nem
-> conhecimento público resolvem, e estão listados no rodapé da migration.
+> **Also in S08, 28 new cuisines entered as `suggested`** (migration `20260807140000`), covering the
+> published food places that had none — from 45 without a cuisine down to 17. It is not curation: it
+> is an approval queue, invisible to the visitor under RN-31 until Michael confirms it. Total pending
+> suggestions: **173**. The remaining 17 are the ones that neither the name nor public knowledge
+> resolves, and they are listed in the migration's footer.
 
 ---
 
-## 13. Escopo do MVP
+## 13. MVP scope
 
-Sete features. Ordem de dependência estrita: cada uma só começa com a anterior em build limpo.
+Seven features. Strict dependency order: each one only starts with the previous one building clean.
 
-| # | Feature | Entrega | Sessões | Status |
+| # | Feature | Delivery | Sessions | Status |
 |---|---|---|---|---|
-| **F-00** | Fundação | Vite + TS + Tailwind + shadcn/ui, client Supabase, tipos, roteamento, layout | ~0,5 | ✅ S02 |
-| **F-01** | Schema + dados | Migration do schema corrigido, seed (93 tags, 38 perguntas, 5 tiers), import dos 511 com `cuisine` e `price_band` pré-sugeridos | ~1 | ✅ S04 |
-| **F-02** | Admin | Login, lista com filtros, editor de lugar, atribuição de tags, quick-add mobile, Overview (distribuição de tiers, progresso de curadoria, filas, desatualizados) | ~2 | ✅ S05 |
-| **F-03** | Público | Portão de cidade, mapa MapLibre, lista sincronizada, detalhe do lugar | ~2 | ⚠️ S05 — mapa mudo por `BL-29` |
-| **F-04** | Filtros | Painel facetado, OR dentro / AND entre facetas, contagem ao vivo, opção zerada desabilitada, estado na URL, empty state autoral | ~1 | ✅ S06 |
-| **F-05** | Codes + Roulette | Codes completo (tema, estilo de mapa, pins, filtro pré-aplicado, destaques, type-anywhere no desktop, long-press no mobile) + Roulette | ~2 | ✅ S07 |
-| **F-06** | Field reports | 7 tipos de input, sorteio de 2-3 perguntas, agregado com n≥5, texto livre em fila, rate limit | ~1,5 | ✅ S08 |
+| **F-00** | Foundation | Vite + TS + Tailwind + shadcn/ui, Supabase client, types, routing, layout | ~0.5 | ✅ S02 |
+| **F-01** | Schema + data | Corrected schema migration, seed (93 tags, 38 questions, 5 tiers), import of the 511 with `cuisine` and `price_band` pre-suggested | ~1 | ✅ S04 |
+| **F-02** | Admin | Login, filtered list, place editor, tag assignment, mobile quick-add, Overview (tier distribution, curation progress, queues, stale entries) | ~2 | ✅ S05 |
+| **F-03** | Public | City gate, MapLibre map, synchronized list, place detail | ~2 | ⚠️ S05 — map mute due to `BL-29` |
+| **F-04** | Filters | Faceted panel, OR within / AND between facets, live counts, zero option disabled, state in the URL, authored empty state | ~1 | ✅ S06 |
+| **F-05** | Codes + Roulette | Complete Codes (theme, map style, pins, pre-applied filter, highlights, type-anywhere on desktop, long-press on mobile) + Roulette | ~2 | ✅ S07 |
+| **F-06** | Field reports | 7 input types, draw of 2-3 questions, aggregate at n≥5, free text in a queue, rate limit | ~1.5 | ✅ S08 |
 
-Total estimado: **~10 sessões de CLI.** As sete features fecharam em 7 sessões.
+Total estimate: **~10 CLI sessions.** The seven features closed in 7 sessions.
 
-**A F-06 também não tocou o schema** — segunda feature seguida assim. A F-01 já havia entregue
-`rpc_submit_field_report()` (deriva o status, trunca em 40, limita por sessão), a view
-`field_report_aggregates` com `security_invoker` e o `HAVING count(*) >= 5`, as 38 perguntas
-semeadas e os grants no lugar: `anon` executa a RPC e **não** tem INSERT na tabela, então a RN-23
-está garantida no privilégio, não só na policy.
+**F-06 did not touch the schema either** — the second feature in a row. F-01 had already delivered
+`rpc_submit_field_report()` (derives the status, truncates at 40, limits per session), the
+`field_report_aggregates` view with `security_invoker` and its `HAVING count(*) >= 5`, the 38 seeded
+questions and the grants in place: `anon` executes the RPC and has **no** INSERT on the table, so
+RN-23 is guaranteed at the privilege level, not only by policy.
 
-**A F-05 não tocou o schema.** A F-01 já havia entregue `codes` com os seis campos de efeito
-(`theme`, `pin_style`, `preset_filter`, `highlighted_places`, janela de datas, `active`) e a
-`rpc_redeem_code()` com `anon` autorizado a executá-la. A feature inteira é frontend sobre o
-banco existente — nenhuma migration, nenhuma dependência npm nova, nenhum componente shadcn novo.
+**F-05 did not touch the schema.** F-01 had already delivered `codes` with the six effect fields
+(`theme`, `pin_style`, `preset_filter`, `highlighted_places`, the date window, `active`) and
+`rpc_redeem_code()` with `anon` already authorized to execute it. The entire feature is frontend on
+top of the existing database — no migration, no new npm dependency, no new shadcn component.
 
-**Corte de escopo na F-02 (S05):** a tela dedicada de fila de revisão não foi construída. As três
-filas — conflitos de tier, tags sugeridas, lugares sem tipo — são cartões no Overview que linkam
-para a lista com o filtro aplicado. Uma tela própria seria uma quarta forma de olhar os mesmos
-registros, com dois lugares para manter em sincronia.
+**Scope cut in F-02 (S05):** the dedicated review-queue screen was not built. The three queues — tier
+conflicts, suggested tags, places without a type — are cards on the Overview that link to the list
+with the filter already applied. A screen of its own would be a fourth way of looking at the same
+records, with two places to keep in sync.
 
-### 13.1 A curadoria roda em paralelo
+### 13.1 Curation runs in parallel
 
-A partir da F-02, o Michael começa a taggear. Isso não é fase de dev — é trabalho humano contínuo, e é o caminho crítico do projeto.
+From F-02 onward, Michael starts tagging. This is not a dev phase — it is continuous human work, and it is the project's critical path.
 
-**Estratégia de lançamento:** não esperar os 511. Os 22 com estrela mais os 43 `destination` já formam um guia excelente — são justamente os que os amigos perguntam. Publicar esses ~65 primeiro; o resto entra conforme for taggeado.
+**Launch strategy:** do not wait for all 511. The 22 with a star plus the 43 `destination` already form an excellent guide — they are precisely the ones friends ask about. Publish those ~65 first; the rest arrive as they get tagged.
 
-### 13.2 Fora do MVP
+### 13.2 Out of the MVP
 
-Registrados em `docs/BACKLOG.md`, com o motivo de cada corte: Google Places API e hidratação, My Maps KML sync, Trip Builder, Settle It, I'm Hungry Now, Bad Idea, shortlist local, SEO e indexação, área por polígono geográfico.
+Recorded in `docs/BACKLOG.md`, each with the reason for the cut: Google Places API and hydration, My Maps KML sync, Trip Builder, Settle It, I'm Hungry Now, Bad Idea, local shortlist, SEO and indexing, area by geographic polygon.
 
 ---
 
-## 14. Regras de negócio
+## 14. Business rules
 
-### 14.1 Julgamento
+### 14.1 Judgment
 
-- **RN-01** — Um lugar não visitado (`visited = false`) não pode ter tier. Garantido por constraint.
-- **RN-02** — Um lugar não visitado não pode ter estrela. Garantido por constraint.
-- **RN-03** — A estrela cruza os tiers; não é um tier a mais.
-- **RN-04** — `destination` e `experience` são topos paralelos, não posições 1 e 2. Nenhum texto do produto afirma superioridade entre eles.
-- **RN-05** — Tipos sem tier (outdoors, food truck, dessert, grocery, hotel, winery, shop) usam a estrela como único sinal de qualidade.
-- **RN-06** — O admin exibe a distribuição de tiers e estrelas ao vivo. Meta: estrela abaixo de 5% dos publicados.
+- **RN-01** — An unvisited place (`visited = false`) cannot have a tier. Guaranteed by constraint.
+- **RN-02** — An unvisited place cannot have a star. Guaranteed by constraint.
+- **RN-03** — The star crosses the tiers; it is not one more tier.
+- **RN-04** — `destination` and `experience` are parallel summits, not positions 1 and 2. No product text claims one is superior to the other.
+- **RN-05** — Types without a tier (outdoors, food truck, dessert, grocery, hotel, winery, shop) use the star as their only quality signal.
+- **RN-06** — The admin displays the tier and star distribution live. Target: stars below 5% of published places.
 
-### 14.2 Publicação e descoberta
+### 14.2 Publication and discovery
 
-- **RN-07** — Todo lugar importado ou criado nasce `unreviewed`. Só `published` é visível ao público.
-- **RN-08** — Validação se aplica na promoção a `published`, nunca na inserção. Importar exigindo validação completa é impossível.
-- **RN-09** — Um lugar publicado precisa de cidade. Garantido por constraint.
-- **RN-10** — Todo lugar publicado precisa ser alcançável por ao menos uma faceta literal — cuisine, city, place type ou price. Lugar acessível apenas por tag de `character` é bug.
-- **RN-11** — Interações de novidade (Roulette) são atalhos aditivos. Nada é alcançável exclusivamente por elas.
+- **RN-07** — Every imported or created place is born `unreviewed`. Only `published` is visible to the public.
+- **RN-08** — Validation applies on promotion to `published`, never on insertion. Importing while demanding complete validation is impossible.
+- **RN-09** — A published place needs a city. Guaranteed by constraint.
+- **RN-10** — Every published place must be reachable through at least one literal facet — cuisine, city, place type or price. A place reachable only through a `character` tag is a bug.
+- **RN-11** — Novelty interactions (Roulette) are additive shortcuts. Nothing is reachable exclusively through them.
 
-### 14.3 Vocabulário
+### 14.3 Vocabulary
 
-- **RN-12** — Tiers são dados, não constantes. O código depende de `tiers.slug`; o rótulo público (`label`) é editável no admin sem deploy.
-- **RN-13** — Tags têm vocabulário controlado. Criação por texto livre é desabilitada.
-- **RN-14** — Tag com `admin_only = true` nunca aparece ao público, em nenhuma superfície: nem no filtro, nem no detalhe, nem no resultado de busca. `Hype trap` é o caso atual.
-- **RN-15** — Tag com `source = 'suggested'` é sugestão da máquina pendente de revisão. O admin as distingue visualmente das atribuídas pelo curador.
-- **RN-31** — **Tag `suggested` não aparece em nenhuma superfície pública.** Nem como selo no lugar,
-  nem como faceta, nem como contagem — até o curador confirmá-la, virando `curator`. A RN-15 mandava
-  distinguir as duas **no admin**, e isso sempre valeu; o que faltava era a outra ponta: o visitante
-  não tinha como distinguir, então um palpite do import (casamento de palavra no nome do lugar)
-  chegava até ele com a mesma autoridade de uma decisão do Michael. Num produto cujo valor inteiro é
-  o julgamento de uma pessoa (§1.1), isso não é detalhe de exibição — é a diferença entre o guia
-  afirmar e o guia chutar. **Consequência aceita:** enquanto a curadoria não começar, o painel
-  público mostra menos facetas. Preferível a mostrar mais do que se sabe. Registrada na S08, quando
-  se constatou que as 145 atribuições existentes eram **todas** `suggested` e todas visíveis.
+- **RN-12** — Tiers are data, not constants. The code depends on `tiers.slug`; the public label (`label`) is editable in the admin without a deploy.
+- **RN-13** — Tags have a controlled vocabulary. Creation from free text is disabled.
+- **RN-14** — A tag with `admin_only = true` never appears to the public, on any surface: not in the filter, not in the detail view, not in search results. `Hype trap` is the current case.
+- **RN-15** — A tag with `source = 'suggested'` is a machine suggestion pending review. The admin distinguishes them visually from the ones the curator assigned.
+- **RN-31** — **A `suggested` tag appears on no public surface.** Not as a badge on the place, not as a
+  facet, not as a count — until the curator confirms it, turning it into `curator`. RN-15 required
+  distinguishing the two **in the admin**, and that always held; what was missing was the other end:
+  the visitor had no way to distinguish, so a guess from the import (word matching on the place name)
+  reached them with the same authority as a decision by Michael. In a product whose entire value is
+  one person's judgment (§1.1), that is not a display detail — it is the difference between the guide
+  asserting and the guide guessing. **Accepted consequence:** while curation has not started, the
+  public panel shows fewer facets. Preferable to showing more than is known. Recorded in S08, when it
+  was found that all 145 existing assignments were `suggested` and all of them visible.
 
-### 14.4 Filtro
+### 14.4 Filtering
 
-- **RN-16** — OR dentro de uma faceta, AND entre facetas. Tacos + BBQ mostra os dois; somar East Austin restringe a tacos e BBQ em East Austin.
-- **RN-17** — Toda opção de filtro exibe contagem de resultado ao vivo. Opção que retornaria zero fica **desabilitada, não escondida**.
-- **RN-18** — O filtro de área só aparece em cidades com ~15 lugares ou mais.
-- **RN-19** — O estado do filtro serializa na URL. Qualquer visão é compartilhável.
-- **RN-30** — **O visitante não filtra por tier.** Não existe faceta de rating no painel, e o
-  parâmetro `tier` saiu da URL junto — um filtro sem controle na tela estreitaria o guia de forma
-  invisível, que é exatamente a falha que a RN-27 existe para impedir. Link antigo com `?tier=` é
-  simplesmente ignorado. **O tier em si não foi tocado:** continua rotulando o lugar na lista e no
-  detalhe, ordenando a lista, colorindo o pin e sendo atribuído pelo curador (§6). A estrela passa a
-  ser o único sinal de qualidade *filtrável*, que é como os oito tipos sem tier sempre funcionaram
-  (RN-05) — agora vale também para restaurante e bar. Decisão do Edu na S08; nada de schema mudou,
-  então é reversível sem migration.
-- **RN-26** — **Faceta sem nenhuma opção populada não é renderizada.** A RN-17 governa a *opção* dentro
-  de uma faceta e continua valendo integralmente; uma faceta inteira sem nada por trás é o caso que a
-  §8 já resolveu para área — degradar em silêncio em vez de renderizar controle vazio. Consequência
-  desejada: o painel cresce sozinho conforme a curadoria avança, sem deploy, porque tags são dado e
-  não código (RN-13). Registrada na F-04, quando seis das sete facetas de tag tinham zero atribuições.
+- **RN-16** — OR within a facet, AND between facets. Tacos + BBQ shows both; adding East Austin narrows to tacos and BBQ in East Austin.
+- **RN-17** — Every filter option displays a live result count. An option that would return zero is **disabled, not hidden**.
+- **RN-18** — The area filter only appears in cities with roughly 15 places or more.
+- **RN-19** — Filter state serializes into the URL. Any view is shareable.
+- **RN-30** — **The visitor does not filter by tier.** There is no rating facet in the panel, and the
+  `tier` parameter left the URL along with it — a filter with no control on screen would narrow the
+  guide invisibly, which is exactly the failure RN-27 exists to prevent. An old link carrying
+  `?tier=` is simply ignored. **The tier itself was not touched:** it still labels the place in the
+  list and the detail view, orders the list, colors the pin and is assigned by the curator (§6). The
+  star becomes the only *filterable* quality signal, which is how the eight tier-less types always
+  worked (RN-05) — now true for restaurants and bars as well. Edu's decision in S08; no schema
+  changed, so it is reversible without a migration.
+- **RN-26** — **A facet with no populated option is not rendered.** RN-17 governs the *option* inside
+  a facet and continues to hold in full; an entire facet with nothing behind it is the case §8 already
+  solved for areas — degrade silently instead of rendering an empty control. Desired consequence: the
+  panel grows on its own as curation advances, with no deploy, because tags are data and not code
+  (RN-13). Recorded in F-04, when six of the seven tag facets had zero assignments.
 
 ### 14.5 Codes
 
-- **RN-20** — Códigos nunca são listáveis. O público não tem SELECT em `codes`; a validação passa pela RPC, que responde por código específico.
-- **RN-21** — Codes nunca removem conteúdo. Eles reestilizam, reordenam, destacam e adicionam mensagem. Nunca escondem um lugar de quem não tem o código.
-- **RN-27** — **O filtro pré-aplicado de um code semeia o painel uma vez e depois é do visitante.**
-  Ele entra selecionado, conta como qualquer outro filtro, e sai pelo mesmo botão *Clear*. E
-  **nunca sobrescreve filtro já presente na URL** — link compartilhado é escolha explícita de
-  alguém e vence a decoração. É a RN-21 aplicada ao único efeito de code que estreita a visão:
-  sem esta regra, um preset seria um code escondendo lugares. Registrada na F-05.
-- **RN-28** — **O resgate de um code é revalidado no servidor a cada carga.** O código digitado
-  é lembrado localmente para sobreviver a um reload — o Michael entrega um code a uma *pessoa*,
-  não a uma aba —, mas o efeito nunca é lido do que ficou guardado. Desligar um code no admin
-  vale na próxima visita, e não fica preso no navegador de quem já o usou.
+- **RN-20** — Codes are never listable. The public has no SELECT on `codes`; validation goes through the RPC, which answers for one specific code.
+- **RN-21** — Codes never remove content. They restyle, reorder, highlight and add a message. They never hide a place from someone who does not have the code.
+- **RN-27** — **A code's pre-applied filter seeds the panel once and then belongs to the visitor.**
+  It arrives selected, counts like any other filter, and leaves through the same *Clear* button. And
+  it **never overwrites a filter already present in the URL** — a shared link is somebody's explicit
+  choice and beats decoration. It is RN-21 applied to the only code effect that narrows the view:
+  without this rule, a preset would be a code hiding places. Recorded in F-05.
+- **RN-28** — **A code's redemption is revalidated on the server on every load.** The code typed in is
+  remembered locally so it survives a reload — Michael hands a code to a *person*, not to a tab — but
+  the effect is never read from what was stored. Switching a code off in the admin takes effect on the
+  next visit instead of being stuck in the browser of someone who already used it.
 
 ### 14.6 Field reports
 
-- **RN-22** — Nenhuma pergunta pode indagar se o lugar era bom, nem permitir que uma nota seja derivada. Esse eixo pertence só ao curador.
-- **RN-23** — O status da resposta é derivado de `questions.requires_review` pelo servidor. O visitante não escolhe se sua resposta vai ao ar.
-- **RN-24** — Texto livre é limitado a 40 caracteres, entra como `pending` e só publica com aprovação. Nenhum outro input de texto ilimitado existe no produto.
-- **RN-25** — Agregados ficam ocultos abaixo de 5 respostas.
-- **RN-29** — **A pergunta de acompanhamento (`judgment_prompt`) é escolha fechada, nunca campo de
-  texto.** O `judgment` viaja junto da resposta e é publicado na hora sempre que a pergunta principal
-  não exige revisão — um campo aberto ali seria um segundo texto livre do visitante, ao vivo e sem
-  moderação, exatamente o que a RN-24 permite uma única vez. Os dois rótulos saem do próprio enunciado,
-  que ou os oferece ("good or bad") ou é uma pergunta de sim/não. Registrada na F-06.
+- **RN-22** — No question may ask whether the place was good, nor allow a score to be derived. That axis belongs to the curator alone.
+- **RN-23** — The answer's status is derived from `questions.requires_review` by the server. The visitor does not choose whether their answer goes live.
+- **RN-24** — Free text is limited to 40 characters, enters as `pending` and only publishes with approval. No other unbounded text input exists in the product.
+- **RN-25** — Aggregates stay hidden below 5 answers.
+- **RN-29** — **The follow-up question (`judgment_prompt`) is a closed choice, never a text field.**
+  The `judgment` travels alongside the answer and is published immediately whenever the main question
+  does not require review — an open field there would be a second piece of visitor free text, live and
+  unmoderated, exactly what RN-24 permits exactly once. Both labels come from the prompt itself, which
+  either offers them ("good or bad") or is a yes/no question. Recorded in F-06.
 
 ---
 
-## 15. Decisões de arquitetura (ADR)
+## 15. Architecture decisions (ADR)
 
-Registro das exceções deliberadas ao framework Wise* e das escolhas que não devem ser reabertas sem motivo novo.
+A record of the deliberate exceptions to the Wise* framework and of the choices that should not be reopened without a new reason.
 
-**ADR-01 — Sem multi-tenant.** O framework exige `company_id` e RLS por empresa em toda tabela. Aqui há um único guia, dois curadores e nenhum cliente. Autorização é allowlist de curador. *Motivo: forçar tenancy seria cerimônia sem função.*
+**ADR-01 — No multi-tenancy.** The framework requires `company_id` and per-company RLS on every table. Here there is a single guide, two curators and no customer. Authorization is a curator allowlist. *Reason: forcing tenancy would be ceremony without function.*
 
-**ADR-02 — Produto em inglês, formato en-US.** O framework exige UI em PT-BR e formato brasileiro. O guia é de Austin, os usuários são anglófonos, e as 93 tags e 38 perguntas já estão escritas em inglês. Documentação interna e conversas seguem em PT-BR. *Motivo: o produto não é brasileiro.*
+**ADR-02 — Product in English, en-US format.** The framework requires a PT-BR UI and Brazilian formatting. The guide covers Austin, its users are English speakers, and the 93 tags and 38 questions were already written in English. *Reason: the product is not Brazilian.*
 
-**ADR-03 — `status` no lugar de `deleted_at`.** O framework exige soft delete por `deleted_at`. Aqui `status` (`unreviewed | published | closed | hidden`) é mais expressivo e já cobre o caso. *Motivo: um lugar que fechou é diferente de um lugar escondido, e nenhum dos dois é "deletado".*
+> **Amendment of v2.9 (S09, Edu's decision):** the original wording kept internal documentation and
+> conversation in Portuguese. **The documentation moved to English** — this bible, STATUS, BACKLOG,
+> `CLAUDE.md`, `init.md`, the skills, the agents and the boot prompts. The reason is a new fact: the
+> project is being prepared to change hands, and documentation the next maintainer cannot read is
+> documentation that does not exist. What stays in Portuguese is the **conversation with Edu**, for
+> the obvious reason. The session history in `docs/STATUS.md` was translated, not rewritten — it
+> remains the record of what each past session observed.
 
-**ADR-04 — Sem GANTT, sem DOMAIN_QUESTIONS, sem spec por feature, sem pipeline de agentes.** O framework Wise* pressupõe SaaS com cliente e prestação de contas. Este projeto é pessoal, o PRD já cumpre o papel de spec, e o custo do processo superaria o do código. Mantidos: migrations versionadas, `STATUS.md`, `BACKLOG.md` e esta Bíblia. *Motivo: proporcionalidade.*
+**ADR-03 — `status` instead of `deleted_at`.** The framework requires soft deletes through `deleted_at`. Here `status` (`unreviewed | published | closed | hidden`) is more expressive and already covers the case. *Reason: a place that closed is different from a place that is hidden, and neither of them is "deleted".*
 
-**ADR-05 — MapLibre GL, não Google Maps.** Escolhido originalmente porque troca estilo de mapa em runtime, do que os Codes dependem. Mantido também por não cobrar por render. *Não substituir por embed do Google.*
+**ADR-04 — No GANTT, no DOMAIN_QUESTIONS, no per-feature spec, no agent pipeline.** The Wise* framework presupposes a SaaS with a customer and accountability. This project is personal, the PRD already serves as the spec, and the cost of the process would exceed the cost of the code. Kept: versioned migrations, `STATUS.md`, `BACKLOG.md` and this bible. *Reason: proportionality.*
 
-> **Emenda da v2.3 (F-03, S05):** a fonte de tiles é o **OpenFreeMap** — grátis e sem chave, mesma
-> lógica do ADR-06 de não depender de API cobrada. A versão em uso é a **5.x**, não a 6: o v5
-> entrega arquivo único com o worker embutido, enquanto o v6 monta a URL do worker em runtime por
-> concatenação de string, o que nenhum bundler enxerga e obrigava a um `config.WORKER_URL` manual.
-> O downgrade **não** resolveu a renderização — `BL-29` é ambiental, não de versão. Antes de mexer
-> no mapa, ler o `BL-29` no BACKLOG: o caminho já foi percorrido inteiro.
+**ADR-05 — MapLibre GL, not Google Maps.** Originally chosen because it swaps map styles at runtime, which the Codes depend on. Also kept because it does not charge per render. *Do not replace it with a Google embed.*
 
-**ADR-06 — Sem Google Places API.** O original hidratava os 511 lugares contra o Places para obter horário, telefone e faixa de preço. Cortado: horário resolve com o botão de direções, e **faixa de preço é julgamento do Michael, não do Google**. Geocoding do quick-add usa Nominatim/OSM. *Motivo: elimina uma API paga, uma chave, um script de hidratação e um NFR inteiro, sem perda relevante.*
+> **Amendment of v2.3 (F-03, S05):** the tile source is **OpenFreeMap** — free and keyless, the same
+> logic as ADR-06's refusal to depend on a paid API. The version in use is **5.x**, not 6: v5 ships a
+> single file with the worker embedded, whereas v6 builds the worker URL at runtime through string
+> concatenation, which no bundler can see and which forced a manual `config.WORKER_URL`. The downgrade
+> did **not** fix the rendering — `BL-29` is environmental, not a version problem. Before touching the
+> map, read `BL-29` in the backlog: that path has already been walked end to end.
 
-> **Emenda da v2.1 (F-01, aprovada pelo Edu):** a redação original mandava pré-classificar
-> `cuisine` **e** `price_band` como `suggested`. Só `cuisine` foi. `price_band` é coluna de
-> `places`, e a §9.1 removeu `price_band_source` — não existe onde marcar que o valor é chute de
-> máquina, então um palpite ficaria indistinguível do veredito do curador num campo da camada de
-> julgamento. Sem Google Places, a única entrada seria o nome do lugar. `price_band` nasce null;
-> sugestão de preço, se vier, é affordance da UI do admin, não dado gravado no import.
+**ADR-06 — No Google Places API.** The original hydrated the 511 places against Places to obtain hours, phone numbers and price band. Cut: hours are solved by the directions button, and **price band is Michael's judgment, not Google's**. Quick-add geocoding uses Nominatim/OSM. *Reason: it eliminates a paid API, a key, a hydration script and an entire NFR, with no relevant loss.*
 
-**ADR-07 — Não-listado (`noindex`).** O guia é público e sem senha, mas não é indexado por buscador. *Motivo: os field reports dependem de quem responde ter estado no lugar; os Codes pressupõem distribuição pessoal; e a decisão é reversível em minutos numa direção e lenta e incompleta na outra.* Reavaliar só se o Michael pedir. Consequência: nenhum trabalho de SEO no MVP.
+> **Amendment of v2.1 (F-01, approved by Edu):** the original wording required pre-classifying
+> `cuisine` **and** `price_band` as `suggested`. Only `cuisine` was. `price_band` is a column on
+> `places`, and §9.1 removed `price_band_source` — there is nowhere to mark that the value is a
+> machine guess, so a guess would be indistinguishable from the curator's verdict in a judgment-layer
+> field. Without Google Places, the only input would be the place's name. `price_band` is born null;
+> a price suggestion, if it ever comes, is an affordance of the admin UI, not data written by the
+> import.
 
-**ADR-08 — Sem My Maps sync.** O original sincronizava um mapa do Google via KML. O quick-add mobile já é caminho completo de captura — o próprio PRD admite isso. *Motivo: era a feature de maior complexidade e menor valor marginal.* Some junto a tabela `sync_runs` e o gate de teste de sabotagem.
+**ADR-07 — Unlisted (`noindex`).** The guide is public and password-free, but not indexed by search engines. *Reason: field reports depend on the respondent having been to the place; Codes presuppose personal distribution; and the decision is reversible in minutes in one direction and slow and incomplete in the other.* Reconsider only if Michael asks. Consequence: no SEO work in the MVP.
+
+**ADR-08 — No My Maps sync.** The original synchronized a Google map through KML. Mobile quick-add is already a complete capture path — the PRD itself admits this. *Reason: it was the feature with the highest complexity and the lowest marginal value.* The `sync_runs` table and the sabotage-test gate go with it.
+
+> **Assessed again in S09, at Edu's request, and not reopened.** Two facts settle it. First, the
+> places come from **Apple Maps**, not Google My Maps: syncing the latter would read an empty source
+> unless Michael keeps one in parallel. Second, KML carries name, coordinates, description and layer,
+> and **never** the judgment layer — so a sync brings more pins, and §1 says pins are precisely what
+> has no value here. If it is ever built, the cheap version keys on a **link-shared map id** (a plain
+> `GET` on the KML endpoint, no OAuth); the version keyed on an **account** has no official API and
+> would break on its own. What is worth reconsidering is only the assumption behind the cut — that
+> quick-add is a complete capture path — because S08 measured that Michael has not sat down to use
+> any of our tools yet.
 
 ---
 
-## 16. Decisões pendentes
+## 16. Pending decisions
 
-| # | Decisão | Status | Bloqueia |
+| # | Decision | Status | Blocks |
 |---|---|---|---|
-| DP-01 | `destination` acima de `experience`? | ✅ Resolvida — não faz diferença, topos paralelos (RN-04) | — |
-| DP-02 | Cidades singleton: pares, agrupadas ou suprimidas? | ✅ Resolvida — exibir como pares | — |
-| DP-03 | Nomes públicos dos tiers | ✅ Resolvida — editáveis no admin (RN-12) | — |
-| DP-04 | `Hype trap` público ou admin? | ✅ Resolvida — admin-only (RN-14) | — |
-| DP-05 | Link indexável? | ✅ Resolvida — não-listado (ADR-07) | — |
-| DP-06 | O Michael quer aparecer — rosto, perfil de gosto, página "about"? | 🔴 Aberta | Copy e tom. Não bloqueia build |
-| DP-07 | Notas de voz por lugar | 🔴 Aberta | Fora do MVP; candidata a fase futura |
-| DP-08 | Os 28 conflitos, 15 sem classificação e 4 fora do cruzamento | 🔴 Aberta — depende do Michael | Publicação desses lugares específicos |
+| DP-01 | `destination` above `experience`? | ✅ Resolved — makes no difference, parallel summits (RN-04) | — |
+| DP-02 | Singleton cities: pairs, grouped or suppressed? | ✅ Resolved — display as pairs | — |
+| DP-03 | Public names of the tiers | ✅ Resolved — editable in the admin (RN-12) | — |
+| DP-04 | `Hype trap` public or admin? | ✅ Resolved — admin-only (RN-14) | — |
+| DP-05 | Indexable link? | ✅ Resolved — unlisted (ADR-07) | — |
+| DP-06 | Does Michael want to appear — face, taste profile, an "about" page? | 🔴 Open | Copy and tone. Does not block the build |
+| DP-07 | Voice notes per place | 🔴 Open | Outside the MVP; a candidate for a future phase |
+| DP-08 | The 28 conflicts, 15 unclassified and 4 outside the crossing | 🔴 Open — depends on Michael | Publication of those specific places |
 
 ---
 
-## 17. Como o CLI usa este documento
+## 17. How the CLI uses this document
 
-1. **Boot da sessão:** ler `.claude/CLAUDE.md` → esta Bíblia → `docs/STATUS.md` → `docs/BACKLOG.md`.
-2. **Antes de codar:** confirmar com o Edu qual feature está em foco. Nunca começar sem confirmação.
-3. **Dúvida de comportamento:** §14 (regras de negócio).
-4. **Dúvida de schema:** §9 — e confirmar contra o banco vivo via MCP antes de escrever SQL.
-5. **Dúvida sobre por que algo não está no projeto:** §15 (ADRs) antes de propor de novo.
-6. **Ao fechar feature:** atualizar `STATUS.md`; pendência nova vai para `BACKLOG.md`.
-7. **O PRD original** (`docs/files/`) é material de origem, não fonte da verdade. Onde divergir desta Bíblia, esta Bíblia vence.
+1. **Session boot:** read `.claude/CLAUDE.md` → this bible → `docs/STATUS.md` → `docs/BACKLOG.md`.
+2. **Before writing code:** confirm with Edu which feature is in focus. Never start without confirmation.
+3. **Question about behavior:** §14 (business rules).
+4. **Question about the schema:** §9 — and confirm against the live database through MCP before writing SQL.
+5. **Question about why something is not in the project:** §15 (ADRs) before proposing it again.
+6. **On closing a feature:** update `STATUS.md`; anything newly pending goes to `BACKLOG.md`.
+7. **The original PRD** (`docs/files/`) is origin material, not source of truth. Where it disagrees with this bible, this bible wins.
 
-> **A camada de julgamento — `tier`, `starred`, `the_dish`, `curator_note`, `story`, `last_visited` e as atribuições de tag — é o único dado insubstituível do sistema.** Qualquer rotina automática que escreva nesses campos precisa de autorização explícita.
+> **The judgment layer — `tier`, `starred`, `the_dish`, `curator_note`, `story`, `last_visited` and the tag assignments — is the only irreplaceable data in the system.** Any automated routine writing to those fields needs explicit authorization.

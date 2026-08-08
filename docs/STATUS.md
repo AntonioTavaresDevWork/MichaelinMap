@@ -1,758 +1,812 @@
 # Michaelin Map — STATUS
 
-> Atualizado ao final de cada sessão de desenvolvimento.
-> Lido no boot, junto de `.claude/CLAUDE.md`, `docs/MICHAELINMAP_BIBLIA.md` e `docs/BACKLOG.md`.
+> Updated at the end of every development session.
+> Read at boot, alongside `.claude/CLAUDE.md`, `docs/MICHAELINMAP_BIBLIA.md` and `docs/BACKLOG.md`.
 
 ---
 
-## 🗓️ Última atualização
+## 🗓️ Last update
 
-**Data:** 2026-08-07
-**Sessão:** S08 — F-06 (Field reports)
-**Versão:** `0.1.0` — mantida por decisão do Edu; bump só quando o produto for ao ar
-**Atualizado por:** Claude Code (orquestrador)
-
----
-
-## 📍 Fase atual
-
-**As sete features do MVP estão fechadas.** Admin, lado público, filtro facetado, Codes, Roulette e
-Field reports. Não há próxima feature planejada.
-
-**O caminho crítico agora é inteiramente humano** e não é código: nenhum dos 58 lugares publicados
-tem `the_dish` ou `curator_note`, e as 145 atribuições de tag continuam todas `suggested`. O guia
-mostra os vereditos, não a voz.
+**Date:** 2026-08-07
+**Session:** S08 — F-06 (Field reports)
+**Version:** `0.1.0` — kept by Edu's decision; bump only when the product goes live
+**Updated by:** Claude Code (orchestrator)
 
 ---
 
-## ✅ Concluído
+## 📍 Current phase
 
-### Sessão 01 — Scaffold
-- [x] Repositório GitHub criado (`AdminFeedpro/MichaelinMap`)
-- [x] Projeto Supabase criado (`woapimgpmlgqqvauckdy`) — **vazio**
-- [x] MCP Supabase configurado
-- [x] Estrutura `.claude/` (CLAUDE.md, init.md, 5 agentes, 5 skills)
-- [x] `docs/prompts/` (orquestrador + executor)
+**All seven MVP features are closed.** Admin, public side, faceted filter, Codes, Roulette and
+field reports. There is no next feature planned.
 
-### Sessão 02 — Escopo e fundação documental
-- [x] Material do Claude Web analisado: PRD v1.0, CLAUDE.md do produto, PLAN.md, schema.sql, seed.sql, import-places.ts, CSV master
-- [x] CSV validado linha a linha contra os números do PRD — batem todos (511 lugares, 273 restaurantes, 91 bares, 22 estrelas, 42 não visitados, 28 conflitos, 19 guias, 0 Apple IDs duplicados, 0 coordenadas faltando)
-- [x] Auditoria do schema — 7 achados, 3 de severidade alta (`BL-01` a `BL-07` no BACKLOG)
-- [x] Reavaliação de escopo: cortes de overengineering acordados com Edu
-- [x] 5 decisões pendentes resolvidas (DP-01 a DP-05)
-- [x] 8 ADRs registrados
-- [x] `docs/MICHAELINMAP_BIBLIA.md` v2.0 escrita
-- [x] `docs/BACKLOG.md` populado (20 itens)
-- [x] `docs/STATUS.md` corrigido — a versão anterior afirmava "Setup concluído" com o banco vazio
-- [x] Skills renomeadas `wise-*` → `michaelinmap-*`; BOM removido do frontmatter (impedia o parser de ler as descrições)
+**The critical path is now entirely human** and it is not code: none of the 58 published places has
+`the_dish` or `curator_note`, and the 145 tag assignments are all still `suggested`. The guide shows
+the verdicts, not the voice.
 
-### F-00 — Fundação ✅
-- [x] Vite 8 + React 19 + TypeScript 6 + Tailwind 4 + shadcn/ui (preset radix-nova)
-- [x] 7 dependências instaladas: `@supabase/supabase-js`, `@tanstack/react-query`, `react-router-dom`, `zustand`, `sonner`, `lucide-react`, `maplibre-gl`
-- [x] 9 componentes shadcn: button, input, label, card, sonner, separator, skeleton, badge, dropdown-menu
-- [x] `src/lib/supabase/client.ts` — singleton que valida env no import
-- [x] `src/lib/utils.ts` — `cn()`, `mapRpcError()`, formatadores **en-US**, `monthsSince()`, `slugify()` alinhado ao script de import
-- [x] `src/types/index.ts` — 8 interfaces em snake_case espelhando o schema-alvo
-- [x] `useSession()` + `ProtectedRoute` para `/admin`
-- [x] Layouts público e admin; login funcional; placeholders nas rotas por vir
-- [x] `noindex, nofollow` no `index.html` (ADR-07)
+---
+
+## ✅ Completed
+
+### Session 01 — Scaffold
+- [x] GitHub repository created (`AdminFeedpro/MichaelinMap`)
+- [x] Supabase project created (`woapimgpmlgqqvauckdy`) — **empty**
+- [x] Supabase MCP configured
+- [x] `.claude/` structure (CLAUDE.md, init.md, 5 agents, 5 skills)
+- [x] `docs/prompts/` (orchestrator + executor)
+
+### Session 02 — Scope and documentary foundation
+- [x] Claude Web material analyzed: PRD v1.0, the product's CLAUDE.md, PLAN.md, schema.sql, seed.sql, import-places.ts, master CSV
+- [x] CSV validated line by line against the PRD's numbers — all match (511 places, 273 restaurants, 91 bars, 22 stars, 42 unvisited, 28 conflicts, 19 guides, 0 duplicate Apple IDs, 0 missing coordinates)
+- [x] Schema audit — 7 findings, 3 of high severity (`BL-01` through `BL-07` in the BACKLOG)
+- [x] Scope reassessment: overengineering cuts agreed with Edu
+- [x] 5 pending decisions resolved (DP-01 through DP-05)
+- [x] 8 ADRs recorded
+- [x] `docs/MICHAELINMAP_BIBLIA.md` v2.0 written
+- [x] `docs/BACKLOG.md` populated (20 items)
+- [x] `docs/STATUS.md` corrected — the previous version claimed "setup complete" with an empty database
+- [x] Skills renamed `wise-*` → `michaelinmap-*`; BOM removed from the frontmatter (it prevented the parser from reading the descriptions)
+
+### F-00 — Foundation ✅
+- [x] Vite 8 + React 19 + TypeScript 6 + Tailwind 4 + shadcn/ui (radix-nova preset)
+- [x] 7 dependencies installed: `@supabase/supabase-js`, `@tanstack/react-query`, `react-router-dom`, `zustand`, `sonner`, `lucide-react`, `maplibre-gl`
+- [x] 9 shadcn components: button, input, label, card, sonner, separator, skeleton, badge, dropdown-menu
+- [x] `src/lib/supabase/client.ts` — singleton that validates env at import
+- [x] `src/lib/utils.ts` — `cn()`, `mapRpcError()`, **en-US** formatters, `monthsSince()`, `slugify()` aligned with the import script
+- [x] `src/types/index.ts` — 8 interfaces in snake_case mirroring the target schema
+- [x] `useSession()` + `ProtectedRoute` for `/admin`
+- [x] Public and admin layouts; working login; placeholders on the routes still to come
+- [x] `noindex, nofollow` in `index.html` (ADR-07)
 - [x] `.env.example` + `.env.local` (publishable key; gitignored)
-- [x] **Gate:** `npm run build` e `npm run lint` limpos · dev server sobe e responde 200 em `/` e `/admin/login`
+- [x] **Gate:** `npm run build` and `npm run lint` clean · dev server starts and answers 200 on `/` and `/admin/login`
 
-### Sessão 03 — Destravamento de ambiente ✅
-- [x] `mcp.json` → `.mcp.json` — nome que o Claude Code lê e que o `.gitignore` já cobria
-- [x] `env.local.download` → `.env.local` — o arquivo existia com o nome quebrado pelo download
-- [x] `git init` + commit inicial `b6fef0c` na `main` (68 arquivos)
-- [x] Varredura de secrets no índice: limpo. `.mcp.json`, `.env.local` e `.claude/settings.local.json` confirmados ignorados
-- [x] Node.js 24.19.0 / npm 11.17.0 instalados · `npm install` (459 pacotes)
-- [x] **Gate reexecutado nesta máquina:** `npm run build` e `npm run lint` limpos
-- [x] Token do Supabase validado: projeto `ACTIVE_HEALTHY`, PostgreSQL 17.6.1, região us-west-2
-- [x] Caminho da pasta corrigido na Bíblia §3 e no `.claude/CLAUDE.md`
-- [x] `env.example` duplicado removido (`BL-24` fechado) — `.env.example` é o único canônico
+### Session 03 — Unblocking the environment ✅
+- [x] `mcp.json` → `.mcp.json` — the name Claude Code reads and the one `.gitignore` already covered
+- [x] `env.local.download` → `.env.local` — the file existed with the name broken by the download
+- [x] `git init` + initial commit `b6fef0c` on `main` (68 files)
+- [x] Secret sweep of the index: clean. `.mcp.json`, `.env.local` and `.claude/settings.local.json` confirmed ignored
+- [x] Node.js 24.19.0 / npm 11.17.0 installed · `npm install` (459 packages)
+- [x] **Gate re-run on this machine:** `npm run build` and `npm run lint` clean
+- [x] Supabase token validated: project `ACTIVE_HEALTHY`, PostgreSQL 17.6.1, region us-west-2
+- [x] Folder path corrected in bible §3 and in `.claude/CLAUDE.md`
+- [x] Duplicate `env.example` removed (`BL-24` closed) — `.env.example` is the only canonical one
 
-### F-01 — Schema + dados ✅
-- [x] `20260806120000_f01_schema_rls_rpc.sql` — 8 tabelas, 3 constraints de julgamento, 8 índices, trigger `updated_at`, `is_curator()`, 14 policies, view `field_report_aggregates` com `security_invoker`, 2 RPCs. **12 GATEs inline passaram**
-- [x] `20260806120100_f01_seed_and_import.sql` — 4 tiers, 94 tags, 38 perguntas, code `DEMO`, 511 lugares, 145 tags sugeridas. **18 GATEs passaram**
-- [x] `BL-01` a `BL-08`, `BL-12` e `BL-13` fechados
-- [x] Import verificado por **checksum contra o CSV**: nome, slug, tipo, tier, estrela, visitado, país, cidade, área, coordenadas, endereço e `source_guides` — os 511 registros do banco são idênticos ao gerado da fonte
-- [x] Smoke de segurança com `SET ROLE anon`: vê 0 lugares, 93 tags (`Hype trap` oculto), 0 `place_tags`, zero acesso a `codes` e `curators`
-- [x] Smoke funcional das RPCs: code válido/minúsculo/inexistente, field report numérico → `published`, texto livre → `pending` truncado em 40 chars, duplicata bloqueada, resposta sem `value` rejeitada
-- [x] `20260806130000_f01_seed_curator.sql` — a linha do `Michael` em `curators`, resolvida por subquery em `auth.users` (sem UUID hardcoded). 2 GATEs
-- [x] **Autorização verificada ponta a ponta com JWT simulado.** Curador: vê os 511 lugares, as 94 tags, `codes` e `curators`, e escreve. Conta autenticada **fora** da allowlist: 0 lugares, 93 tags, 0 codes, 0 curators, `UPDATE` afeta 0 linhas. É exatamente o caso que o modelo original (`auth.role() = 'authenticated'`) errava — `BL-03` fechado com evidência
-- [x] `schema_migrations` saneado — versões realinhadas com os nomes de arquivo
-- [x] **Gate:** `npm run build` e `npm run lint` limpos
+### F-01 — Schema + data ✅
+- [x] `20260806120000_f01_schema_rls_rpc.sql` — 8 tables, 3 judgment constraints, 8 indexes, `updated_at` trigger, `is_curator()`, 14 policies, the `field_report_aggregates` view with `security_invoker`, 2 RPCs. **12 inline gates passed**
+- [x] `20260806120100_f01_seed_and_import.sql` — 4 tiers, 94 tags, 38 questions, the `DEMO` code, 511 places, 145 suggested tags. **18 gates passed**
+- [x] `BL-01` through `BL-08`, `BL-12` and `BL-13` closed
+- [x] Import verified by **checksum against the CSV**: name, slug, type, tier, star, visited, country, city, area, coordinates, address and `source_guides` — the 511 records in the database are identical to the ones generated from the source
+- [x] Security smoke test with `SET ROLE anon`: sees 0 places, 93 tags (`Hype trap` hidden), 0 `place_tags`, zero access to `codes` and `curators`
+- [x] Functional smoke test of the RPCs: valid/lowercase/nonexistent code, numeric field report → `published`, free text → `pending` truncated at 40 chars, duplicate blocked, answer without `value` rejected
+- [x] `20260806130000_f01_seed_curator.sql` — the `Michael` row in `curators`, resolved by a subquery on `auth.users` (no hardcoded UUID). 2 gates
+- [x] **Authorization verified end to end with simulated JWTs.** Curator: sees all 511 places, the 94 tags, `codes` and `curators`, and writes. An authenticated account **outside** the allowlist: 0 places, 93 tags, 0 codes, 0 curators, `UPDATE` affects 0 rows. This is exactly the case the original model (`auth.role() = 'authenticated'`) got wrong — `BL-03` closed with evidence
+- [x] `schema_migrations` sanitized — versions realigned with the file names
+- [x] **Gate:** `npm run build` and `npm run lint` clean
 
 ### F-02 — Admin ✅ (S05)
 
-- [x] Lista de lugares com barra de filtros (`places.tsx`, `place-filter-bar.tsx`, `place-filters.ts`)
-- [x] Editor de lugar completo (`place-editor.tsx`) + regras de promoção a `published` (`publish-rules.ts`)
-- [x] Atribuição de tags com distinção visual de `suggested` × `curator` — RN-15 (`tag-picker.tsx`)
-- [x] Overview no lugar do dashboard: distribuição de tiers, progresso de curadoria, filas e desatualizados
-- [x] Quick-add mobile com geocoding Nominatim, sem chave — ADR-06 (`quick-add.tsx`, `use-geocode.ts`)
+- [x] Place list with a filter bar (`places.tsx`, `place-filter-bar.tsx`, `place-filters.ts`)
+- [x] Complete place editor (`place-editor.tsx`) + rules for promotion to `published` (`publish-rules.ts`)
+- [x] Tag assignment with a visual distinction between `suggested` and `curator` — RN-15 (`tag-picker.tsx`)
+- [x] Overview instead of a dashboard: tier distribution, curation progress, queues and stale entries
+- [x] Mobile quick-add with Nominatim geocoding, no key — ADR-06 (`quick-add.tsx`, `use-geocode.ts`)
 - [x] Hooks `use-places`, `use-tags`, `use-tiers`
-- [x] 6 componentes shadcn adicionados: checkbox, dialog, select, switch, tabs, textarea
-- [x] **Tela dedicada de fila de revisão cortada** — as três filas viraram cartões no Overview que
-      linkam para a lista com o filtro aplicado. Uma tela própria seria uma quarta forma de olhar
-      os mesmos registros, com dois lugares para manter em sincronia
+- [x] 6 shadcn components added: checkbox, dialog, select, switch, tabs, textarea
+- [x] **Dedicated review-queue screen cut** — the three queues became cards on the Overview that
+      link to the list with the filter applied. A screen of its own would be a fourth way of looking
+      at the same records, with two places to keep in sync
 
-### F-03 — Público ⚠️ (S05) — entregue, com o mapa mudo por causa ambiental
+### F-03 — Public ⚠️ (S05) — delivered, with the map mute for environmental reasons
 
-- [x] Portão de cidade com cidades em pares e contagem (DP-02); empty state autoral
-- [x] Guia da cidade separando "Eat & drink" de "Everything else" (§7); ordem estrela → tier → nome;
-      `the_dish` lidera a linha quando existe
-- [x] Detalhe do lugar liderando pelo veredito, nunca pelo endereço; direções em botão
-- [x] `use-public-guide.ts` — leitura pública via anon key
-- [x] Mapa MapLibre sincronizado com a lista nos dois sentidos, **uma única seleção compartilhada**;
-      cor do pin codifica julgamento (âmbar+estrela, escuro para destination/experience, claro o resto)
-- [x] Tiles do OpenFreeMap — grátis, sem chave, mesma lógica do ADR-06
-- [x] Mapa em `lazy` + `Suspense` (`BL-25`): principal 699 kB (204 kB gzip), chunk do mapa carregado
-      só ao abrir uma cidade
-- [x] Caminho público verificado ponta a ponta com a anon key: 58 publicados, 93 tags (`Hype trap`
-      ausente — RN-14), `codes` negando com 42501 (RN-20)
-- [x] Corrigido de verdade no caminho: o enquadramento só roda após `load` e com container
-      dimensionado — `fitBounds` contra largura zero produzia zoom degenerado
-- [ ] ⚠️ **O mapa não desenha geometria nesta máquina** — `BL-29`. Não é o nosso código; ver Blockers
+- [x] City gate with cities as pairs and counts (DP-02); authored empty state
+- [x] City guide separating "Eat & drink" from "Everything else" (§7); order star → tier → name;
+      `the_dish` leads the row when it exists
+- [x] Place detail leading with the verdict, never with the address; directions in a button
+- [x] `use-public-guide.ts` — public reading through the anon key
+- [x] MapLibre map synchronized with the list in both directions, **one single shared selection**;
+      pin color encodes judgment (amber+star, dark for destination/experience, light for the rest)
+- [x] OpenFreeMap tiles — free, keyless, the same logic as ADR-06
+- [x] Map in `lazy` + `Suspense` (`BL-25`): main bundle 699 kB (204 kB gzip), map chunk loaded
+      only when a city opens
+- [x] Public path verified end to end with the anon key: 58 published, 93 tags (`Hype trap`
+      absent — RN-14), `codes` denying with 42501 (RN-20)
+- [x] Genuinely fixed along the way: framing only runs after `load` and with a sized container —
+      `fitBounds` against zero width produced a degenerate zoom
+- [ ] ⚠️ **The map draws no geometry on this machine** — `BL-29`. It is not our code; see Blockers
 
-### Sessão 06 — Reconciliação documental
-- [x] `docs/STATUS.md` e `docs/MICHAELINMAP_BIBLIA.md` alinhados com o estado real (F-02 e F-03 na `main`)
-- [x] `schema_migrations` reconferido via MCP: **3** migrations vivas, não 2 como este arquivo dizia
-- [x] **Gate reexecutado:** `npm run build` e `npm run lint` limpos
+### Session 06 — Documentary reconciliation
+- [x] `docs/STATUS.md` and `docs/MICHAELINMAP_BIBLIA.md` aligned with the real state (F-02 and F-03 on `main`)
+- [x] `schema_migrations` re-checked through MCP: **3** live migrations, not 2 as this file claimed
+- [x] **Gate re-run:** `npm run build` and `npm run lint` clean
 
-### F-04 — Filtros facetados ✅ (S06)
+### F-04 — Faceted filters ✅ (S06)
 
-- [x] `src/lib/guide-filters.ts` — objeto de filtro único, **OR dentro da faceta e AND entre facetas** (RN-16),
-      contagem ao vivo calculada contra as *outras* facetas ativas, serialização na URL (RN-19)
-- [x] `src/components/public/guide-filter-panel.tsx` — opção zerada **desabilitada, não escondida** (RN-17);
-      recolhível no telefone, sempre aberto no desktop
-- [x] Filtro alimenta lista e mapa a partir do mesmo estado; o mapa reenquadra sozinho ao filtrar
-- [x] Seleção que sai do resultado é limpa, para o mapa não destacar pin sem linha ao lado
-- [x] Área só em cidade acima do piso de densidade (RN-18)
-- [x] **Decisão de desenho:** faceta sem nenhuma opção populada não é renderizada. Não contraria a RN-17,
-      que governa a *opção* dentro da faceta — é o princípio da §8 ("degradar em silêncio em vez de
-      renderizar controle vazio") aplicado às demais facetas. Hoje seis das sete facetas de tag estão
-      vazias (`BL-30`); elas aparecem sozinhas conforme o Michael taggear, sem deploy
-- [x] Empty state autoral da combinação impossível (`BL-18` fechado)
-- [x] **Verificado por harness descartável: 27 checks contra o banco vivo pelo caminho anônimo**, o que
-      testa RLS e filtro juntos. Cobre OR/AND, contagem ao vivo, opção zerada desabilitada, opção
-      selecionada que zerou continuar clicável, round-trip da URL, piso de densidade da área e a
-      defesa em profundidade da RN-14
-- [x] **Gate:** `npm run build` e `npm run lint` limpos. Bundle principal 699 → 707 kB
+- [x] `src/lib/guide-filters.ts` — a single filter object, **OR within a facet and AND between facets** (RN-16),
+      live counts computed against the *other* active facets, serialization into the URL (RN-19)
+- [x] `src/components/public/guide-filter-panel.tsx` — a zeroed option is **disabled, not hidden** (RN-17);
+      collapsible on the phone, always open on the desktop
+- [x] The filter feeds list and map from the same state; the map reframes itself when filtering
+- [x] A selection that falls out of the results is cleared, so the map does not highlight a pin with no row beside it
+- [x] Area only in cities above the density floor (RN-18)
+- [x] **Design decision:** a facet with no populated option at all is not rendered. It does not contradict
+      RN-17, which governs the *option* inside a facet — it is §8's principle ("degrade silently instead of
+      rendering an empty control") applied to the remaining facets. Today six of the seven tag facets are
+      empty (`BL-30`); they appear on their own as Michael tags, with no deploy
+- [x] Authored empty state for the impossible combination (`BL-18` closed)
+- [x] **Verified by a throwaway harness: 27 checks against the live database through the anonymous path**, which
+      tests RLS and filtering together. Covers OR/AND, live counts, a zeroed option being disabled, a
+      selected option that zeroed out staying clickable, the URL round trip, the area density floor and
+      RN-14's defense in depth
+- [x] **Gate:** `npm run build` and `npm run lint` clean. Main bundle 699 → 707 kB
 
 ### F-05 — Codes + Roulette ✅ (S07)
 
-- [x] **Nenhuma migration.** A F-01 já havia entregue `codes` com os seis campos de efeito e a
-      `rpc_redeem_code()` com `anon` autorizado. Feature 100% frontend, zero dependência npm nova,
-      zero componente shadcn novo
-- [x] `src/lib/code-effects.ts` — tema por CSS custom properties (todo shadcn do app lê esses
-      tokens, então um code repinta a interface sem tocar em componente nenhum); `contrastOn()`
-      deriva o texto legível por luminância WCAG; fundo escuro liga a classe `dark`; token de estilo
-      de mapa → URL, com fallback para valor desconhecido
-- [x] `src/lib/roulette.ts` — sorteio ponderado (estrela 6, `destination`/`experience` 3, `cool` 2,
-      `fair` 1), sobre o resultado **filtrado**, com `random` injetável e "spin again" que não repete
-- [x] `src/lib/code-context.ts` + `code-provider.tsx` — code lembrado em `localStorage` mas
-      **revalidado no servidor a cada carga** (RN-28); `?code=` aceito e retirado da URL na chegada
-- [x] `code-entry.tsx` — escuta de teclado sem campo visível no desktop, dialog por long-press da
-      logo no celular (PRD §9.7). Falha silenciosa na escuta: quem não perguntou nada não recebe erro
-- [x] `code-banner.tsx` — faixa com a mensagem e a saída; aplica e **remove** o tema, montado no
-      layout público para o admin nunca vestir o code de um visitante
-- [x] `guide-map.tsx` — `setStyle` em runtime (os marcadores são DOM, sobrevivem à troca), pins
-      repintados pelo code, anel nos destacados sem apagar a cor do tier
-- [x] `guide.tsx` — preset semeia o painel uma vez e nunca sobrescreve a URL (RN-27); destacados
-      sobem na ordem com selo "Picked for you"; Roulette ao lado da contagem
-- [x] `/admin/codes` no lugar do placeholder — lista, editor com cor, estilo de mapa, pin, janela de
-      datas, e o `preset_filter` montado **pelo próprio painel do visitante**
-- [x] **Verificado no navegador** (a extensão do Chrome conectou, ao contrário da S06): code digitado
-      no ar → URL virou `?tier=destination&star=1` sozinha, guia escureceu, banner apareceu, selo
-      âmbar entrou na linha, pins viraram quadrados com anel, opções zeradas ficaram cinza e
-      clicáveis. "Back to normal" desfez tudo. Troca de estilo confirmada por rede: `/styles/liberty`
-      na carga, `/styles/dark` no instante do resgate
-- [x] **60 checks num harness descartável**, os puros e o caminho anônimo real: code válido,
-      minúsculo, com espaço, inexistente, vazio, desligado, ainda não começado e expirado — mais a
-      prova de que toda falha responde idêntica (RN-20) e de que `anon` segue sem listar `codes`
-- [x] `BL-19` fechado na parte de contraste; `BL-23` parcialmente resolvido
-- [x] **Gate:** `npm run build` e `npm run lint` limpos. Bundle principal 707 → 736 kB (214 kB gzip)
-- [ ] ⚠️ **A tela `/admin/codes` não foi clicada** — está atrás do login do curador e o CLI não tem
-      a senha. `BL-31`
+- [x] **No migration.** F-01 had already delivered `codes` with the six effect fields and
+      `rpc_redeem_code()` with `anon` authorized. A 100% frontend feature, zero new npm dependencies,
+      zero new shadcn components
+- [x] `src/lib/code-effects.ts` — theming through CSS custom properties (every shadcn component in the
+      app reads those tokens, so a code repaints the interface without touching a single component);
+      `contrastOn()` derives legible text from WCAG luminance; a dark background turns on the `dark`
+      class; a map style token → URL, with a fallback for an unknown value
+- [x] `src/lib/roulette.ts` — weighted draw (star 6, `destination`/`experience` 3, `cool` 2,
+      `fair` 1), over the **filtered** result, with an injectable `random` and a "spin again" that does
+      not repeat
+- [x] `src/lib/code-context.ts` + `code-provider.tsx` — the code is remembered in `localStorage` but
+      **revalidated on the server on every load** (RN-28); `?code=` accepted and removed from the URL on arrival
+- [x] `code-entry.tsx` — keyboard listening with no visible field on the desktop, a dialog through a
+      long-press on the logo on mobile (PRD §9.7). Silent failure while listening: whoever asked nothing gets no error
+- [x] `code-banner.tsx` — a band with the message and the way out; it applies and **removes** the theme,
+      mounted in the public layout so the admin never wears a visitor's code
+- [x] `guide-map.tsx` — `setStyle` at runtime (the markers are DOM and survive the swap), pins
+      repainted by the code, a ring on the highlighted ones without erasing the tier color
+- [x] `guide.tsx` — the preset seeds the panel once and never overwrites the URL (RN-27); highlighted
+      places rise in the order with a "Picked for you" badge; Roulette next to the count
+- [x] `/admin/codes` in place of the placeholder — list, editor with color, map style, pin, date
+      window, and the `preset_filter` built **by the visitor's own panel**
+- [x] **Verified in the browser** (the Chrome extension connected, unlike S06): a code typed into the
+      air → the URL became `?tier=destination&star=1` on its own, the guide darkened, the banner
+      appeared, the amber badge entered the row, pins became squares with rings, zeroed options went
+      gray and stayed clickable. "Back to normal" undid everything. The style swap confirmed over the
+      network: `/styles/liberty` on load, `/styles/dark` at the moment of redemption
+- [x] **60 checks in a throwaway harness**, the pure ones and the real anonymous path: a valid code,
+      lowercase, with whitespace, nonexistent, empty, switched off, not yet started and expired — plus
+      proof that every failure answers identically (RN-20) and that `anon` still cannot list `codes`
+- [x] `BL-19` closed on the contrast part; `BL-23` partially resolved
+- [x] **Gate:** `npm run build` and `npm run lint` clean. Main bundle 707 → 736 kB (214 kB gzip)
+- [ ] ⚠️ **The `/admin/codes` screen was never clicked** — it is behind the curator login and the CLI
+      does not have the password. `BL-31`
 
 ### F-06 — Field reports ✅ (S08)
 
-- [x] **Nenhuma migration** — segunda feature seguida assim. A F-01 já tinha entregue a RPC, a view
-      com `security_invoker`, as 38 perguntas e os grants. Verificado por introspecção antes de
-      planejar: `anon` executa `rpc_submit_field_report` e **não** tem INSERT em `field_reports`,
-      então a RN-23 está garantida no privilégio, não só na policy
-- [x] `src/lib/field-reports.ts` — sorteio semeado em `lugar + navegador` (aleatório de verdade
-      trocaria a pergunta debaixo do dedo a cada render), sorteio ponderado por `weight` sem
-      reposição, validação por tipo de input, formatação do agregado espelhando o que a view
-      **de fato** calcula (média só para `number` e `slider`; o resto reporta a moda)
-- [x] `src/hooks/use-field-reports.ts` — perguntas, agregados, contador de progresso, submissão
-      pela RPC, `session_hash` estável em `localStorage` com fallback para contexto não-seguro
-- [x] `src/components/public/field-report-form.tsx` — os 7 tipos de input, um recibo por pergunta.
-      `range` e `color` nativos cobrem slider e cor: acessíveis por teclado e sem dependência nova
-- [x] `src/components/public/field-report-panel.tsx` — agregado com seriedade impassível (mono,
-      tabular, `n = 5`), oculto abaixo de 5, e o contador de progresso no lugar do vazio
-- [x] `/admin/reports` — fila de revisão do texto livre (aprovar/rejeitar) e a superfície de
-      semeadura. "The dish you would order again" destacado, que é a única resposta de visitante
-      que alimenta o julgamento do curador (Bíblia §10)
-- [x] **RN-29 nova:** a pergunta de acompanhamento é escolha fechada, nunca texto livre — o
-      `judgment` publica na hora quando a pergunta principal não exige revisão, então um campo
-      aberto ali seria um segundo texto livre ao vivo e sem moderação
-- [x] **61 checks num harness descartável**, metade pura e metade pelo caminho anônimo real. Os que
-      mais valem: `anon` não consegue INSERT direto, texto livre cai em `pending` e fica invisível
-      ao público, um `status` contrabandeado dentro do `answer` não muda nada, e o agregado **não**
-      abre com quatro respostas e abre com a quinta
-- [x] **Verificado no navegador:** duas perguntas sorteadas em 24 Diner e três em Aba (o 2-3 varia),
-      acompanhamento aparecendo ao completar a resposta, recibo, pergunta já respondida some na
-      visita seguinte, e o agregado renderizando `Yes · n = 5` depois da quinta
-- [x] **Dois defeitos encontrados pelo olho, não pelas asserções** — ver o log da sessão
-- [x] `BL-32` fechado: `placeholder.tsx` apagado com autorização do Edu
-- [x] **Gate:** `npm run build` e `npm run lint` limpos. Bundle principal 736 → 762 kB (221 kB gzip)
-- [ ] ⚠️ **A tela `/admin/reports` não foi clicada** — mesmo motivo do `BL-31`, está atrás do login
-      do curador. O embed PostgREST da fila foi validado contra o banco à parte
+- [x] **No migration** — the second feature in a row like that. F-01 had already delivered the RPC, the
+      view with `security_invoker`, the 38 questions and the grants. Verified by introspection before
+      planning: `anon` executes `rpc_submit_field_report` and has **no** INSERT on `field_reports`,
+      so RN-23 is guaranteed at the privilege level, not only by policy
+- [x] `src/lib/field-reports.ts` — a draw seeded on `place + browser` (true randomness would swap the
+      question under the finger on every render), a weighted draw by `weight` without replacement,
+      validation by input type, and formatting of the aggregate mirroring what the view **actually**
+      computes (a mean only for `number` and `slider`; everything else reports the mode)
+- [x] `src/hooks/use-field-reports.ts` — questions, aggregates, a progress counter, submission
+      through the RPC, a stable `session_hash` in `localStorage` with a fallback for a non-secure context
+- [x] `src/components/public/field-report-form.tsx` — the 7 input types, one receipt per question.
+      Native `range` and `color` cover slider and color: keyboard accessible and with no new dependency
+- [x] `src/components/public/field-report-panel.tsx` — the aggregate with deadpan seriousness (mono,
+      tabular, `n = 5`), hidden below 5, and the progress counter in place of the emptiness
+- [x] `/admin/reports` — a review queue for free text (approve/reject) and the seeding surface.
+      "The dish you would order again" highlighted, since it is the only visitor answer that feeds the
+      curator's judgment (bible §10)
+- [x] **New RN-29:** the follow-up question is a closed choice, never free text — the `judgment`
+      publishes immediately when the main question does not require review, so an open field there
+      would be a second piece of live, unmoderated free text
+- [x] **61 checks in a throwaway harness**, half pure and half through the real anonymous path. The
+      ones that matter most: `anon` cannot INSERT directly, free text lands in `pending` and stays
+      invisible to the public, a `status` smuggled inside the `answer` changes nothing, and the
+      aggregate does **not** open with four answers and does open with the fifth
+- [x] **Verified in the browser:** two questions drawn at 24 Diner and three at Aba (the 2-3 varies),
+      the follow-up appearing when the answer completes, the receipt, an already-answered question
+      disappearing on the next visit, and the aggregate rendering `Yes · n = 5` after the fifth
+- [x] **Two defects found by eye, not by assertions** — see the session log
+- [x] `BL-32` closed: `placeholder.tsx` deleted with Edu's authorization
+- [x] **Gate:** `npm run build` and `npm run lint` clean. Main bundle 736 → 762 kB (221 kB gzip)
+- [ ] ⚠️ **The `/admin/reports` screen was never clicked** — same reason as `BL-31`, it is behind the
+      curator login. The PostgREST embed of the queue was validated against the database separately
 
 ---
 
-## 🔄 Em andamento
+## 🔄 In progress
 
-Nada em execução.
+Nothing running.
 
 ---
 
-## ⏭️ Próxima ação
+## ⏭️ Next action
 
-**Não há próxima feature.** O MVP acabou. O que o produto precisa agora não é código:
+**There is no next feature.** The MVP is over. What the product needs now is not code:
 
-1. **A voz, e só o Michael pode dar.** Nenhum dos 58 publicados tem `the_dish` ou `curator_note`.
-   São duas perguntas de memória por lugar — "o que eu peço aqui?", "por que este importa?" — em 8 a
-   10 dos mais fortes. Não precisa abrir o admin nem ter nada na mão. É a menor tarefa do projeto
-   com o maior retorno, e com os Codes prontos é exatamente isso que um code entrega a uma pessoa.
-2. **Taggear — também só ele.** O Edu não pode substituir (S08): nunca esteve nos lugares. Das 145
-   atribuições, zero são do curador. Com a RN-31, nenhuma delas aparece mais ao visitante, então o
-   painel tem três facetas até a curadoria começar (`BL-30`). **O que dá para adiantar sem ele** é
-   sugerir `cuisine` em massa como fila de aprovação — `BL-34`.
-3. **Duas filas com dado esperando o Michael:** os 28 conflitos de tier (`DP-08`) e as 145 tags
-   sugeridas (`DP-09`). Ambas já têm superfície no Overview.
-4. **Semear field reports** (`BL-20`): a superfície existe em `/admin/reports`; os valores são
-   observações e têm de ser digitados por quem esteve no lugar.
+1. **The voice, and only Michael can give it.** None of the 58 published places has `the_dish` or
+   `curator_note`. It is two questions from memory per place — "what do I order here?", "why does this
+   one matter?" — on 8 to 10 of the strongest. It requires neither opening the admin nor having
+   anything at hand. It is the project's smallest task with the largest return, and with the Codes
+   ready it is exactly what a code delivers to a person.
+2. **Tagging — also only him.** Edu cannot substitute (S08): he has never been to these places. Of the
+   145 assignments, zero are the curator's. Under RN-31 none of them appears to a visitor any more, so
+   the panel has three facets until curation starts (`BL-30`). **What can be advanced without him** is
+   suggesting `cuisine` in bulk as an approval queue — `BL-34`.
+3. **Two queues with data waiting on Michael:** the 28 tier conflicts (`DP-08`) and the 145 suggested
+   tags (`DP-09`). Both already have a surface on the Overview.
+4. **Seeding field reports** (`BL-20`): the surface exists at `/admin/reports`; the values are
+   observations and have to be typed by someone who was there.
 
-**Do lado técnico, o que sobra é operacional:** clicar `/admin/codes` e `/admin/reports` logado
-(`BL-31`), desabilitar o signup (`OP-01`) e configurar o deploy na Vercel, que nunca foi feito.
+**On the technical side, what is left is operational:** clicking `/admin/codes` and `/admin/reports`
+while logged in (`BL-31`), disabling signup (`OP-01`) and configuring the Vercel deploy, which was
+never done.
 
 ---
 
 ## 🚫 Blockers
 
-**Nenhum blocker.** O MVP fechou e nada impede o produto de ir ao ar.
+**No blockers.** The MVP closed and nothing prevents the product from going live.
 
-🔽 **`BL-29` deixou de ser bug e virou limitação da minha inspeção visual.** O Edu relatou na S08
-que **vê o mapa normalmente no Firefox e no celular** — ou seja, o guia funciona para quem o usa, e
-o mapa mudo é do Chrome automatizado desta máquina. O produto nunca esteve quebrado.
+🔽 **`BL-29` stopped being a bug and became a limitation of my visual inspection.** Edu reported in S08
+that he **sees the map normally in Firefox and on his phone** — that is, the guide works for whoever
+uses it, and the mute map belongs to this machine's automated Chrome. The product was never broken.
 
-Isso **contradiz o registro da S05**, que dizia ter reproduzido em Chrome, Firefox e Edge com um
-MapLibre puro de CDN: ou o ambiente mudou nesses meses, ou aquele teste não isolava o que se
-pensava. Não refiz nenhum dos dois, e o que está acima é relato do Edu, não verificação minha.
+This **contradicts the S05 record**, which claimed reproduction in Chrome, Firefox and Edge with a
+plain MapLibre from a CDN: either the environment changed over those months, or that test did not
+isolate what it was thought to. I redid neither, and what is above is Edu's report, not my verification.
 
-**O que fica na prática:** quando uma sessão precisar conferir o mapa de verdade, quem olha é o Edu
-— eu não tenho como. Só reabrir se alguém relatar mapa mudo num navegador de uso real.
+**What this means in practice:** when a session needs to genuinely check the map, Edu is the one who
+looks — I have no way to. Reopen only if someone reports a mute map in a real browser.
 
-**Um detalhe adjacente, da mesma sessão e possivelmente da mesma família:** o Chrome recusou
-`localhost:5173` e `127.0.0.1:5173` com a porta comprovadamente escutando, e só respondeu pelo IP
-de rede. Anotado no `.claude/CLAUDE.md` para a próxima verificação visual não perder tempo.
+**An adjacent detail, from the same session and possibly the same family:** Chrome refused
+`localhost:5173` and `127.0.0.1:5173` with the port demonstrably listening, and answered only on the
+network IP. Noted in `.claude/CLAUDE.md` so the next visual check does not lose time.
 
 ---
 
-## 📊 Estado do banco
+## 📊 Database state
 
-Reconferido via MCP na S06 (`list_tables`, `list_migrations`). RLS ligada nas 8 tabelas.
+Re-checked through MCP in S06 (`list_tables`, `list_migrations`). RLS enabled on all 8 tables.
 
-| Tabela | Linhas | Observação |
+| Table | Rows | Note |
 |---|---|---|
-| `places` | 511 | **58 `published`** (lote de lançamento, S05), 453 `unreviewed` |
-| `tags` | 94 | 93 públicas + `Hype trap` admin-only |
-| `questions` | 38 | 4 com `requires_review` (as de texto livre) |
+| `places` | 511 | **58 `published`** (launch batch, S05), 453 `unreviewed` |
+| `tags` | 94 | 93 public + `Hype trap` admin-only |
+| `questions` | 38 | 4 with `requires_review` (the free-text ones) |
 | `tiers` | 4 | `destination`, `experience`, `fair`, `cool` |
-| `place_tags` | **173** | todas `source = 'suggested'` — 145 do import da F-01, 28 do lote de cuisine da S08. **Zero do curador** |
-| `codes` | 1 | `DEMO`, para smoke da RPC. A S07 criou 4 codes de teste e **apagou os quatro** ao fim |
-| `curators` | 1 | `Michael` — `mikemyday@mikecofone.com`, conta confirmada |
-| `field_reports` | 0 | A S08 criou linhas de teste pela RPC e por SQL e **apagou todas** ao fim; a tabela voltou a zero, conferido |
+| `place_tags` | **173** | all `source = 'suggested'` — 145 from the F-01 import, 28 from S08's cuisine batch. **Zero from the curator** |
+| `codes` | 1 | `DEMO`, for the RPC smoke test. S07 created 4 test codes and **deleted all four** at the end |
+| `curators` | 1 | `Michael` — `mikemyday@mikecofone.com`, account confirmed |
+| `field_reports` | 0 | S08 created test rows through the RPC and through SQL and **deleted them all** at the end; the table went back to zero, verified |
 
-Distribuição de julgamento: estrela 22 (4,3%), não visitados 42, com tier 279 (`fair` 182, `destination` 38, `experience` 30, `cool` 29), com área 107, 16 cidades.
+Judgment distribution: 22 stars (4.3%), 42 unvisited, 279 with a tier (`fair` 182, `destination` 38, `experience` 30, `cool` 29), 107 with an area, 16 cities.
 
-**Lote de lançamento publicado na S05**, com aprovação do Edu: os 58 lugares com estrela ou tier `destination`, em 5 cidades (Austin 52, St. Augustine 3, Los Angeles 1, Mountain Home 1, Oxfordshire 1). Não foi julgamento novo — tier e estrela vieram dos guias do próprio Michael; o import só não os tinha revelado. Verificado pela API pública com a anon key: o visitante anônimo enxerga 58, não 511. Reversível com `UPDATE places SET status='unreviewed' WHERE status='published'`.
+**Launch batch published in S05**, with Edu's approval: the 58 places with a star or the `destination` tier, across 5 cities (Austin 52, St. Augustine 3, Los Angeles 1, Mountain Home 1, Oxfordshire 1). It was not new judgment — tier and star came from Michael's own guides; the import simply had not revealed them. Verified through the public API with the anon key: an anonymous visitor sees 58, not 511. Reversible with `UPDATE places SET status='unreviewed' WHERE status='published'`.
 
-⚠️ **Nenhum dos 58 tem `the_dish` ou `curator_note`.** O guia está populado mas mudo: mostra os vereditos, não a voz. Escrever essas frases em 8-10 dos mais fortes é o que separa a demo de uma lista organizada — e é trabalho humano, não de CLI.
+⚠️ **None of the 58 has `the_dish` or `curator_note`.** The guide is populated but mute: it shows the verdicts, not the voice. Writing those sentences for 8-10 of the strongest is what separates the demo from an organized list — and it is human work, not CLI work.
 
-Migrations vivas — **4**: `20260806120000_f01_schema_rls_rpc`, `20260806120100_f01_seed_and_import`,
-`20260806130000_f01_seed_curator` e `20260807140000_suggest_cuisine_published` (S08).
-`schema_migrations` saneado após o apply, versões alinhadas com os nomes de arquivo.
+Live migrations — **4**: `20260806120000_f01_schema_rls_rpc`, `20260806120100_f01_seed_and_import`,
+`20260806130000_f01_seed_curator` and `20260807140000_suggest_cuisine_published` (S08).
+`schema_migrations` sanitized after the apply, versions aligned with the file names.
 
-A F-02 e a F-03 **não alteraram o schema** — são frontend sobre o banco da F-01. O `place_tags`
-continua com as 145 linhas `suggested` do import: a curadoria ainda não começou a escrever.
+F-02 and F-03 **did not change the schema** — they are frontend on top of F-01's database. `place_tags`
+still holds the 145 `suggested` rows from the import: curation has not started writing.
 
 ---
 
-## 🗺️ Roteiro
+## 🗺️ Roadmap
 
-| # | Feature | Status | Sessões |
+| # | Feature | Status | Sessions |
 |---|---|---|---|
-| F-00 | Fundação | ✅ Concluída (S02) | ~0,5 |
-| F-01 | Schema + dados | ✅ Concluída (S04) | ~1 |
-| F-02 | Admin | ✅ Concluída (S05) | ~1 |
-| F-03 | Público (city gate, mapa, lista, detalhe) | ⚠️ Concluída (S05) — mapa mudo por `BL-29` | ~1 |
-| F-04 | Filtros facetados | ✅ Concluída (S06) | ~0,5 |
-| F-05 | Codes completo + Roulette | ✅ Concluída (S07) | ~1 |
-| F-06 | Field reports | ✅ Concluída (S08) | ~1 |
+| F-00 | Foundation | ✅ Complete (S02) | ~0.5 |
+| F-01 | Schema + data | ✅ Complete (S04) | ~1 |
+| F-02 | Admin | ✅ Complete (S05) | ~1 |
+| F-03 | Public (city gate, map, list, detail) | ⚠️ Complete (S05) — map mute due to `BL-29` | ~1 |
+| F-04 | Faceted filters | ✅ Complete (S06) | ~0.5 |
+| F-05 | Complete Codes + Roulette | ✅ Complete (S07) | ~1 |
+| F-06 | Field reports | ✅ Complete (S08) | ~1 |
 
-Total estimado: ~10 sessões — **as sete features fecharam em 7 sessões de CLI**, à frente da
-estimativa. As duas últimas estavam orçadas em ~2 cada e saíram em ~1, pelo mesmo motivo: nenhuma
-das duas precisou de schema, porque a F-01 já tinha construído o terreno. A curadoria do Michael
-roda em paralelo desde a F-02 — ver Bíblia §13.1 — e agora é o **único** caminho crítico do
-projeto: o código terminou à frente do conteúdo.
+Total estimate: ~10 sessions — **the seven features closed in 7 CLI sessions**, ahead of the estimate.
+The last two were budgeted at ~2 each and came in at ~1, for the same reason: neither needed schema
+work, because F-01 had already built the ground. Michael's curation has been running in parallel since
+F-02 — see bible §13.1 — and is now the **only** critical path in the project: the code finished ahead
+of the content.
 
 ---
 
-## 📝 Log de sessões
-
-### 2026-08-07 — S08: F-06 — Field reports (o MVP fechou)
-
-**O que foi feito:** a última feature do MVP. Visitantes agora respondem 2-3 perguntas por lugar,
-os agregados abrem na quinta resposta, o texto livre espera o Michael numa fila, e o curador tem
-onde semear as próprias respostas.
-
-**Pela segunda sessão seguida, zero migration.** O boot conferiu o schema vivo antes de planejar e
-encontrou tudo pronto desde a F-01: a RPC derivando status, truncando em 40 e limitando por sessão;
-a view com `security_invoker` e o `HAVING count(*) >= 5`; as 38 perguntas semeadas. O achado que
-mais vale registrar é do nível de privilégio: **`anon` executa a RPC e não tem INSERT em
-`field_reports`**, então a RN-23 não depende de a policy estar certa — não existe caminho de escrita
-direta para revogar.
-
-**Uma regra nova saiu de uma coisa pequena.** Quatro perguntas carregam um acompanhamento
-(`judgment_prompt` — "Was it worth it?", "Is that good or bad?") e o `judgment` é publicado na hora
-sempre que a pergunta principal não exige revisão. Um campo de texto ali seria um **segundo** texto
-livre do visitante, ao vivo e sem moderação, quando a RN-24 permite exatamente um. Virou **RN-29**:
-o acompanhamento é escolha fechada, e os dois rótulos saem do próprio enunciado — que ou os oferece
-("good or bad" → Good/Bad) ou é sim/não.
-
-**Sobre semear (BL-20), o que foi entregue e o que não foi.** A superfície existe: o curador escolhe
-um lugar, responde as perguntas na mesma UI do visitante, e as respostas entram publicadas. O que o
-CLI **não** fez foi inventar os valores. Temperatura da comida no Franklin, pé-direito em mãos no
-Uchi — eu nunca estive em nenhum dos 58, e o painel reporta com uma casa decimal e cara de medição;
-um número inventado ali seria indistinguível de um medido. A Bíblia §10 sempre disse "**o curador**
-semeia as próprias respostas". Vale saber que semear não revela agregado nenhum: o n=5 é por lugar ×
-pergunta e uma pessoa dá uma resposta só — o ganho é o contador não nascer em zero.
-
-**Verificação: 61 checks, e depois o olho — que achou o que os 61 não achavam.**
-
-O harness cobriu o que asserção cobre bem: o sorteio ser estável para a mesma semente e mudar de
-pessoa para pessoa, `anon` não conseguir INSERT direto, texto livre cair em `pending` e ficar
-invisível ao público, um `status` contrabandeado dentro do `answer` não mudar nada, o agregado **não**
-abrir com quatro respostas e abrir com a quinta.
-
-Aí a página foi aberta no navegador e apareceram **dois defeitos que nenhum dos 61 pegava**, os dois
-de estado de interface:
-
-1. **O recibo nunca aparecia.** O painel filtra as perguntas já respondidas, e o predicado era
-   reativo — responder uma pergunta a removia da lista no mesmo instante, desmontando o cartão antes
-   de ele mostrar "Logged". Corrigido tirando um retrato do que já estava respondido **na abertura da
-   página**: uma pergunta respondida agora fica de pé até o fim da visita, e só some na próxima.
-2. **O recibo contava duas vezes** — dizia "2 of 5" na primeira resposta. A submissão invalida a
-   query de contagem, que revalida já incluindo a resposta nova, e o `+1` somava em cima. Corrigido
-   guardando a contagem de antes da resposta.
-
-Nenhum dos dois é sutil de ver e nenhum era visível sem abrir a página. É a mesma lição que a S05
-registrou por outro caminho, agora do lado do frontend: asserção prova regra, olho prova interface.
-
-**Um detalhe do ambiente que vale saber.** O `session_hash` gerado no navegador saiu no formato de
-fallback (`s-<timestamp>-<random>`) em vez de UUID: servido por HTTP no IP de rede, a página não é
-um contexto seguro e `crypto.randomUUID` não existe. O fallback estava lá para isso e funcionou —
-em produção (HTTPS na Vercel) será UUID. Não é bug, mas explica o formato se alguém olhar a coluna.
-
-**Dado de teste criado e apagado.** A verificação escreveu em `field_reports` pela RPC e por SQL —
-inclusive as cinco respostas necessárias para abrir um agregado de verdade na tela. Tudo apagado ao
-fim por `session_hash`; a tabela voltou a zero, conferido.
-
-**`BL-32` fechado:** `placeholder.tsx` estava órfão desde a F-05 e foi apagado com autorização do
-Edu, depois de confirmar que ninguém o importava.
-
-**O que ficou sem olhar, de novo dito explicitamente:** `/admin/reports` compila, passa no lint e o
-embed PostgREST da fila (`places(...)`, `questions(...)`) foi validado contra o banco à parte — mas
-a tela está atrás do login do curador e o CLI não tem a senha. Mesmo buraco do `BL-31`, agora com
-duas telas dentro.
-
-**Correção de registro:** o log da S07 dizia que o commit `c782770` era "local, não empurrado". O
-boot desta sessão conferiu com `git fetch` e a `main` local está idêntica à `origin/main` — os três
-commits da S07 estão no GitHub. Corrigido abaixo.
-
-**Commit da F-06:** `5aa2b96`. A sessão não terminou aí — seguiu por mais seis commits, registrados
-abaixo; o hash de fechamento da S08 está no fim desta entrada.
-
-**Ainda na S08, depois da F-06: a faceta de rating saiu do filtro público**, por decisão do Edu. Ele
-escolheu o alcance mais estreito dos três que apresentei — só a faceta; os selos `Destination`,
-`Experience`, `Fair` e `Cool` continuam na linha da lista e na página do lugar, o admin e o banco
-não foram tocados.
-
-**A única decisão que tomei por conta foi tirar o parâmetro `tier` da URL junto com a faceta.**
-Deixar o predicado vivo sem controle na tela criaria um filtro que estreita o guia de forma
-invisível — a falha exata que a RN-27 foi escrita para impedir, e que ninguém conseguiria desfazer
-porque não haveria o que clicar. Conferi antes que nenhum code dependia disso: o `DEMO` é o único
-que existe e tem `preset_filter` null. Link antigo com `?tier=` agora é ignorado, verificado na tela.
-
-Virou **RN-30**, e a Bíblia §6 ganhou a distinção que faltava: julgamento e eixo de navegação não são
-a mesma coisa. O tier segue sendo tudo o que a §6 descreve; o que ele deixou de ser é uma faceta.
-A estrela passa a ser o único sinal de qualidade filtrável — que é como os oito tipos sem tier
-sempre funcionaram (RN-05), agora valendo também para restaurante e bar.
-
-**Gate:** build e lint limpos. Bundle 762 → 761 kB.
-
-**E o `BL-29` fechou como pergunta, ao fim da sessão.** Eu havia registrado que o mapa voltara a não
-desenhar geometria nas duas telas de Austin desta verificação. O Edu respondeu que **vê o mapa no
-Firefox e no celular** — o que encerra o assunto na direção que mais importava: o produto está
-certo, e o mapa mudo é do Chrome que eu dirijo. Rebaixado de bug a limitação da inspeção pelo CLI.
-Vale registrar que isso contradiz o teste da S05, que dizia ter reproduzido nos três navegadores;
-não refiz nenhum dos dois, e o relato é do Edu, não verificação minha.
-
-**A consequência operacional é para as próximas sessões:** eu não consigo conferir o mapa. Quando
-uma verificação depender dele, quem olha é o Edu.
-
-**Por último, o achado que mais muda o projeto — e não é técnico.** O Edu perguntou quais tags
-existiam para atribuir e, ao ver a lista, disse que **não tem como taggear: ele nunca esteve em
-nenhum desses lugares, a lista é do Michael.** Medi o estado real na sequência: das 145 atribuições,
-**zero** são do curador; dos 58 publicados, 11 têm alguma tag e **nenhum** tem `the_dish`; 21 das 94
-tags foram usadas alguma vez. A curadoria que este arquivo vinha descrevendo como "rodando em
-paralelo desde a F-02" **nunca começou**, e não é falta de ferramenta — é que depende de uma pessoa
-específica que ainda não sentou para fazer.
-
-**Fui checar e achei uma coisa pior que o volume:** o lado público **não distinguia** tag sugerida
-de tag do curador. `usePlaceTagLabels` e `buildGuideIndex` liam `place_tags` sem olhar `source`, e
-as 5 cuisines que apareciam no painel de Austin eram 100% palpite do import — `Breakfast & Diner`,
-com 56 usos, veio do **nome de um guia do Apple Maps**, não de alguém decidindo. Estava assim desde
-a F-01; ninguém tinha olhado por esse ângulo.
-
-Corrigido nesta sessão: **RN-31** — tag `suggested` não aparece em superfície pública nenhuma até
-ser confirmada. O custo é visível e foi aceito de olho aberto: o painel de Austin caiu de cinco
-facetas para três (estrela, tipo, área) e os selos de cuisine sumiram das páginas de lugar. Mostrar
-menos do que se sabe é melhor que apresentar chute com a autoridade de veredito, num produto cujo
-valor inteiro é o julgamento de uma pessoa (§1.1).
-
-**O efeito colateral bom:** agora que sugestão é invisível ao visitante, sugerir em massa virou
-seguro — vira fila de aprovação no admin, não afirmação pública. É o `BL-34`.
-
-**E foi o que fechou a sessão: 28 cuisines novas** (`20260807140000_suggest_cuisine_published`),
-levando os publicados de comida sem cuisine de 45 para 17. Duas coisas ficam registradas sobre o
-critério:
-
-- **Dez delas são legíveis do próprio nome** e qualquer um confere sem conhecer Austin: `ALC Steaks`
-  → Steakhouse, `Chez L'Amour` → French, `Il Brutto` e `L'Oca d'Oro` → Italian, `El Raval` → Spanish
-  (bairro de Barcelona). **As outras dezoito dependem de eu conhecer o restaurante**, o que é
-  memória e não observação — pode estar desatualizada, e um lugar pode ter mudado de conceito.
-  Justamente por isso todas entraram como `suggested`.
-- **Dezessete ficaram de fora de propósito**, com a lista nominal no rodapé da migration. Sugestão
-  errada custa mais que sugestão ausente: alguém tem de ler e rejeitar.
-
-**Um GATE reprovou o primeiro apply, e o errado era eu.** O G3 afirmava que nenhum lugar carrega
-duas cuisines; falhou apontando 11. Fui olhar: são todos do import da F-01 e **todos corretos** —
-`Dean's Italian Steakhouse` é Italian *e* Steakhouse, cafeteria que serve café da manhã é Coffee *e*
-Breakfast & Diner. Duas cuisines não são contradição; a regra que eu tinha escrito é que era. O
-gate foi reescrito para o escopo do lote e a migration voltou atrás inteira antes disso — o banco
-nunca ficou num estado intermediário.
-
-**Verificado depois do apply:** o painel público de Austin continua com três facetas, sem nenhuma
-seção de cuisine, com as 28 tags já no banco. É a RN-31 provada no sentido que importa — dado novo
-entrou e o visitante não viu.
-
-**Por fim, o repositório ficou pronto para a Vercel (`OP-04`).** Três coisas entraram, e a primeira
-é a que importa:
-
-- **`vercel.json` com rewrite de SPA.** Sem ele, `/city/austin` e `/place/canje` devolvem **404** em
-  acesso direto — e acesso direto é precisamente o que um link compartilhado é. Um guia que só
-  funciona se você navegar a partir da home não serve para o que este produto existe.
-- **`public/robots.txt`** com `Disallow: /`. O `noindex` do `index.html` já cobria o ADR-07 para
-  quem renderiza a página; isto cobre crawler que não executa JS. Cinto e suspensório, custo zero.
-- **`engines.node >= 22`** no `package.json`. Sem isso o Vercel escolhe a versão de Node dele, e o
-  Vite 8 não roda em Node antigo — é a causa clássica de primeiro deploy falhando.
-
-**O que eu não fiz e não vou fazer sozinho:** autenticar na conta da Vercel. O passo a passo com as
-variáveis está na conversa da sessão; o `.env.local` tem os valores e não vai para o repo.
-
-**Checagem de segurança antes de expor:** `get_advisors(security)` não acusou nenhuma falha de RLS.
-Os 8 avisos de `SECURITY DEFINER` são o `BL-28`, já aceito e reavaliado. Apareceu um aviso novo,
-`auth_leaked_password_protection` desligado — toca a senha da conta do curador, não o visitante, e
-resolve-se com um toggle no painel junto do `OP-01`.
-
-**A S08 fechou em `aa3cf73`**, e não em `5aa2b96` como esta entrada dizia — aquele é o commit da
-F-06, e depois dele vieram seis: `0868505` (registro), `c899458` (faceta de rating), `7f1dd41`
-(`BL-29` rebaixado), `aa6e362` (RN-31), `08791bb` (28 cuisines) e `aa3cf73` (preparo da Vercel).
-Todos na `main` e no GitHub, conferido com `fetch` na S09. O conteúdo dos seis sempre esteve narrado
-aqui; era só o hash que apontava para o meio da sessão.
-
-### 2026-08-07 — S07: F-05 — Codes e Roulette
-
-**O que foi feito:** a feature que o PRD chama de mais diretamente ligada ao propósito do produto
-(§9.7 — "o curador cria um code para cada pessoa a quem mostra o guia, para sempre, sem envolver
-desenvolvedor"). Entregue inteira, sem tocar o banco.
-
-**O achado que definiu a sessão: a F-05 não precisava de migration.** O boot conferiu o schema vivo
-antes de planejar e encontrou `codes` já com `theme`, `pin_style`, `preset_filter`,
-`highlighted_places`, janela de datas e `active`; a `rpc_redeem_code()` aplicada, com `anon` já
-autorizado a executá-la; e a policy de curador no lugar. A F-01 tinha construído o terreno inteiro
-oito meses antes de alguém pisar nele. Resultado: zero migration, zero dependência npm, zero
-componente shadcn novo — 10 arquivos novos e 5 tocados, tudo frontend.
-
-**Duas decisões de comportamento viraram RN, porque não são detalhe de implementação:**
-
-- **RN-27** — o preset de um code semeia o painel **uma vez**, entra selecionado, sai pelo *Clear*
-  normal, e **nunca sobrescreve filtro já presente na URL**. Sem isso, um preset seria um code
-  escondendo lugares, que é exatamente o que a RN-21 proíbe. Link compartilhado é escolha explícita
-  de alguém e vence a decoração.
-- **RN-28** — o code é lembrado em `localStorage` (o Michael entrega um code a uma *pessoa*, não a
-  uma aba) mas o efeito é **revalidado no servidor a cada carga**. Desligar um code no admin passa a
-  valer na próxima visita, em vez de ficar preso no navegador de quem já o usou.
-
-**Um detalhe de URL que virou regra no CLAUDE.md.** `filtersToParams()` monta um `URLSearchParams`
-do zero a cada clique, então um `?code=` estacionado ali sumiria no primeiro toque em faceta — e
-reapareceria no próximo compartilhamento. Pior do que não suportar. A solução foi resgatar e retirar
-o parâmetro na chegada; a regra geral é que a URL do guia pertence ao filtro.
-
-**Contraste resolvido na origem, não policiado depois.** `contrastOn()` deriva
-`--primary-foreground` e `--foreground` da luminância WCAG da cor que o curador escolheu, então
-nenhum tema de code pode nascer ilegível, por pior que seja a cor. Fecha a parte de contraste do
-`BL-19` sem precisar auditar componente por componente. E fundo escuro liga a classe `dark`, porque
-sobrescrever só `--background` deixaria borda, texto suave e acento nos valores claros — página
-escura com costura clara em toda parte.
-
-**Verificação: desta vez houve olho, não só asserção.** A extensão do Chrome conectou (na S06 não
-conectara, e o registro da época dizia isso com todas as letras). O code foi digitado no ar na
-página do guia e, em sequência e sem mais nenhum toque: a URL virou `?tier=destination&star=1`
-sozinha, o guia inteiro escureceu, o banner apareceu com a mensagem e a saída, o selo âmbar "Picked
-for you" entrou na linha do Canje, os pins viraram quadrados âmbar com anel nos destacados, e as
-opções que zeraram ficaram cinza e ainda clicáveis (RN-17). "Back to normal" desfez tudo. A troca de
-estilo de mapa ficou provada por rede: `/styles/liberty` na carga, `/styles/dark` no instante exato
-do resgate.
-
-Antes disso, **60 checks num harness descartável** cobriram o que o olho não vê: o caminho anônimo
-real com code válido, minúsculo, com espaço em volta, inexistente, vazio, desligado, ainda não
-começado e expirado — mais a prova de que toda falha responde byte a byte igual, que é o que impede
-a RPC de virar oráculo de códigos (RN-20), e de que `anon` continua sem conseguir listar `codes`.
-
-**O `BL-29` deixou de reproduzir.** O mapa desenhou geometria completa nos dois estilos. Nada mudou
-no nosso código do mapa além do `setStyle` que esta feature acrescentou. Está registrado como
-sintoma ausente, **não** como causa explicada — não fui atrás do porquê, porque a investigação
-técnica já tinha sido esgotada na S05 e o próximo passo registrado era do Edu. Se voltar, o
-histórico do que já foi descartado com evidência continua no `BL-29`.
-
-**O que ficou sem olhar, dito explicitamente:** a tela `/admin/codes` compila e passa no lint, mas
-está atrás do login do curador e o CLI não tem a senha do Michael. É o único pedaço da entrega que
-ninguém viu rodando (`BL-31`).
-
-**Dívida assumida.** O harness dos 60 checks é descartável de novo, não suíte versionada — foi para
-o scratchpad, fora do repo. O `BL-22` ganhou a técnica que o tornou possível: `vite build --ssr`
-bunda um harness TS resolvendo os aliases `@/`, o Node roda o resultado, e um `document` de mentira
-de dez linhas basta para testar o que escreve CSS var. É o esboço pronto da suíte quando ela vier.
-
-**Versão mantida em `0.1.0`** por decisão do Edu — bump só quando o produto for ao ar.
-
-**Commit:** `c782770` — está no GitHub (a S08 conferiu; este registro dizia "local, não empurrado").
-
-### 2026-08-07 — S06: Reconciliação documental
-
-**O que foi feito:** o boot encontrou o STATUS afirmando "F-01 concluída, F-02 a iniciar" com F-02 e
-F-03 já commitadas na `main`. Este arquivo e a Bíblia foram realinhados com o real antes de qualquer
-código novo.
-
-**Divergências fechadas:**
-- STATUS dizia fase F-01/próxima F-02; o real são quatro features fechadas e F-04 como próxima
-- STATUS listava **2** migrations vivas; o MCP mostra **3** — a `20260806130000_f01_seed_curator`
-  estava aplicada desde a S04 e nunca entrou nesta lista
-- STATUS dizia que a F-02 estava "bloqueada por `OP-01` e `OP-02`"; o `OP-02` fechou na própria S04
-  e o `OP-01` é higiene, não bloqueio — o teste negativo da S04 já provou que conta fora da
-  allowlist é tratada como visitante
-- Bíblia seguia em "F-00 e F-01 concluídas" e não registrava o OpenFreeMap como fonte de tiles
-- `BL-25` no BACKLOG guardava o tamanho do chunk do mapa da época do MapLibre 6 (947 kB); com o v5,
-  que embute o worker no mesmo arquivo, são 1.030 kB (274 kB gzip)
-
-**Por que a S05 fechou sem atualizar o STATUS:** não sei — não estive nela. O log da S05 abaixo foi
-reconstruído das mensagens de commit, que são detalhadas o bastante para isso. Fica o registro de
-que é reconstrução, não relato ao vivo.
-
-**Depois da reconciliação, a F-04 foi construída na mesma sessão** — ver abaixo.
-
-**F-04 — filtros facetados.** A decisão que define a feature foi tomada antes de escrever código, a
-partir do banco vivo: medindo o vocabulário real dos 58 publicados, seis das sete facetas de tag têm
-**zero** atribuições, `price_band` tem zero, e só 11 lugares carregam alguma tag. Construir o painel
-completo renderizaria cinco seções inteiras de checkbox cinza.
-
-Daí a regra nova: **faceta sem nenhuma opção populada não é renderizada.** Ela não contraria a RN-17,
-que governa a opção dentro da faceta e continua valendo — é a §8 ("degradar em silêncio em vez de
-renderizar controle vazio") aplicada além da área. O efeito é que o painel cresce sozinho conforme a
-curadoria avança, sem deploy, que é o ponto de tags serem dado e não código (RN-13).
-
-**Verificação.** A extensão do Chrome não estava conectada, então não houve inspeção visual. Em vez
-de afirmar sem olhar — o erro que a S05 registrou como aprendizado — a lógica foi verificada por um
-harness descartável que lê o guia **pelo caminho anônimo real** (PostgREST + anon key, RLS em vigor) e
-roda as funções de filtro sobre o resultado: 27 checks, todos passando. Testa RLS e filtro juntos, e
-inclui o caso adversarial da RN-14 (injetar uma atribuição de `Hype trap` e provar que ela não vira
-faceta nem entra no índice, mesmo se o RLS falhasse).
-
-Um dos checks passou inicialmente por cláusula de escape — nenhuma opção zerada existia nos dados, e
-a asserção da RN-17 não chegou a ser exercida. Forçado o caso (`cuisine=bbq` em Austin são dois
-`destination`, então os outros três tiers zeram) e a regra foi verificada de verdade, incluindo que a
-opção selecionada que esvaziou a lista continue clicável — senão o visitante não consegue desfazer.
-
-**O que fica registrado como dívida:** o harness é descartável, não suíte versionada. A próxima
-mudança no filtro não tem rede (`BL-22` atualizado). E as seis facetas dormentes viraram `BL-30` —
-não como bug, mas como o sintoma visível de que a curadoria é o caminho crítico.
-
-### 2026-08-06 — S05: F-02 (admin) e F-03 (público)
-
-> Entrada reconstruída na S06 a partir das mensagens de commit `b83ff78..29239c6`. Fiel ao que está
-> versionado; decisões tomadas em conversa que não deixaram rastro no repositório não aparecem aqui.
-
-**O que foi feito:** duas features inteiras. O admin saiu de placeholder para ferramenta de curadoria
-completa, e o lado público saiu do zero para navegável — portão de cidade, guia, detalhe e mapa.
-Nenhuma das duas tocou o schema: são frontend sobre o banco da F-01.
-
-**F-02 — Admin.** Lista com filtros, editor de lugar, atribuição de tags com `suggested` distinguido
-visualmente do que veio do curador (RN-15), Overview com distribuição de tiers ao vivo (RN-06) e
-quick-add mobile com geocoding Nominatim. Seis componentes shadcn entraram; nenhuma dependência npm
-nova.
-
-**Decisão de escopo: a tela dedicada de fila de revisão foi cortada.** As três filas — 28 conflitos
-de tier, tags sugeridas pendentes, 15 sem tipo — viraram cartões no Overview que linkam para a lista
-com o filtro já aplicado. Uma tela própria seria uma quarta forma de olhar os mesmos registros, com
-o custo de manter dois lugares em sincronia. Registrado em "Fora do MVP".
-
-**F-03 — Público.** O portão de cidade exibe cidades como pares com contagem (DP-02) — cidade de um
-lugar não é escondida, só é honesta sobre ser um lugar. O guia separa "Eat & drink" de "Everything
-else", porque o tipo é o segundo portão (§7) e parque estadual em lista de restaurante é ruído. O
-detalhe lidera pelo veredito, nunca pelo endereço; horário de funcionamento não existe por causa do
-ADR-06, e o botão de direções resolve — o app de mapas sabe, e sabe também se está aberto agora.
-
-**Lote de lançamento publicado, com aprovação do Edu:** os 58 lugares com estrela ou tier
-`destination` passaram de `unreviewed` a `published`. Não foi julgamento novo — tier e estrela vieram
-dos guias do próprio Michael e o import só não os tinha revelado. Verificado pela API pública com a
-anon key: o anônimo enxerga 58, não 511.
-
-**O mapa: quatro tentativas, um bug real corrigido e uma causa ambiental.**
-
-A investigação vale registro porque três dos quatro commits de fix foram becos, e o quarto encontrou
-um bug de verdade:
-
-1. `resize()` no `load` + `ResizeObserver` — o container é dimensionado depois que o mapa é
-   construído (unidade `vh`, wrapper sticky, e o mapa vem de dentro de um `lazy`). Correto de fazer,
-   não era a causa.
-2. `config.WORKER_URL` explícito — o MapLibre 6 monta a URL do worker em runtime por concatenação de
-   string, coisa que nenhum bundler enxerga, então o Rollup nunca emitia o arquivo. **Era um bug
-   real**, provado por o mapa voltar a requisitar as fontes (só o worker dispara isso). Ainda assim
-   os tiles não vieram.
-3. **`fitBounds` só depois de `load` e com container de largura real** — este é o achado que fica.
-   Enquadrar contra largura zero calcula um zoom degenerado, e o mapa nunca descobre de quais tiles
-   precisa; o `resize` posterior conserta o canvas mas não recalcula a câmera, então a visão ruim
-   ficava presa e os 52 marcadores de Austin apareciam amontoados num canto. Corrigido, os
-   marcadores passaram a se distribuir com a geografia real. **E o enquadramento roda uma vez por
-   conjunto de lugares (chave = ids), o que já deixa pronto o caminho da F-04.**
-4. Downgrade `maplibre-gl` 6.2.0 → 5.24.0, aprovado pelo Edu. O v5 entrega arquivo único com o
-   worker embutido, então as gambiarras do item 2 saíram. Não resolveu a renderização.
-
-**O diagnóstico final é que não há o que corrigir.** Um mapa MapLibre puro, de CDN, em página em
-branco e sem uma linha nossa, se comporta idêntico nos três navegadores. Registrado como `BL-29`
-com a lista inteira do que foi descartado com evidência, para a próxima sessão não refazer o mesmo
-caminho.
-
-**`BL-25` parcialmente resolvido.** O MapLibre levou o bundle único a 1.647 kB — peso demais para
-quem só abre o portão de cidade. O mapa virou `lazy` + `Suspense`: principal 699 kB (204 kB gzip),
-chunk do mapa carregado só ao abrir uma cidade, e a lista já é utilizável enquanto ele chega.
-
-**Aprendizado que vale além deste projeto:** três dos quatro fixes do mapa foram para o lugar errado
-porque a hipótese nunca foi testada fora do nosso código. O teste que encerrou a questão — MapLibre
-puro de CDN em página em branco — custa cinco minutos e deveria ter sido o primeiro, não o último.
-
-### 2026-08-06 — S04: F-01 — schema, RLS, RPCs e import
-
-**O que foi feito:** o banco saiu de zero tabelas para o schema inteiro com os 511 lugares dentro. Duas migrations, ambas versionadas em `supabase/migrations/`, ambas com rollback escrito em `supabase/rollbacks/`.
-
-**Cinco decisões cravadas antes de escrever SQL, todas aprovadas pelo Edu:**
-- **Import por SQL versionado**, não pelo `import-places.ts`. O script exigia service-role key no ambiente e a dependência `csv-parse`; o SQL gerado a partir do CSV fica auditável no repo e não pede chave nova. Os slugs saem da mesma função `slugify()` que está em `src/lib/utils.ts`, então batem com o frontend
-- **`price_band` não foi pré-sugerido.** O ADR-06 mandava pré-classificar `cuisine` e `price_band`, mas a §9.1 removeu `price_band_source` — não existe onde marcar que o valor é chute de máquina, e sem Google Places a única entrada seria o nome do lugar. Um palpite ficaria indistinguível do veredito do Michael num campo da camada de julgamento. ADR-06 emendado na Bíblia
-- **145 tags gravadas como `suggested`**, com autorização explícita (é camada de julgamento). Duas fontes só: a coluna `Tags` do CSV, que vem dos nomes dos guias do próprio Michael, e casamento inequívoco de palavra de cozinha no nome do lugar, restrito a tipos que servem comida
-- **`DEMO`** semeado para dar o que testar em `rpc_redeem_code()` antes da F-05
-- **`curators` nasce vazia** — `auth.users` tem zero contas
-
-**Duas divergências encontradas no meio do caminho:**
-- **São 4 tiers, não 5.** STATUS e Bíblia diziam 5 porque a tabela da §6.2 lista `fair` duas vezes, uma por escala. Como `slug` é PK, `fair` é uma linha com `applies_to = {restaurant, bar}` — que é para isso que a coluna é array. Confirmado por `SEEDED_TIER_SLUGS` no `src/types/index.ts` e pelo valor único `Fair` no CSV. Corrigido na Bíblia
-- **A coluna `Town` do CSV estava sendo descartada.** É o município real — Lockhart, Dripping Springs, San Marcos. Virou `area` onde difere da cidade-portão: 107 dos 511. É geografia derivada, não julgamento, e some com um `UPDATE`
-
-**O gate G6 pegou um bug real na primeira tentativa de aplicar.** A migration falhou porque `anon` tinha 4 privilégios de escrita sobrando em `public`. Causa: a view `field_report_aggregates` era criada **depois** do `REVOKE ALL ... FROM anon`, então herdava as default privileges do Supabase e nascia com INSERT, UPDATE, DELETE e TRUNCATE liberados. A migration inteira voltou atrás, o banco ficou intacto, os blocos foram reordenados e a segunda tentativa passou. Vale como evidência de que os GATEs inline pagam por si.
-
-**Verificação do import.** Como a migration de 155 kB não coube numa chamada de `apply_migration`, os 511 registros entraram por `execute_sql` em quatro blocos — o que introduz risco de erro silencioso de transcrição. Em vez de confiar, o conteúdo do banco foi comparado com o CSV por checksum md5 campo a campo: nome, slug, tipo, tier, estrela, visitado, país, cidade, área, coordenadas, endereço e `source_guides`. Todos batem. (A primeira rodada acusou divergência em `source_guides`, que era bug do script de verificação — o parser removia as aspas antes de ler o array. Os dados sempre estiveram certos.)
-
-**Duas decisões tomadas no fim da sessão:**
-- **Uma conta de curador, não duas.** O Edu acessa pela conta do Michael. Fecha `BL-11` — o PRD, que dizia "single-user authentication", estava certo desde o começo. Não muda schema: `curators` só passa a ter uma linha. Custo aceito: `updated_by` deixa de dizer *quem* editou (`BL-17` atualizado)
-- **História reconciliada com o GitHub.** O repo remoto existia desde a S01, com dois commits de fundação; o `git init` da S03 tinha criado um histórico órfão em paralelo, sem ancestral comum. Resolvido por `git rebase --onto origin/main b6fef0c main`: o "commit inicial" local, que só replicava o que já estava no GitHub, foi descartado e os quatro seguintes replicados sobre a história real. Resultado linear, árvore final byte-idêntica à de antes do rebase, push vira fast-forward — nada de `--force`, nenhum commit da fundação perdido. Branch `backup-pre-rebase` guardada por segurança
-- **Correção de registro:** eu havia escrito neste arquivo que "o remote nunca existiu" e que era "a terceira afirmação da S01 que não se sustenta". Errado nas duas contas — a S01 estava certa. O que falhou foi o diagnóstico da S03, que tratou a ausência de `.git` local como ausência de repositório
-- **O projeto mudou de casa no GitHub.** O push para `AdminFeedpro/MichaelinMap` respondia "Repository not found" mesmo com a leitura funcionando. Causa: a credencial armazenada no Git Credential Manager desta máquina é da conta **`AntonioTavaresDevWork`**, que não tem acesso àquele repositório — o GitHub devolve 404 em vez de 403 para não confirmar a existência de repo privado. Por decisão do Edu, criei `AntonioTavaresDevWork/MichaelinMap` (privado) e apontei o remote para lá. Subiram os 9 commits, com os dois da fundação (`038d040`, `d98f07c`) preservados. O repositório antigo continua existindo, parado naqueles dois commits
-
-- **Curador semeado no fim da sessão.** Conta `mikemyday@mikecofone.com` criada no painel pelo Edu, linha inserida por migration versionada. O teste com JWT simulado provou os dois lados do modelo: curador escreve, autenticado-fora-da-allowlist não vê nem escreve nada além do que um visitante anônimo veria
-
-**Aprendizados registrados (onde procurar depois):**
-
-| Aprendizado | Onde ficou |
+## 📝 Session log
+
+### 2026-08-07 — S08: F-06 — Field reports (the MVP closed)
+
+**What was done:** the MVP's last feature. Visitors now answer 2-3 questions per place, the aggregates
+open on the fifth answer, free text waits for Michael in a queue, and the curator has somewhere to
+seed his own answers.
+
+**For the second session in a row, zero migrations.** The boot checked the live schema before planning
+and found everything ready since F-01: the RPC deriving status, truncating at 40 and limiting per
+session; the view with `security_invoker` and its `HAVING count(*) >= 5`; the 38 seeded questions. The
+finding most worth recording is about privilege level: **`anon` executes the RPC and has no INSERT on
+`field_reports`**, so RN-23 does not depend on the policy being right — there is no direct write path
+to revoke.
+
+**A new rule came out of something small.** Four questions carry a follow-up (`judgment_prompt` — "Was
+it worth it?", "Is that good or bad?") and the `judgment` is published immediately whenever the main
+question does not require review. A text field there would be a **second** piece of visitor free text,
+live and unmoderated, when RN-24 permits exactly one. It became **RN-29**: the follow-up is a closed
+choice, and both labels come from the prompt itself — which either offers them ("good or bad" →
+Good/Bad) or is a yes/no question.
+
+**About seeding (BL-20), what was delivered and what was not.** The surface exists: the curator picks a
+place, answers the questions in the same UI the visitor sees, and the answers enter published. What the
+CLI **did not** do was invent the values. Food temperature at Franklin, ceiling height in hands at
+Uchi — I have never been to any of the 58, and the panel reports to one decimal place with the face of
+a measurement; an invented number there would be indistinguishable from a measured one. Bible §10 always
+said "**the curator** seeds his own answers". Worth knowing that seeding reveals no aggregate at all:
+n=5 is per place × question and one person gives one answer — the gain is that the counter is not born
+at zero.
+
+**Verification: 61 checks, and then the eye — which found what the 61 could not.**
+
+The harness covered what assertions cover well: the draw being stable for the same seed and changing
+from person to person, `anon` being unable to INSERT directly, free text landing in `pending` and
+staying invisible to the public, a `status` smuggled inside the `answer` changing nothing, the aggregate
+**not** opening with four answers and opening with the fifth.
+
+Then the page was opened in the browser and **two defects appeared that none of the 61 caught**, both
+of interface state:
+
+1. **The receipt never appeared.** The panel filters out already-answered questions, and the predicate
+   was reactive — answering a question removed it from the list in the same instant, unmounting the card
+   before it could show "Logged". Fixed by taking a snapshot of what was already answered **when the
+   page opens**: an answered question now stays standing until the end of the visit, and only
+   disappears on the next one.
+2. **The receipt counted twice** — it said "2 of 5" on the first answer. The submission invalidates the
+   count query, which revalidates already including the new answer, and the `+1` added on top. Fixed by
+   holding the count from before the answer.
+
+Neither is subtle to see and neither was visible without opening the page. It is the same lesson S05
+recorded by another route, now on the frontend side: assertions prove rules, the eye proves interfaces.
+
+**An environment detail worth knowing.** The `session_hash` generated in the browser came out in the
+fallback format (`s-<timestamp>-<random>`) instead of a UUID: served over HTTP on the network IP, the
+page is not a secure context and `crypto.randomUUID` does not exist. The fallback was there for exactly
+that and it worked — in production (HTTPS on Vercel) it will be a UUID. Not a bug, but it explains the
+format if anyone looks at the column.
+
+**Test data created and deleted.** The verification wrote to `field_reports` through the RPC and through
+SQL — including the five answers needed to genuinely open an aggregate on screen. All deleted at the end
+by `session_hash`; the table went back to zero, verified.
+
+**`BL-32` closed:** `placeholder.tsx` had been orphaned since F-05 and was deleted with Edu's
+authorization, after confirming nobody imported it.
+
+**What was left unseen, said explicitly again:** `/admin/reports` compiles, passes the linter, and the
+PostgREST embed of the queue (`places(...)`, `questions(...)`) was validated against the database
+separately — but the screen is behind the curator login and the CLI does not have the password. Same
+hole as `BL-31`, now with two screens inside it.
+
+**Record correction:** the S07 log said commit `c782770` was "local, not pushed". This session's boot
+checked with `git fetch` and the local `main` is identical to `origin/main` — S07's three commits are on
+GitHub. Corrected below.
+
+**Commit for F-06:** `5aa2b96`. The session did not end there — it continued for six more commits,
+recorded below; the S08 closing hash is at the end of this entry.
+
+**Still in S08, after F-06: the rating facet left the public filter**, by Edu's decision. He chose the
+narrowest of the three scopes I presented — only the facet; the `Destination`, `Experience`, `Fair` and
+`Cool` badges stay in the list row and on the place page, and the admin and the database were not
+touched.
+
+**The only decision I made on my own was removing the `tier` parameter from the URL along with the
+facet.** Leaving the predicate alive with no control on screen would create a filter that narrows the
+guide invisibly — exactly the failure RN-27 was written to prevent, and one nobody could undo because
+there would be nothing to click. I checked first that no code depended on it: `DEMO` is the only one
+that exists and its `preset_filter` is null. An old link with `?tier=` is now ignored, verified on screen.
+
+It became **RN-30**, and bible §6 gained the distinction it was missing: judgment and navigation axis
+are not the same thing. The tier is still everything §6 describes; what it stopped being is a facet. The
+star becomes the only filterable quality signal — which is how the eight tier-less types always worked
+(RN-05), now true for restaurants and bars as well.
+
+**Gate:** build and lint clean. Bundle 762 → 761 kB.
+
+**And `BL-29` closed as a question, at the end of the session.** I had recorded that the map again drew
+no geometry on both Austin screens during this verification. Edu answered that he **sees the map in
+Firefox and on his phone** — which settles the matter in the direction that mattered most: the product
+is right, and the mute map belongs to the Chrome I drive. Downgraded from bug to a limitation of CLI
+inspection. Worth recording that this contradicts the S05 test, which claimed reproduction in all three
+browsers; I redid neither, and the report is Edu's, not my verification.
+
+**The operational consequence is for future sessions:** I cannot check the map. When a verification
+depends on it, Edu is the one who looks.
+
+**Finally, the finding that changes the project most — and it is not technical.** Edu asked which tags
+existed to assign and, on seeing the list, said that **he cannot tag: he has never been to any of these
+places, the list is Michael's.** I measured the real state right after: of the 145 assignments, **zero**
+are the curator's; of the 58 published, 11 have some tag and **none** has `the_dish`; 21 of the 94 tags
+have ever been used. The curation this file had been describing as "running in parallel since F-02"
+**never started**, and it is not for lack of a tool — it is that it depends on one specific person who
+has not yet sat down to do it.
+
+**I went to check and found something worse than the volume:** the public side **did not distinguish** a
+suggested tag from a curator tag. `usePlaceTagLabels` and `buildGuideIndex` read `place_tags` without
+looking at `source`, and the 5 cuisines showing up in the Austin panel were 100% import guesswork —
+`Breakfast & Diner`, with 56 uses, came from the **name of an Apple Maps guide**, not from someone
+deciding. It had been that way since F-01; nobody had looked from that angle.
+
+Fixed in this session: **RN-31** — a `suggested` tag appears on no public surface until it is confirmed.
+The cost is visible and was accepted with eyes open: the Austin panel fell from five facets to three
+(star, type, area) and the cuisine badges disappeared from place pages. Showing less than you know is
+better than presenting a guess with the authority of a verdict, in a product whose entire value is one
+person's judgment (§1.1).
+
+**The good side effect:** now that a suggestion is invisible to the visitor, suggesting in bulk became
+safe — it becomes an approval queue in the admin, not a public assertion. That is `BL-34`.
+
+**And that is what closed the session: 28 new cuisines** (`20260807140000_suggest_cuisine_published`),
+taking published food places without a cuisine from 45 down to 17. Two things are recorded about the
+criterion:
+
+- **Ten of them are legible from the name itself** and anyone can verify them without knowing Austin:
+  `ALC Steaks` → Steakhouse, `Chez L'Amour` → French, `Il Brutto` and `L'Oca d'Oro` → Italian,
+  `El Raval` → Spanish (a Barcelona neighborhood). **The other eighteen depend on my knowing the
+  restaurant**, which is memory and not observation — it may be out of date, and a place may have
+  changed concept. Precisely for that reason all of them entered as `suggested`.
+- **Seventeen were deliberately left out**, with the nominal list in the migration's footer. A wrong
+  suggestion costs more than a missing one: somebody has to read it and reject it.
+
+**A gate failed the first apply, and the one who was wrong was me.** G3 asserted that no place carries
+two cuisines; it failed, pointing at 11. I went to look: they are all from the F-01 import and **all
+correct** — `Dean's Italian Steakhouse` is Italian *and* Steakhouse, a café serving breakfast is Coffee
+*and* Breakfast & Diner. Two cuisines are not a contradiction; the rule I had written was. The gate was
+rewritten to the batch's scope and the migration rolled all the way back before that — the database was
+never in an intermediate state.
+
+**Verified after the apply:** the public Austin panel still has three facets, with no cuisine section at
+all, with the 28 tags already in the database. It is RN-31 proven in the direction that matters — new
+data went in and the visitor did not see it.
+
+**Finally, the repository became Vercel-ready (`OP-04`).** Three things landed, and the first is the one
+that matters:
+
+- **`vercel.json` with the SPA rewrite.** Without it, `/city/austin` and `/place/canje` return **404**
+  on direct access — and direct access is precisely what a shared link is. A guide that only works if
+  you navigate from the home page does not serve what this product exists for.
+- **`public/robots.txt`** with `Disallow: /`. The `noindex` in `index.html` already covered ADR-07 for
+  anyone rendering the page; this covers crawlers that do not execute JS. Belt and suspenders, zero cost.
+- **`engines.node >= 22`** in `package.json`. Without it Vercel picks its own Node version, and Vite 8
+  does not run on an old one — it is the classic cause of a first deploy failing.
+
+**What I did not do and will not do alone:** authenticate into the Vercel account. The step by step with
+the variables is in the session's conversation; `.env.local` has the values and does not go into the repo.
+
+**Security check before exposing anything:** `get_advisors(security)` reported no RLS failure. The 8
+`SECURITY DEFINER` warnings are `BL-28`, already accepted and reassessed. A new warning appeared,
+`auth_leaked_password_protection` disabled — it touches the curator account's password, not the visitor,
+and is solved with a dashboard toggle alongside `OP-01`.
+
+**S08 closed at `aa3cf73`**, not at `5aa2b96` as this entry used to say — that is F-06's commit, and six
+came after it: `0868505` (record), `c899458` (rating facet), `7f1dd41` (`BL-29` downgraded), `aa6e362`
+(RN-31), `08791bb` (28 cuisines) and `aa3cf73` (Vercel preparation). All on `main` and on GitHub,
+verified with `fetch` in S09. The content of all six was always narrated here; it was only the hash that
+pointed to the middle of the session.
+
+### 2026-08-07 — S07: F-05 — Codes and Roulette
+
+**What was done:** the feature the PRD calls the one most directly tied to the product's purpose (§9.7 —
+"the curator creates a code for every person he shows the guide to, forever, without involving a
+developer"). Delivered whole, without touching the database.
+
+**The finding that defined the session: F-05 needed no migration.** The boot checked the live schema
+before planning and found `codes` already carrying `theme`, `pin_style`, `preset_filter`,
+`highlighted_places`, a date window and `active`; `rpc_redeem_code()` applied, with `anon` already
+authorized to execute it; and the curator policy in place. F-01 had built the entire ground eight months
+before anyone stepped on it. Result: zero migrations, zero npm dependencies, zero new shadcn components —
+10 new files and 5 touched, all frontend.
+
+**Two behavioral decisions became business rules, because they are not implementation details:**
+
+- **RN-27** — a code's preset seeds the panel **once**, arrives selected, leaves through the normal
+  *Clear*, and **never overwrites a filter already in the URL**. Without that, a preset would be a code
+  hiding places, which is exactly what RN-21 forbids. A shared link is somebody's explicit choice and
+  beats decoration.
+- **RN-28** — the code is remembered in `localStorage` (Michael hands a code to a *person*, not to a tab)
+  but the effect is **revalidated on the server on every load**. Switching a code off in the admin now
+  takes effect on the next visit, instead of being stuck in the browser of someone who already used it.
+
+**A URL detail that became a rule in CLAUDE.md.** `filtersToParams()` builds a fresh `URLSearchParams` on
+every click, so a `?code=` parked there would vanish the first time a facet was touched — and reappear on
+the next share. Worse than not supporting it. The solution was to rescue and remove the parameter on
+arrival; the general rule is that the guide's URL belongs to the filter.
+
+**Contrast solved at the source, not policed afterwards.** `contrastOn()` derives
+`--primary-foreground` and `--foreground` from the WCAG luminance of the color the curator picked, so no
+code theme can be born illegible, however bad the color. It closes the contrast part of `BL-19` without
+auditing component by component. And a dark background turns on the `dark` class, because overriding
+`--background` alone would leave borders, muted text and accents at their light values — a dark page
+with light seams everywhere.
+
+**Verification: this time there was an eye, not only assertions.** The Chrome extension connected (in S06
+it had not, and the record of the time said so in as many words). The code was typed into the air on the
+guide page and, in sequence and with no further input: the URL became `?tier=destination&star=1` on its
+own, the whole guide darkened, the banner appeared with the message and the way out, the amber "Picked
+for you" badge entered Canje's row, the pins became amber squares with rings on the highlighted ones, and
+the options that zeroed went gray and stayed clickable (RN-17). "Back to normal" undid everything. The
+map style swap was proven over the network: `/styles/liberty` on load, `/styles/dark` at the exact moment
+of redemption.
+
+Before that, **60 checks in a throwaway harness** covered what the eye does not see: the real anonymous
+path with a code that was valid, lowercase, surrounded by whitespace, nonexistent, empty, switched off,
+not yet started and expired — plus proof that every failure answers byte for byte identically, which is
+what keeps the RPC from becoming a code oracle (RN-20), and that `anon` still cannot list `codes`.
+
+**`BL-29` stopped reproducing.** The map drew complete geometry in both styles. Nothing changed in our map
+code beyond the `setStyle` this feature added. It is recorded as a symptom absent, **not** a cause
+explained — I did not chase the why, because the technical investigation had already been exhausted in S05
+and the recorded next step was Edu's. If it comes back, the history of what has been ruled out with
+evidence is still in `BL-29`.
+
+**What was left unseen, said explicitly:** the `/admin/codes` screen compiles and passes the linter, but it
+is behind the curator login and the CLI does not have Michael's password. It is the only piece of the
+delivery nobody has seen running (`BL-31`).
+
+**Debt taken on.** The 60-check harness is throwaway again, not a versioned suite — it went to the
+scratchpad, outside the repo. `BL-22` gained the technique that made it possible: `vite build --ssr`
+bundles a TS harness resolving the `@/` aliases, Node runs the result, and a ten-line fake `document` is
+enough to test code that writes CSS variables. It is the ready-made outline of the suite when it comes.
+
+**Version kept at `0.1.0`** by Edu's decision — bump only when the product goes live.
+
+**Commit:** `c782770` — it is on GitHub (S08 verified; this record used to say "local, not pushed").
+
+### 2026-08-07 — S06: Documentary reconciliation
+
+**What was done:** the boot found the STATUS claiming "F-01 complete, F-02 to start" with F-02 and F-03
+already committed on `main`. This file and the bible were realigned with reality before any new code.
+
+**Divergences closed:**
+- STATUS said phase F-01 / next F-02; reality was four closed features and F-04 as next
+- STATUS listed **2** live migrations; MCP shows **3** — `20260806130000_f01_seed_curator` had been
+  applied since S04 and never entered this list
+- STATUS said F-02 was "blocked by `OP-01` and `OP-02`"; `OP-02` closed in S04 itself and `OP-01` is
+  hygiene, not a blocker — S04's negative test had already proven that an account outside the allowlist is
+  treated as a visitor
+- The bible still said "F-00 and F-01 complete" and did not record OpenFreeMap as the tile source
+- `BL-25` in the BACKLOG held the map chunk size from the MapLibre 6 era (947 kB); with v5, which embeds
+  the worker in the same file, it is 1,030 kB (274 kB gzip)
+
+**Why S05 closed without updating the STATUS:** I do not know — I was not in it. The S05 log below was
+reconstructed from the commit messages, which are detailed enough for that. It is recorded that this is a
+reconstruction, not a live account.
+
+**After the reconciliation, F-04 was built in the same session** — see below.
+
+**F-04 — faceted filters.** The decision that defines the feature was taken before writing code, from the
+live database: measuring the real vocabulary of the 58 published places, six of the seven tag facets have
+**zero** assignments, `price_band` has zero, and only 11 places carry any tag. Building the complete panel
+would render five entire sections of gray checkboxes.
+
+Hence the new rule: **a facet with no populated option is not rendered.** It does not contradict RN-17,
+which governs the option inside a facet and still holds — it is §8 ("degrade silently instead of rendering
+an empty control") applied beyond areas. The effect is that the panel grows on its own as curation
+advances, with no deploy, which is the point of tags being data and not code (RN-13).
+
+**Verification.** The Chrome extension was not connected, so there was no visual inspection. Instead of
+asserting without looking — the mistake S05 recorded as a lesson — the logic was verified by a throwaway
+harness that reads the guide **through the real anonymous path** (PostgREST + anon key, RLS in force) and
+runs the filter functions over the result: 27 checks, all passing. It tests RLS and filtering together, and
+includes RN-14's adversarial case (inject a `Hype trap` assignment and prove it becomes neither a facet nor
+part of the index, even if RLS failed).
+
+One of the checks initially passed through an escape clause — no zeroed option existed in the data, and
+RN-17's assertion was never exercised. The case was forced (`cuisine=bbq` in Austin is two `destination`
+places, so the other three tiers zero out) and the rule was genuinely verified, including that a selected
+option which emptied the list stays clickable — otherwise the visitor cannot undo it.
+
+**What is recorded as debt:** the harness is throwaway, not a versioned suite. The next change to the filter
+has no net (`BL-22` updated). And the six dormant facets became `BL-30` — not as a bug, but as the visible
+symptom that curation is the critical path.
+
+### 2026-08-06 — S05: F-02 (admin) and F-03 (public)
+
+> Entry reconstructed in S06 from the commit messages `b83ff78..29239c6`. Faithful to what is versioned;
+> decisions taken in conversation that left no trace in the repository do not appear here.
+
+**What was done:** two entire features. The admin went from placeholder to a complete curation tool, and the
+public side went from zero to navigable — city gate, guide, detail and map. Neither touched the schema: they
+are frontend on top of F-01's database.
+
+**F-02 — Admin.** List with filters, place editor, tag assignment with `suggested` visually distinguished
+from what came from the curator (RN-15), Overview with live tier distribution (RN-06) and mobile quick-add
+with Nominatim geocoding. Six shadcn components landed; no new npm dependency.
+
+**Scope decision: the dedicated review-queue screen was cut.** The three queues — 28 tier conflicts, pending
+suggested tags, 15 without a type — became cards on the Overview linking to the list with the filter already
+applied. A screen of its own would be a fourth way of looking at the same records, at the cost of keeping two
+places in sync. Recorded under "Out of the MVP".
+
+**F-03 — Public.** The city gate displays cities as pairs with counts (DP-02) — a city with one place is not
+hidden, it is just honest about being one place. The guide separates "Eat & drink" from "Everything else",
+because type is the second gate (§7) and a state park in a restaurant list is noise. The detail leads with the
+verdict, never the address; opening hours do not exist because of ADR-06, and the directions button solves it —
+the maps app knows, and it also knows whether the place is open now.
+
+**Launch batch published, with Edu's approval:** the 58 places with a star or the `destination` tier went from
+`unreviewed` to `published`. It was not new judgment — tier and star came from Michael's own guides and the
+import simply had not revealed them. Verified through the public API with the anon key: an anonymous visitor
+sees 58, not 511.
+
+**The map: four attempts, one real bug fixed and one environmental cause.**
+
+The investigation is worth recording because three of the four fix commits were dead ends, and the fourth found
+a genuine bug:
+
+1. `resize()` on `load` + a `ResizeObserver` — the container is sized after the map is built (a `vh` unit, a
+   sticky wrapper, and the map coming from inside a `lazy`). Correct to do, was not the cause.
+2. Explicit `config.WORKER_URL` — MapLibre 6 builds the worker URL at runtime through string concatenation,
+   something no bundler can see, so Rollup never emitted the file. **It was a real bug**, proven by the map
+   going back to requesting fonts (only the worker triggers that). Even so, the tiles did not come.
+3. **`fitBounds` only after `load` and with a container of real width** — this is the finding that stays.
+   Framing against zero width computes a degenerate zoom, and the map never discovers which tiles it needs; a
+   later `resize` fixes the canvas but does not recompute the camera, so the bad view stayed stuck and Austin's
+   52 markers appeared piled in a corner. Once fixed, the markers spread out with the real geography. **And the
+   framing runs once per set of places (key = ids), which already prepared the path for F-04.**
+4. Downgrade `maplibre-gl` 6.2.0 → 5.24.0, approved by Edu. v5 ships a single file with the worker embedded, so
+   the workarounds from item 2 went away. It did not fix the rendering.
+
+**The final diagnosis is that there is nothing to fix.** A plain MapLibre map, from a CDN, on a blank page and
+without a line of ours, behaves identically in all three browsers. Recorded as `BL-29` with the full list of
+what was ruled out with evidence, so the next session does not walk the same path again.
+
+**`BL-25` partially resolved.** MapLibre took the single bundle to 1,647 kB — too much weight for someone who
+only opens the city gate. The map became `lazy` + `Suspense`: main bundle 699 kB (204 kB gzip), map chunk loaded
+only when a city opens, and the list is already usable while it arrives.
+
+**A lesson worth more than this project:** three of the four map fixes went to the wrong place because the
+hypothesis was never tested outside our code. The test that settled the question — plain MapLibre from a CDN on
+a blank page — costs five minutes and should have been the first, not the last.
+
+### 2026-08-06 — S04: F-01 — schema, RLS, RPCs and import
+
+**What was done:** the database went from zero tables to the whole schema with the 511 places inside. Two
+migrations, both versioned in `supabase/migrations/`, both with a rollback written in `supabase/rollbacks/`.
+
+**Five decisions settled before writing SQL, all approved by Edu:**
+- **Import through versioned SQL**, not through `import-places.ts`. The script required a service-role key in the
+  environment and the `csv-parse` dependency; SQL generated from the CSV stays auditable in the repo and asks for
+  no new key. The slugs come from the same `slugify()` that lives in `src/lib/utils.ts`, so they match the frontend
+- **`price_band` was not pre-suggested.** ADR-06 required pre-classifying `cuisine` and `price_band`, but §9.1
+  removed `price_band_source` — there is nowhere to mark that a value is a machine guess, and without Google Places
+  the only input would be the place's name. A guess would be indistinguishable from Michael's verdict in a
+  judgment-layer field. ADR-06 amended in the bible
+- **145 tags written as `suggested`**, with explicit authorization (it is the judgment layer). Two sources only: the
+  CSV's `Tags` column, which comes from the names of Michael's own guides, and unambiguous cuisine-word matching in
+  the place name, restricted to types that serve food
+- **`DEMO`** seeded to give `rpc_redeem_code()` something to test against before F-05
+- **`curators` is born empty** — `auth.users` has zero accounts
+
+**Two divergences found along the way:**
+- **There are 4 tiers, not 5.** STATUS and the bible said 5 because the §6.2 table lists `fair` twice, once per
+  scale. Since `slug` is the PK, `fair` is one row with `applies_to = {restaurant, bar}` — which is what the column
+  being an array is for. Confirmed by `SEEDED_TIER_SLUGS` in `src/types/index.ts` and by the single `Fair` value in
+  the CSV. Corrected in the bible
+- **The CSV's `Town` column was being discarded.** It is the real municipality — Lockhart, Dripping Springs, San
+  Marcos. It became `area` where it differs from the gate city: 107 of the 511. It is derived geography, not
+  judgment, and it goes away with an `UPDATE`
+
+**Gate G6 caught a real bug on the first attempt to apply.** The migration failed because `anon` had 4 leftover
+write privileges in `public`. Cause: the `field_report_aggregates` view was created **after** the
+`REVOKE ALL ... FROM anon`, so it inherited Supabase's default privileges and was born with INSERT, UPDATE, DELETE
+and TRUNCATE granted. The whole migration rolled back, the database stayed intact, the blocks were reordered and the
+second attempt passed. It stands as evidence that inline gates pay for themselves.
+
+**Import verification.** Since the 155 kB migration did not fit in one `apply_migration` call, the 511 records went
+in through `execute_sql` in four blocks — which introduces the risk of a silent transcription error. Instead of
+trusting it, the database's contents were compared against the CSV by md5 checksum field by field: name, slug, type,
+tier, star, visited, country, city, area, coordinates, address and `source_guides`. All match. (The first round
+reported a divergence in `source_guides`, which was a bug in the verification script — the parser stripped the quotes
+before reading the array. The data was always right.)
+
+**Two decisions taken at the end of the session:**
+- **One curator account, not two.** Edu accesses through Michael's account. It closes `BL-11` — the PRD, which said
+  "single-user authentication", was right from the start. It does not change the schema: `curators` simply has one
+  row. Accepted cost: `updated_by` stops saying *who* edited (`BL-17` updated)
+- **History reconciled with GitHub.** The remote repo had existed since S01, with two founding commits; S03's
+  `git init` had created an orphan history in parallel, with no common ancestor. Resolved with
+  `git rebase --onto origin/main b6fef0c main`: the local "initial commit", which only replicated what was already on
+  GitHub, was discarded and the following four replayed on top of the real history. A linear result, a final tree
+  byte-identical to the one before the rebase, and a push that becomes a fast-forward — no `--force`, no founding
+  commit lost. A `backup-pre-rebase` branch kept for safety
+- **Record correction:** I had written in this file that "the remote never existed" and that it was "the third S01
+  claim that does not hold up". Wrong on both counts — S01 was right. What failed was S03's diagnosis, which treated
+  the absence of a local `.git` as the absence of a repository
+- **The project moved house on GitHub.** The push to `AdminFeedpro/MichaelinMap` answered "Repository not found"
+  even though reading worked. Cause: the credential stored in this machine's Git Credential Manager belongs to the
+  **`AntonioTavaresDevWork`** account, which has no access to that repository — GitHub returns 404 instead of 403 so
+  as not to confirm that a private repo exists. By Edu's decision I created `AntonioTavaresDevWork/MichaelinMap`
+  (private) and pointed the remote there. The 9 commits went up, with the two founding ones (`038d040`, `d98f07c`)
+  preserved. The old repository still exists, frozen at those two commits
+
+- **Curator seeded at the end of the session.** The account `mikemyday@mikecofone.com` was created in the dashboard
+  by Edu, and the row inserted through a versioned migration. The simulated-JWT test proved both sides of the model:
+  a curator writes, and an authenticated-but-not-allowlisted account neither sees nor writes anything beyond what an
+  anonymous visitor would see
+
+**Lessons recorded (where to look later):**
+
+| Lesson | Where it ended up |
 |---|---|
-| Bloco de GRANT/REVOKE é sempre o último da migration — default privileges valem no momento da criação do objeto | `.claude/CLAUDE.md` + skill `michaelinmap-migration` |
-| `apply_migration` tem limite de payload; carga de massa por fallback exige checksum contra a fonte | `.claude/CLAUDE.md` + skill `michaelinmap-migration` |
-| Ausência de `.git` local não é diagnóstico de "repositório não existe" | `.claude/CLAUDE.md`, fluxo de trabalho |
-| GATEs de privilégio, RLS órfã e `search_path` pegam o que revisão visual não pega | skill `michaelinmap-migration` |
-| `execute_sql` devolve só o último resultado; `RAISE EXCEPTION` serve de relatório em smoke que precisa reverter | skill `michaelinmap-migration` |
-| Verificação de RLS com JWT simulado, testando os dois lados | skill `michaelinmap-rls-policy` |
+| The GRANT/REVOKE block is always last in the migration — default privileges apply at the moment an object is created | `.claude/CLAUDE.md` + the `michaelinmap-migration` skill |
+| `apply_migration` has a payload limit; a bulk load through a fallback requires a checksum against the source | `.claude/CLAUDE.md` + the `michaelinmap-migration` skill |
+| The absence of a local `.git` is not a diagnosis of "the repository does not exist" | `.claude/CLAUDE.md`, workflow |
+| Gates for privileges, orphan RLS and `search_path` catch what a visual review does not | the `michaelinmap-migration` skill |
+| `execute_sql` returns only the last result; `RAISE EXCEPTION` serves as a report in a smoke test that must roll back | the `michaelinmap-migration` skill |
+| RLS verification with simulated JWTs, testing both sides | the `michaelinmap-rls-policy` skill |
 
-**`BL-14` fechado no caminho.** As cinco skills traziam objetos do WiseFacilities que não existem
-aqui. O achado mais grave não eram os exemplos órfãos: a `michaelinmap-naming` prescrevia formato
-brasileiro (`1.234,56`, `DD/MM/YYYY`, `R$`), em contradição direta com o ADR-02 — um agente
-seguindo a skill produziria formatação errada num produto em inglês.
+**`BL-14` closed along the way.** The five skills carried objects from WiseFacilities that do not exist here. The
+most serious finding was not the orphan examples: `michaelinmap-naming` prescribed Brazilian formatting
+(`1.234,56`, `DD/MM/YYYY`, `R$`), in direct contradiction with ADR-02 — an agent following the skill would have
+produced wrong formatting in an English-language product.
 
-**Curiosidade útil:** o `docs/S01.md`, que só apareceu nesta máquina via rebase, já recomendava
-converter o CSV em migration de seed idempotente em vez de rodar o `import-places.ts`, pelo mesmo
-motivo que decidimos nesta sessão — não expor a service-role key. A decisão foi tomada sem
-conhecer esse arquivo.
+**A useful curiosity:** `docs/S01.md`, which only appeared on this machine through the rebase, already recommended
+converting the CSV into an idempotent seed migration instead of running `import-places.ts`, for the same reason we
+decided on in this session — not exposing the service-role key. The decision was made without knowing that file
+existed.
 
-**Próxima sessão:** F-02 — Admin, sem bloqueio. Sobram só o `git push` e o desligamento do signup, ambos operacionais.
+**Next session:** F-02 — Admin, with no blockers. All that is left is the `git push` and switching off signup, both
+operational.
 
-### 2026-08-06 — S03: Destravamento de ambiente
+### 2026-08-06 — S03: Unblocking the environment
 
-**O que foi feito:** a máquina de trabalho não estava pronta para a F-01 e o STATUS não registrava isso. Quatro divergências entre o registrado e o real, todas fechadas nesta sessão.
+**What was done:** the working machine was not ready for F-01 and the STATUS did not record that. Four divergences
+between the recorded and the real, all closed in this session.
 
-**As divergências:**
-- **Repositório não existia.** A S01 registrou "repositório GitHub criado", mas não havia `.git` na pasta local. Nada estava versionado. Corrigido com `git init` + commit `b6fef0c`.
-- **MCP do Supabase não carregava.** A config estava em `mcp.json`; o Claude Code lê `.mcp.json`. O `.gitignore` também só cobria a versão com ponto — o arquivo com o access token estava exposto e teria entrado no primeiro commit. O rename resolveu as duas coisas.
-- **Node.js não estava no PATH.** O `winget` reportou o pacote como já instalado e, de fato, `C:\Program Files\nodejs` existia com o PATH de máquina apontando pra lá — o shell da sessão é que havia sido iniciado antes. Sem isso, nem `npm` nem o MCP (que roda via `npx`) funcionavam.
-- **`.env.local` ausente.** Existia como `env.local.download`, nome quebrado no download. O client Supabase valida env no import, então nada subia.
+**The divergences:**
+- **The repository did not exist.** S01 recorded "GitHub repository created", but there was no `.git` in the local
+  folder. Nothing was versioned. Fixed with `git init` + commit `b6fef0c`.
+- **The Supabase MCP server did not load.** The config was in `mcp.json`; Claude Code reads `.mcp.json`. The
+  `.gitignore` also only covered the dotted version — the file with the access token was exposed and would have
+  entered the first commit. The rename solved both.
+- **Node.js was not on the PATH.** `winget` reported the package as already installed and, indeed,
+  `C:\Program Files\nodejs` existed with the machine PATH pointing at it — the session's shell had simply been
+  started before. Without it, neither `npm` nor the MCP server (which runs through `npx`) worked.
+- **`.env.local` was missing.** It existed as `env.local.download`, a name broken by the download. The Supabase
+  client validates env at import, so nothing would start.
 
-**Consequência importante:** o gate "build + lint limpos" que a S02 registrou como cumprido **não era reproduzível** nesta máquina — sem `node_modules`, nenhum dos dois rodava. Foi reexecutado do zero nesta sessão e passou limpo, então a F-00 se sustenta. Mas o registro anterior era uma afirmação sem verificação possível.
+**An important consequence:** the "clean build + lint" gate that S02 recorded as met **was not reproducible** on
+this machine — without `node_modules`, neither of them ran. It was re-run from scratch in this session and passed
+clean, so F-00 holds. But the earlier record was a claim with no possible verification.
 
-**Decisões tomadas:**
-- Identidade git configurada local ao repositório, não global
-- O commit inicial documenta no corpo que o gate não pôde rodar no momento em que foi criado — preferível a omitir
-- Estado do banco **não** foi reconfirmado: a validação por API de gestão foi bloqueada e não foi contornada. Fica como primeira ação do próximo boot, via MCP
+**Decisions taken:**
+- Git identity configured local to the repository, not global
+- The initial commit documents in its body that the gate could not run at the moment it was created — preferable to
+  omitting it
+- The database state was **not** re-confirmed: validation through the management API was blocked and not worked
+  around. It stays as the first action of the next boot, through MCP
 
-**Próxima sessão:** F-01 — Schema + dados. Reiniciar a sessão primeiro, para o `.mcp.json` carregar.
+**Next session:** F-01 — Schema + data. Restart the session first, so `.mcp.json` loads.
 
-### 2026-08-06 — S02: Escopo e fundação documental
+### 2026-08-06 — S02: Scope and documentary foundation
 
-**O que foi feito:** análise integral do material do Claude Web; validação dos dados; auditoria de segurança do schema; reavaliação de escopo; redação da Bíblia, do BACKLOG e deste arquivo.
+**What was done:** a full analysis of the Claude Web material; data validation; a security audit of the schema; a
+scope reassessment; writing the bible, the BACKLOG and this file.
 
-**Decisões tomadas:**
-- Projeto é pessoal, não SaaS — sem multi-tenant (ADR-01)
-- Produto em inglês, docs internos em PT-BR (ADR-02)
-- Google Places API cortada; pré-classificação de `cuisine` e `price_band` feita pelo CLI no seed (ADR-06)
-- My Maps sync cortado (ADR-08)
-- Guia não-listado, `noindex` (ADR-07)
-- Codes na versão completa; field reports mantidos por pedido do Michael
-- Roulette reincluída — custo próximo de zero, alto valor de personalidade
-- Framework Wise* reduzido: sem GANTT, DOMAIN_QUESTIONS, spec por feature ou pipeline de agentes (ADR-04)
-- Estratégia de lançamento: publicar os ~65 lugares com estrela ou `destination` primeiro, em vez de esperar os 511
+**Decisions taken:**
+- The project is personal, not a SaaS — no multi-tenancy (ADR-01)
+- Product in English, internal docs in PT-BR (ADR-02)
+- Google Places API cut; pre-classification of `cuisine` and `price_band` done by the CLI in the seed (ADR-06)
+- My Maps sync cut (ADR-08)
+- Unlisted guide, `noindex` (ADR-07)
+- Codes in the complete version; field reports kept at Michael's request
+- Roulette brought back — near-zero cost, high personality value
+- Wise* framework reduced: no GANTT, DOMAIN_QUESTIONS, per-feature spec or agent pipeline (ADR-04)
+- Launch strategy: publish the ~65 places with a star or `destination` first, instead of waiting for all 511
 
-**Também nesta sessão:** F-00 executada e fechada. Desvios em relação ao previsto, todos registrados no CLAUDE.md e no BACKLOG: o template Vite atual usa **oxlint** no lugar do ESLint; TypeScript 6 deprecou `baseUrl`, então o alias `@/` usa só `paths`; o `sonner.tsx` do shadcn vinha atrelado a `next-themes` e foi reescrito.
+**Also in this session:** F-00 executed and closed. Deviations from the plan, all recorded in CLAUDE.md and the
+BACKLOG: the current Vite template uses **oxlint** instead of ESLint; TypeScript 6 deprecated `baseUrl`, so the
+`@/` alias uses only `paths`; shadcn's `sonner.tsx` came coupled to `next-themes` and was rewritten.
 
-**Próxima sessão:** F-01 — Schema + dados.
+**Next session:** F-01 — Schema + data.
 
 ### 2026-08-05 — S01: Scaffold
 
-Estrutura Wise* instanciada, repositório e projeto Supabase criados. Nenhum código de produto, nenhuma migration.
+Wise* structure instantiated, repository and Supabase project created. No product code, no migrations.

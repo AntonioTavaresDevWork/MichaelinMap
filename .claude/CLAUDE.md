@@ -1,153 +1,162 @@
 # CLAUDE.md — Michaelin Map
 
-> Leia no início de TODA sessão. Regras inegociáveis do projeto.
-> **Localização canônica:** `.claude/CLAUDE.md`.
-> Fonte da verdade do produto: `docs/MICHAELINMAP_BIBLIA.md`.
+> Read at the start of EVERY session. Non-negotiable rules for this project.
+> **Canonical location:** `.claude/CLAUDE.md`.
+> Product source of truth: `docs/MICHAELINMAP_BIBLIA.md`.
 
-## Identidade do projeto
+## Project identity
 
-- **Nome:** Michaelin Map — guia de lugares curado por uma pessoa
-- **Natureza:** projeto pessoal do Edu Mello para o Michael. **Não é SaaS, não será monetizado, não tem cliente.**
-- **Pasta:** `C:\Users\tomme\OneDrive\Documents\Projects\Michaelin Map`
+- **Name:** Michaelin Map — a places guide curated by one person
+- **Nature:** Edu Mello's personal project for Michael. **Not a SaaS, will not be monetized, has no customer.**
+- **Folder:** `C:\Users\tomme\OneDrive\Documents\Projects\Michaelin Map`
 - **Supabase:** ID `woapimgpmlgqqvauckdy` · URL `https://woapimgpmlgqqvauckdy.supabase.co`
-- **GitHub:** `AntonioTavaresDevWork/MichaelinMap` (privado). **É conta do Edu** — não estranhe a diferença para o autor dos commits (`Edu Mello <eduardo@feedback.com.vc>`); são a mesma pessoa. O `AdminFeedpro/MichaelinMap` foi a casa original e ficou parado nos dois commits da fundação — não é mais o remote (S04)
+- **GitHub:** `AntonioTavaresDevWork/MichaelinMap` (private). **It is Edu's account** — do not be surprised by the mismatch with the commit author (`Edu Mello <eduardo@feedback.com.vc>`); they are the same person. `AdminFeedpro/MichaelinMap` was the original home and stayed frozen at the two founding commits — it is no longer the remote (S04)
 
-> Este projeto usa o framework Wise* em **versão reduzida** (ADR-04 da Bíblia). Sem GANTT, sem
-> DOMAIN_QUESTIONS, sem spec por feature, sem pipeline obrigatório de agentes. O PRD original
-> em `docs/files/` cumpre o papel de spec. Mantidos: migrations versionadas, STATUS, BACKLOG e Bíblia.
+> This project uses the Wise* framework in a **reduced version** (ADR-04 of the bible). No GANTT, no
+> DOMAIN_QUESTIONS, no per-feature spec, no mandatory agent pipeline. The original PRD in
+> `docs/files/` serves as the spec. Kept: versioned migrations, STATUS, BACKLOG and the bible.
 
-## Idioma — atenção
+## Language — attention
 
-| Onde | Idioma |
+Amended in S09, when the project was being prepared to change hands (ADR-02 in the bible).
+
+| Where | Language |
 |---|---|
-| Conversa com o Edu, Bíblia, STATUS, BACKLOG | **Português BR** |
-| UI do produto, tags, perguntas, mensagens, copy | **Inglês** |
-| Comentários de código, nomes de variáveis | Inglês |
+| **Everything written into this repository** — bible, STATUS, BACKLOG, README, skills, agents, prompts, code comments | **English** |
+| Product UI, tags, questions, messages, copy | **English** |
+| Conversation with Edu | Portuguese BR, unless he switches |
 
-Formato **en-US** no produto: `1,000.00`, `MM/DD/YYYY`, `$`. Nada de formato brasileiro (ADR-02).
+**en-US format** in the product: `1,000.00`, `MM/DD/YYYY`, `$`. No Brazilian formatting (ADR-02).
 
-## Documentação-chave
+> Before S09 the internal documentation was written in Portuguese while the product was in English.
+> That split stopped making sense once a handover to someone who may not read Portuguese became
+> likely: documentation nobody on the team can read is documentation that does not exist. Session
+> history in `docs/STATUS.md` was translated, not rewritten — it records what past sessions observed.
 
-| Arquivo | Propósito |
+## Key documentation
+
+| File | Purpose |
 |---|---|
-| `docs/MICHAELINMAP_BIBLIA.md` | Fonte da verdade: domínio, schema, RNs, ADRs, escopo |
-| `docs/STATUS.md` | Estado atual, próxima ação, log de sessões |
-| `docs/BACKLOG.md` | Fonte única de pendências. Ler no boot junto do STATUS |
-| `docs/files/` | Material de origem do Claude Web (PRD, PLAN, schema, seed, CSV). Referência, **não** fonte da verdade |
-| `.claude/init.md` | Checklist de boot |
-| `docs/prompts/0X-*.md` | Briefings de boot do orquestrador/executor |
+| `README.md` | Entry point for a human: setup, architecture, handover checklist |
+| `docs/MICHAELINMAP_BIBLIA.md` | Source of truth: domain, schema, business rules, ADRs, scope |
+| `docs/STATUS.md` | Current state, next action, session log |
+| `docs/BACKLOG.md` | Single home for every pending item. Read at boot alongside STATUS |
+| `docs/files/` | Origin material from Claude Web (PRD, PLAN, schema, seed, CSV). Reference, **not** source of truth |
+| `.claude/init.md` | Boot checklist |
+| `docs/prompts/0X-*.md` | Boot briefings for the orchestrator and the executor |
 
-**Não usados neste projeto** (ADR-04): `docs/GANTT-MichaelinMap.csv`, `docs/DOMAIN_QUESTIONS.md`, `docs/specs/`, `docs/qa/`.
+**Not used in this project** (ADR-04): `docs/GANTT-MichaelinMap.csv`, `docs/DOMAIN_QUESTIONS.md`, `docs/specs/`, `docs/qa/`.
 
 ## Build & Dev
 
 ```bash
 npm run dev         # Vite dev server
-npm run build       # tsc -b && vite build (type-check)
+npm run build       # tsc -b && vite build (type check)
 npm run lint        # oxlint
-npm run preview     # serve o dist
+npm run preview     # serve dist
 ```
 
-- **Lint é `oxlint`**, não ESLint — é o default do template Vite atual. Config em `.oxlintrc.json`, com `src/components/ui/**` isento de `only-export-components` (arquivos gerados pelo shadcn).
-- Path alias: `@/` → `./src/*`. Declarado em `vite.config.ts` e nos `tsconfig*.json` via `paths` **sem `baseUrl`** — TypeScript 6 deprecou `baseUrl`.
-- Env: copiar `.env.example` → `.env.local`.
-- Vitest ainda não configurado — entra quando houver o que testar.
-- Antes de commit: `build` + `lint` limpos + validação SQL no banco via MCP.
-- **Para inspeção visual pelo navegador, use a URL de rede que o Vite imprime** (`http://192.168.1.127:5173`), não `localhost` nem `127.0.0.1`. Nesta máquina o Chrome devolve `ERR_CONNECTION_REFUSED` nas duas com a porta comprovadamente escutando (`Test-NetConnection` responde True). Descoberto na S07; convive com o `BL-29`, que também é rede local desta máquina se comportando mal.
-- **O mapa não desenha geometria no Chrome que o CLI dirige — e isso não é bug do produto.** O Edu
-  confirmou na S08 que vê o mapa normalmente no Firefox e no celular. Pins aparecem e se posicionam
-  certo; os tiles é que não renderizam. **Não investigar** (`BL-29` tem o histórico inteiro do que já
-  foi descartado com evidência) e **não afirmar que o mapa está quebrado** a partir de um screenshot
-  meu. Quando uma verificação depender de ver o mapa, pedir ao Edu.
-- **Nunca matar processo `node` por janela de tempo.** O MCP do Supabase roda via `npx` — é `node`, igual ao Vite e a qualquer outra ferramenta do projeto. Um `Get-Process node | Where StartTime -gt ...` derruba o MCP junto com o dev server, e aí só volta reiniciando o Claude Code. Para encerrar o dev server, usar o ID que o `run_in_background` devolveu, ou filtrar pela linha de comando (`vite`). Aconteceu na S07.
+- **The linter is `oxlint`**, not ESLint — it is the default of the current Vite template. Config in `.oxlintrc.json`, with `src/components/ui/**` exempt from `only-export-components` (files generated by shadcn).
+- Path alias: `@/` → `./src/*`. Declared in `vite.config.ts` and in the `tsconfig*.json` files through `paths` **without `baseUrl`** — TypeScript 6 deprecated `baseUrl`.
+- Env: copy `.env.example` → `.env.local`.
+- Vitest is not configured yet — it arrives when there is something to test.
+- Before committing: clean `build` + `lint` + SQL validation against the database through MCP.
+- **For visual inspection through the browser, use the network URL Vite prints** (`http://192.168.1.127:5173`), not `localhost` and not `127.0.0.1`. On this machine Chrome returns `ERR_CONNECTION_REFUSED` for both while the port is demonstrably listening (`Test-NetConnection` answers True). Discovered in S07; it coexists with `BL-29`, which is also this machine's local network misbehaving.
+- **The map draws no geometry in the Chrome the CLI drives — and that is not a product bug.** Edu
+  confirmed in S08 that he sees the map normally in Firefox and on his phone. Pins appear and position
+  correctly; it is the tiles that do not render. **Do not investigate** (`BL-29` holds the entire
+  history of what has already been ruled out with evidence) and **do not claim the map is broken**
+  based on a screenshot of mine. When a check depends on seeing the map, ask Edu.
+- **Never kill a `node` process by time window.** The Supabase MCP server runs through `npx` — it is `node`, same as Vite and every other tool in the project. A `Get-Process node | Where StartTime -gt ...` takes the MCP server down along with the dev server, and then only restarting Claude Code brings it back. To stop the dev server, use the ID that `run_in_background` returned, or filter by command line (`vite`). It happened in S07.
 
-## Stack obrigatória
+## Mandatory stack
 
-- **React + Vite + TypeScript (SPA, sem SSR).** Não é Next.js — sem App Router, server actions ou API routes.
-- UI: Tailwind + shadcn/ui. Verificar se o componente já existe antes de criar custom.
-- **Mapa: MapLibre GL** (ADR-05). Não substituir por embed do Google.
-- Forms: `useState` controlado, validação inline no `onSubmit`. Sem react-hook-form/zod.
-- Notificações: `sonner` — `<Toaster richColors position="top-right" />` no `App.tsx`.
-- State: React Query (server) + Zustand (UI, se necessário) · Routing: React Router DOM · Ícones: lucide-react
-- Backend: Supabase (PostgreSQL 17 + Auth). Server-side, se necessário, em Edge Functions (Deno).
-- Geocoding: Nominatim/OSM (ADR-06). **Sem Google Places API.**
+- **React + Vite + TypeScript (SPA, no SSR).** This is not Next.js — no App Router, no server actions, no API routes.
+- UI: Tailwind + shadcn/ui. Check whether the component already exists before writing a custom one.
+- **Map: MapLibre GL** (ADR-05). Do not replace it with a Google embed.
+- Forms: controlled `useState`, inline validation in `onSubmit`. No react-hook-form, no zod.
+- Notifications: `sonner` — `<Toaster richColors position="top-right" />` in `App.tsx`.
+- State: React Query (server) + Zustand (UI, if needed) · Routing: React Router DOM · Icons: lucide-react
+- Backend: Supabase (PostgreSQL 17 + Auth). Server-side work, if ever needed, goes in Edge Functions (Deno).
+- Geocoding: Nominatim/OSM (ADR-06). **No Google Places API.**
 - Deploy: Vercel.
 
-## Arquitetura
+## Architecture
 
 ```
 src/  components/[ui|admin|public|shared]  hooks/  lib/supabase/  pages/  types/  utils/
 supabase/  migrations/  rollbacks/
 ```
 
-- **Não é multi-tenant** (ADR-01). Não existe `company_id`. Autorização é allowlist de curador.
-- Fluxo: componente → hook customizado → React Query → Supabase client → PostgreSQL (RLS).
-- Entrypoints: `main.tsx` (QueryClientProvider) → `App.tsx` (BrowserRouter) · `lib/supabase/client.ts` (singleton, valida env no import) · `lib/utils.ts` (`cn()` + `mapRpcError()`).
+- **Not multi-tenant** (ADR-01). There is no `company_id`. Authorization is a curator allowlist.
+- Flow: component → custom hook → React Query → Supabase client → PostgreSQL (RLS).
+- Entrypoints: `main.tsx` (QueryClientProvider) → `App.tsx` (BrowserRouter) · `lib/supabase/client.ts` (singleton, validates env at import) · `lib/utils.ts` (`cn()` + `mapRpcError()`).
 
-## Convenções de código
+## Code conventions
 
-- DB/SQL: `snake_case` · RPCs expostas ao client: `rpc_<verbo>_<entidade>` · Frontend: `camelCase` · Componentes: `PascalCase` · Arquivos de componente: `kebab-case.tsx` · Hooks: `use-kebab-case.ts`
-- Sem `any` — usar `unknown` + narrowing
-- Comentários: WHY, not WHAT
-- Mapeamento snake_case → camelCase acontece **na fronteira de acesso a dados**, não espalhado. Tipo populado por `select('*')` direto fica em snake_case.
-- Um único objeto de estado de filtro, compartilhado por mapa e lista. Nunca dois. Serializa na URL.
-- **A URL do guia pertence ao filtro.** `filtersToParams()` monta um `URLSearchParams` do zero a cada clique, então qualquer parâmetro alheio (`?code=`, utm, o que for) é apagado no primeiro toque em faceta. Quem precisar passar algo por URL tem de consumir e remover o parâmetro na chegada — foi assim que a F-05 tratou `?code=`.
+- DB/SQL: `snake_case` · RPCs exposed to the client: `rpc_<verb>_<entity>` · Frontend: `camelCase` · Components: `PascalCase` · Component files: `kebab-case.tsx` · Hooks: `use-kebab-case.ts`
+- No `any` — use `unknown` + narrowing
+- Comments: WHY, not WHAT
+- The snake_case → camelCase mapping happens **at the data-access boundary**, not scattered around. A type populated by a direct `select('*')` stays in snake_case.
+- One single filter state object, shared by map and list. Never two. It serializes into the URL.
+- **The guide's URL belongs to the filter.** `filtersToParams()` builds a fresh `URLSearchParams` on every click, so any foreign parameter (`?code=`, utm, whatever) is erased the first time a facet is touched. Whoever needs to pass something through the URL has to consume and remove the parameter on arrival — that is how F-05 handled `?code=`.
 
-## Segurança
+## Security
 
-- Nunca expor chave no client. `VITE_` só para URL do Supabase e anon key.
-- **RLS obrigatório em todas as tabelas.** Modelo: curator allowlist via `is_curator()` — ver Bíblia §11.
-- **`codes` nunca tem SELECT público** (RN-20). Validação só por `rpc_redeem_code()`.
-- **`field_reports` nunca tem INSERT público direto** (RN-23). Só por `rpc_submit_field_report()`, que deriva o status no servidor.
-- Signup desabilitado no Supabase. Escrita só para quem está em `curators`.
-- Soft delete via `status`, não `deleted_at` (ADR-03).
+- Never expose a key in the client. `VITE_` is only for the Supabase URL and the anon key.
+- **RLS is mandatory on every table.** Model: curator allowlist through `is_curator()` — see bible §11.
+- **`codes` never has public SELECT** (RN-20). Validation only through `rpc_redeem_code()`.
+- **`field_reports` never has direct public INSERT** (RN-23). Only through `rpc_submit_field_report()`, which derives the status on the server.
+- Signup disabled in Supabase. Writing is only for whoever is in `curators`.
+- Soft delete through `status`, not `deleted_at` (ADR-03).
 
-## A camada de julgamento — regra máxima
+## The judgment layer — the highest rule
 
-`tier`, `starred`, `the_dish`, `curator_note`, `story`, `last_visited` e as atribuições em `place_tags` são o **único dado insubstituível do sistema**. Nenhuma rotina automática escreve neles sem autorização explícita do Edu. Em qualquer trade-off, protege-se o julgamento.
+`tier`, `starred`, `the_dish`, `curator_note`, `story`, `last_visited` and the assignments in `place_tags` are the **only irreplaceable data in the system**. No automated routine writes to them without explicit authorization from Edu. In any trade-off, the judgment is protected.
 
 ## Migrations & schema
 
-- Naming `YYYYMMDDNNNNNN_description.sql` · toda migration em `BEGIN; … COMMIT;` · aplicar via `mcp__supabase__apply_migration` (só o orquestrador).
-- Postgres não permite usar novo valor de enum na mesma transação do `ADD VALUE`.
-- Saneamento de `schema_migrations` pós-apply é obrigatório — detalhe na skill `michaelinmap-migration`.
-- **Schema vivo primeiro:** validar tabelas/colunas via MCP (`list_tables`, `execute_sql`) antes de propor SQL. Convenção não substitui introspecção.
-- SAVEPOINT/ROLLBACK TO não é gramática válida dentro de `DO $$ … $$`. Smoke inline deve ser read-only.
-- **O bloco de GRANT/REVOKE é sempre o último da migration.** Default privileges do Supabase são aplicadas no momento da criação do objeto: revogar antes de criar deixa o objeto novo com tudo liberado. Foi assim que a F-01 reprovou no primeiro apply — a view nasceu depois do `REVOKE` e o `anon` ficou com INSERT/UPDATE/DELETE/TRUNCATE nela.
-- **`apply_migration` tem limite prático de payload** (155 kB não passou). Fallback: quebrar em migrations menores, SQL Editor do painel, ou `execute_sql` em blocos. **Se for carga de massa por qualquer fallback, verificação por checksum contra a fonte é obrigatória** — transcrição em blocos corrompe em silêncio.
+- Naming `YYYYMMDDNNNNNN_description.sql` · every migration wrapped in `BEGIN; … COMMIT;` · applied through `mcp__supabase__apply_migration` (orchestrator only).
+- Postgres does not allow using a new enum value in the same transaction as the `ADD VALUE`.
+- Sanitizing `schema_migrations` after an apply is mandatory — details in the `michaelinmap-migration` skill.
+- **Live schema first:** validate tables and columns through MCP (`list_tables`, `execute_sql`) before proposing SQL. Convention is not a substitute for introspection.
+- SAVEPOINT/ROLLBACK TO is not valid grammar inside `DO $$ … $$`. An inline smoke test must be read-only.
+- **The GRANT/REVOKE block is always the last one in the migration.** Supabase default privileges are applied at the moment an object is created: revoking before creating leaves the new object fully exposed. That is how F-01 failed its first apply — the view was born after the `REVOKE` and `anon` was left with INSERT/UPDATE/DELETE/TRUNCATE on it.
+- **`apply_migration` has a practical payload limit** (155 kB did not go through). Fallbacks: split into smaller migrations, the dashboard SQL Editor, or `execute_sql` in blocks. **If a bulk load goes through any fallback, verification by checksum against the source is mandatory** — transcription in blocks corrupts silently.
+- **No migration publishes a place** (`BL-35`). Every place is born `unreviewed`; the batch of 58 published came from an ad-hoc `UPDATE` in S05 and lives only in the database. A rebuild against an empty project therefore returns 511 unreviewed places and a public guide that renders empty while looking healthy.
 
-## Skills do projeto
+## Project skills
 
-| Skill | Quando invocar |
+| Skill | When to invoke |
 |---|---|
-| `michaelinmap-migration` | Antes de escrever/aplicar migration SQL |
-| `michaelinmap-rls-policy` | Antes de escrever/revisar RLS policy |
-| `michaelinmap-rpc` | Antes de criar/modificar RPC `SECURITY DEFINER` |
-| `michaelinmap-naming` | Ao nomear tabela/coluna/RPC/componente/hook/arquivo, ou ao formatar número/data/moeda |
+| `michaelinmap-migration` | Before writing or applying a SQL migration |
+| `michaelinmap-rls-policy` | Before writing or reviewing an RLS policy |
+| `michaelinmap-rpc` | Before creating or modifying a `SECURITY DEFINER` RPC |
+| `michaelinmap-naming` | When naming a table/column/RPC/component/hook/file, or formatting a number/date/currency |
 
-As quatro foram reescritas na S04 sobre os objetos reais deste banco (BL-14 fechado). A quinta,
-`michaelinmap-spec-format`, está marcada como **não usada** — o ADR-04 dispensa spec por feature.
+All four were rewritten in S04 against the real objects of this database (`BL-14` closed). The fifth,
+`michaelinmap-spec-format`, is marked **not used** — ADR-04 dispenses with per-feature specs.
 
-## Fluxo de trabalho
+## Workflow
 
-0. **Antes de `git init` em pasta sem `.git`, verificar o remoto** (`git ls-remote`, ou perguntar ao Edu a URL). Ausência de `.git` local **não** é diagnóstico de "repositório não existe". A S03 concluiu isso e criou um histórico órfão que custou um rebase para reconciliar na S04.
-1. Boot segue `.claude/init.md`. **Regra de ouro: nunca codar sem confirmar a próxima ação com o Edu.**
-2. Apresentar plano antes de qualquer mutação. Aguardar OK explícito.
-3. Decisão técnica é do CLI — recomendar UMA opção com justificativa enxuta, nunca um menu A/B/C. O Edu valida direção, não tecnicidade.
-4. Build sem erros + lint limpo antes de commit.
-5. Atualizar `docs/STATUS.md` ao final da sessão; pendência nova vai para `docs/BACKLOG.md`.
-6. Divergência entre STATUS e estado real do código: **reportar antes de agir.**
+0. **Before running `git init` in a folder with no `.git`, check the remote** (`git ls-remote`, or ask Edu for the URL). The absence of a local `.git` is **not** a diagnosis of "the repository does not exist". S03 concluded that and created an orphan history that cost a rebase to reconcile in S04.
+1. Boot follows `.claude/init.md`. **Golden rule: never write code without confirming the next action with Edu.**
+2. Present a plan before any mutation. Wait for an explicit OK.
+3. Technical decisions belong to the CLI — recommend ONE option with a lean justification, never an A/B/C menu. Edu validates direction, not technicalities.
+4. Clean build + clean lint before committing.
+5. Update `docs/STATUS.md` at the end of the session; anything newly pending goes to `docs/BACKLOG.md`.
+6. Divergence between STATUS and the real state of the code: **report before acting.**
 
-## Sessões paralelas
+## Parallel sessions
 
-Uma sessão nova nesta pasta é o **orquestrador** por padrão. Se o Edu abrir um executor em outro terminal, ele recebe briefing cirúrgico com os fatos do banco vivo embutidos (o executor não herda MCP nem contexto), escreve artefatos e **não** aplica migrations nem faz commit. Leitura paraleliza; mutação serializa — um terminal por vez na mesma área.
+A new session in this folder is the **orchestrator** by default. If Edu opens an executor in another terminal, it receives a surgical briefing with the live database facts embedded (the executor inherits neither MCP nor context), writes artifacts and does **not** apply migrations or commit. Reading parallelizes; mutation serializes — one terminal at a time in the same area.
 
-## Nunca fazer sem aprovação explícita
+## Never do without explicit approval
 
-- DROP, TRUNCATE, DELETE sem WHERE
-- Instalar nova dependência npm
-- Modificar schema fora de migration versionada
-- Alterar RLS existente
-- Push direto na `main` sem confirmar
-- Escrever em campo da camada de julgamento por rotina automática
-- Reabrir decisão registrada como ADR na Bíblia §15 sem fato novo
+- DROP, TRUNCATE, DELETE without WHERE
+- Install a new npm dependency
+- Modify the schema outside a versioned migration
+- Change existing RLS
+- Push straight to `main` without confirming
+- Write to a judgment-layer field through an automated routine
+- Reopen a decision recorded as an ADR in bible §15 without a new fact
