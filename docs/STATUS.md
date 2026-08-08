@@ -7,8 +7,8 @@
 
 ## 🗓️ Last update
 
-**Date:** 2026-08-07
-**Session:** S08 — F-06 (Field reports)
+**Date:** 2026-08-08
+**Session:** S09 — README, database handover and the documentation moved to English
 **Version:** `0.1.0` — kept by Edu's decision; bump only when the product goes live
 **Updated by:** Claude Code (orchestrator)
 
@@ -20,8 +20,14 @@
 field reports. There is no next feature planned.
 
 **The critical path is now entirely human** and it is not code: none of the 58 published places has
-`the_dish` or `curator_note`, and the 145 tag assignments are all still `suggested`. The guide shows
+`the_dish` or `curator_note`, and the tag assignments are all still `suggested`. The guide shows
 the verdicts, not the voice.
+
+**A second track opened in S09: the project is being prepared to change hands.** Edu asked what a
+handover would require, and the answer produced a `README.md`, a documented path for repointing the
+database at another Supabase project, and the decision to move the whole repository to English
+(ADR-02 amended). Both the deploy and the database are expected to move to a company organization.
+Nothing here blocks the product from going live — it is preparation, not an impediment.
 
 ---
 
@@ -210,6 +216,25 @@ the verdicts, not the voice.
 - [ ] ⚠️ **The `/admin/reports` screen was never clicked** — same reason as `BL-31`, it is behind the
       curator login. The PostgREST embed of the queue was validated against the database separately
 
+### Session 09 — Handover, and the documentation in English ✅
+
+- [x] `README.md` created — the repository had no human entry point. Setup, scripts, real directory
+      structure, stack with what is deliberately absent, the authorization model, the two migration
+      rules that already cost a failed apply, known gaps, and troubleshooting for this machine's two
+      traps (the network URL and the mute map)
+- [x] **A handover checklist**, including the section on repointing the database at a different
+      Supabase project — what rebuilds from the four migrations and the three things that do not
+- [x] **The curator login was tested and works.** Edu reset the password through the Supabase
+      dashboard; `BL-31` narrowed to clicking the two screens
+- [x] `BL-35` — no migration publishes a place. Found by sweeping all four migrations
+- [x] `OP-05` — database backup outside the repository, with the reasoning that makes it urgent
+- [x] `BL-36` — the boot prompt filenames stay in Portuguese, and why
+- [x] **ADR-02 amended: the whole repository moved to English.** 19 files, ~3,000 lines
+- [x] **The 2 boot prompts and the 5 agents were instantiated, not translated** — they were the raw
+      Wise* template and their rules contradicted this project's ADRs
+- [x] `docs/MICHAELINMAP_BIBLIA.md` → `docs/MICHAELINMAP_BIBLE.md`, with 16 references in 12 files
+- [x] **Gate:** `npm run build` and `npm run lint` clean. No code touched, no migration applied
+
 ---
 
 ## 🔄 In progress
@@ -236,9 +261,20 @@ Nothing running.
 4. **Seeding field reports** (`BL-20`): the surface exists at `/admin/reports`; the values are
    observations and have to be typed by someone who was there.
 
-**On the technical side, what is left is operational:** clicking `/admin/codes` and `/admin/reports`
-while logged in (`BL-31`), disabling signup (`OP-01`) and configuring the Vercel deploy, which was
-never done.
+**On the technical side, what is left is operational, and S09 reordered it:**
+
+1. **Take a database backup** (`OP-05`). This is the only pending item that can cost irreplaceable
+   data, and it becomes urgent the moment the database is repointed at another project. Also confirm
+   in the dashboard whether this project has automatic backups at all — nobody has checked.
+2. **Turn the launch batch into a migration** (`BL-35`). The 58 published places exist only in the
+   live database, so a rebuild returns an empty guide that looks perfectly healthy. The criterion is
+   one statement.
+3. **Click `/admin/codes` and `/admin/reports` while logged in** (`BL-31`). The login works now. For
+   the reports queue to show anything, a `pending` free-text answer has to exist first.
+4. **Disable signup and turn on leaked-password protection** (`OP-01`) — two dashboard toggles.
+5. **Deploy** (`OP-04`) — **deferred by Edu's decision:** it will use the company's Vercel account,
+   not a personal one, and the database is expected to move to the company's organization as well.
+   The repository is ready; the README documents what the move requires.
 
 ---
 
@@ -314,6 +350,115 @@ of the content.
 ---
 
 ## 📝 Session log
+
+### 2026-08-08 — S09: Handover, and the documentation in English
+
+**What was done:** no product code. The session started as a status check and turned into preparing
+the project to change hands — a README, a documented path for moving the database, and the whole
+repository translated to English.
+
+**The boot found something it could not do.** The Supabase MCP server did not load: `.mcp.json`
+declares it, but no `mcp__supabase__*` tool was exposed in the session. So **step 6 of the boot never
+ran** — everything this entry says about the database comes from the previous STATUS, not from
+introspection. That also settled what the session could contain: with no live schema access, writing
+SQL was off the table by the project's own first rule.
+
+**Two questions from Edu produced two findings, and neither was the answer to the question asked.**
+
+He asked why the login was asking for a password when there was none in the database. The answer is
+that it lives in `auth.users.encrypted_password`, a schema that is Supabase's and not ours — our
+tables hold only the allowlist. He had set it himself in S04 and it is recorded nowhere, correctly.
+He reset it through the dashboard, and **the login works.** `BL-31` narrowed from "nobody can get in"
+to "the two screens still need clicking".
+
+He then asked how hard it would be to sync the guide with Michael's Google My Maps. The estimate is
+in the amended `ADR-08`, but the useful part was checking the premise first: **the 511 places come
+from Apple Maps**, so a My Maps sync would read an empty source unless Michael keeps one in parallel;
+and KML carries name, coordinates and layer but **never** the judgment layer, so a sync brings more
+pins, which §1 says is exactly what has no value here. Not reopened. What is worth reconsidering some
+day is only the assumption the cut rested on — that quick-add is a complete capture path — because
+S08 measured that Michael has not sat down to use any of our tools yet.
+
+**Then the real question: is the repo enough to hand the project to someone else?** It is
+surprisingly close — the four migrations rebuild the schema, the vocabulary and all 511 places,
+because the seed and the import are themselves migrations. Writing that down turned up two things
+nobody had looked for:
+
+1. **No migration publishes a place** (`BL-35`). Verified by sweeping all four: every occurrence of
+   `status = 'published'` is a policy, an index or a view — none is a write. The batch of 58 came
+   from an ad-hoc `UPDATE` in S05 and lives only in the live database. So a rebuild against an empty
+   project returns 511 places with none published, and **the public guide renders empty while looking
+   perfectly healthy** — the city gate counts published places, so it shows no city at all, with no
+   error and no clue. The criterion is on record (starred or `destination`), so the fix is one
+   statement, and it is worth making it a migration.
+2. **`20260806130000_f01_seed_curator` aborts on a fresh project** if the auth account does not exist
+   first — gate G1 raises on purpose. That is correct behavior, not debt, but it is the kind of thing
+   that stops a rebuild halfway if nobody warned you. Documented in the README rather than the
+   backlog, because it is an instruction, not a defect.
+
+Both feed `OP-05`, the one pending item that can cost data that exists nowhere else. Today the
+migrations reproduce almost the whole database; that stops being true the minute Michael writes his
+first sentence.
+
+**`README.md` created**, and it was the only real gap in the handover: the documentation was
+excellent and lived entirely in `docs/` and `.claude/`, which a CLI finds at boot and a person does
+not. It opens with the judgment-layer rule, because that is what someone needs to understand before
+touching anything.
+
+**The decision that took the rest of the session: everything written into this repository moves to
+English.** Edu's call, and the reason is a new fact — documentation the next maintainer cannot read
+is documentation that does not exist. `ADR-02` was **amended, not replaced**: the original split
+(English product, Portuguese internal record) is still recorded as what was true and why. 19 files,
+about 3,000 lines. `docs/STATUS.md` was **translated, not rewritten** — every past session still
+says what it observed, including the corrections sessions made about themselves.
+
+**Seven of those files were not translated. They were instantiated** — and this is the part worth
+reading twice. The 2 boot prompts, the 5 agents and one skill were still the raw Wise* template,
+carrying instructions that contradict this project's ADRs:
+
+- **UI in Portuguese BR, `R$`, `DD/MM/YYYY`, and error messages in Portuguese** — the exact opposite
+  of ADR-02, in a product that is entirely in English
+- **`company_id`, tenant scoping, `is_superadmin()`, capabilities, `audit_log`, LGPD, CPF, Power BI,
+  an AI layer** — none of which exist here
+- **`deleted_at` soft deletes**, when ADR-03 uses `status`
+- **Decisions presented as A/B/C menus**, which is precisely what the orchestrator is forbidden to
+  hand Edu
+- And the worst one: **a gate that fails any RPC `anon` can execute.** In this project the two public
+  RPCs *must* be executable by `anon` — a Data Architect obeying that checklist would have taken the
+  public guide down while believing it was hardening it
+
+Nobody was misled only because nobody read them: the seven features were built without the agent
+pipeline (ADR-04 makes it optional). That is the lesson, and it went into `CLAUDE.md`: **an
+untranslated template is not neutral, it is instruction the repository appears to endorse.** Either
+instantiate it or mark it unused the way `michaelinmap-spec-format` is marked.
+
+**Smaller things found and fixed along the way:** the bible's header still read v2.6 while its own
+changelog had recorded 2.7 and 2.8; `michaelinmap-spec-format` was full of mojibake inherited from
+the template and referenced its sibling skills by their old `wise-*` names; the how-to for the MCP
+setup had another machine's absolute path hardcoded in an example; and the README's own documentation
+section had to be corrected mid-session, because it still claimed the docs were in Portuguese.
+
+**The STATUS hash was corrected in both directions.** `5aa2b96` was right as F-06's commit and wrong
+as the session's close — six commits followed it, and S08 actually ended at `aa3cf73`.
+
+**`docs/MICHAELINMAP_BIBLIA.md` → `docs/MICHAELINMAP_BIBLE.md`**, with 16 references across 12 files
+updated, including the comment in `src/types/index.ts` and the F-01 migration header. The boot prompt
+filenames stayed in Portuguese on purpose (`BL-36`): the `/orquestrador` and `/executor` slash
+commands live outside this repository and point at those paths, so renaming them breaks both
+silently.
+
+**An operational lesson that cost a failed commit:** a long commit message passed through a
+PowerShell here-string blew up, and git parsed the whole message as pathspecs — nothing was committed
+while the files stayed staged, which looks exactly like success. `git commit -F <file>` has no such
+failure mode, and that went into `CLAUDE.md`.
+
+**What was not done, explicitly:** no product code, no migration, no database change, and no
+verification against the live database — the MCP server never loaded. The Vercel deploy was deferred
+by Edu's decision to use the company's account. And the two admin screens still have not been
+clicked, though now nothing stands in the way but doing it.
+
+**Gate:** build and lint clean throughout. Bundle unchanged at 761 kB, since no source file was
+touched beyond one comment.
 
 ### 2026-08-07 — S08: F-06 — Field reports (the MVP closed)
 

@@ -68,6 +68,7 @@ npm run preview     # serve dist
   history of what has already been ruled out with evidence) and **do not claim the map is broken**
   based on a screenshot of mine. When a check depends on seeing the map, ask Edu.
 - **Never kill a `node` process by time window.** The Supabase MCP server runs through `npx` — it is `node`, same as Vite and every other tool in the project. A `Get-Process node | Where StartTime -gt ...` takes the MCP server down along with the dev server, and then only restarting Claude Code brings it back. To stop the dev server, use the ID that `run_in_background` returned, or filter by command line (`vite`). It happened in S07.
+- **A long commit message goes through `git commit -F <file>`, not a PowerShell here-string.** The `@'…'@` form failed mid-session in S09 and git parsed the whole message as pathspecs — the commit did not happen while the files stayed staged, which reads exactly like a commit that worked. Write the message to a file in the scratchpad and pass `-F`; that path has no such failure mode.
 
 ## Mandatory stack
 
@@ -146,6 +147,7 @@ All four were rewritten in S04 against the real objects of this database (`BL-14
 4. Clean build + clean lint before committing.
 5. Update `docs/STATUS.md` at the end of the session; anything newly pending goes to `docs/BACKLOG.md`.
 6. Divergence between STATUS and the real state of the code: **report before acting.**
+7. **A template file copied into this project is either instantiated or explicitly marked unused.** An untranslated template is not neutral — it is instruction the repository appears to endorse. Twelve of them sat here for nine sessions (2 boot prompts, 5 agents, 1 skill) mandating a PT-BR UI, `company_id`, `deleted_at`, an `audit_log` table, and a gate that fails any RPC `anon` can execute. Nobody was misled only because nobody read them; following the repo's own instructions would have taken the public guide down. Fixed in S09. If you copy something in and cannot instantiate it now, mark it unused at the top, the way `michaelinmap-spec-format` is.
 
 ## Parallel sessions
 
