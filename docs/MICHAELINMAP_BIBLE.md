@@ -1,6 +1,6 @@
 # Michaelin Map — Project Bible
 
-**Version:** 2.9 | **Date:** 2026-08-08 | **Author:** Edu Mello
+**Version:** 3.0 | **Date:** 2026-08-09 | **Author:** Edu Mello
 **Project status:** 🟢 **All seven MVP features are closed.** Working admin, navigable public side,
 faceted filter, Codes, Roulette and field reports, with 58 published places. The critical path is now
 entirely human: the curator's voice and the tagging (§13.1)
@@ -16,6 +16,7 @@ entirely human: the curator's voice and the tagging (§13.1)
 
 | Version | Date | What changed |
 |---|---|---|
+| 3.0 | 2026-08-09 | **New RN-32** (§14.2): a published place that serves food carries at least one `cuisine` tag, and that tag is filterable by the visitor. Edu's requirement, stated twice in S10 — it strengthens RN-10, which city or place type alone could satisfy. §12 updated with the coverage figures and the four documented exceptions |
 | 2.9 | 2026-08-08 | **ADR-02 amended: the internal documentation moved from Portuguese to English**, by Edu's decision, because a handover to someone who may not read Portuguese became likely. This bible, STATUS, BACKLOG, `CLAUDE.md`, the skills, the agents and the boot prompts were translated. Also fixed: the header still read v2.6 while the changelog had already recorded 2.7 and 2.8 |
 | 2.8 | 2026-08-07 | **New RN-31** (§14.3): a `suggested` tag appears on no public surface until the curator confirms it. §12 records the fact that motivated it — all 145 assignments are the machine's and none is Michael's |
 | 2.7 | 2026-08-07 | **The rating facet left the public filter** by Edu's decision (S08). **New RN-30** (§14.4). The tier still exists in full — it labels the place in the list and in the detail view, orders the list, colors the pin and belongs to the curator; what left is the navigation axis and the `tier` URL parameter. §6 gains the distinction between judgment and navigation axis |
@@ -87,7 +88,9 @@ Indexing:      noindex (unlisted) — see ADR-07
 
 > Both the database and the hosting are expected to move to a company organization when the project
 > changes hands. The `README.md` handover section documents what travels with the repository and what
-> does not — including the fact that auth accounts do not, and that no migration publishes a place.
+> does not — chiefly that auth accounts do not travel, so `20260806130000` aborts on a fresh project
+> until the account exists. The migrations do now reproduce the published state (`20260808120000`),
+> which was not true before S10.
 
 ---
 
@@ -409,11 +412,21 @@ Tiers: destination 43, experience 36, fair 198, cool 30. Stars 22. Unvisited 42.
 > separates an artifact of personality from an organized list. It is ten sentences of human work, not
 > five hundred tags.
 >
-> **Also in S08, 28 new cuisines entered as `suggested`** (migration `20260807140000`), covering the
-> published food places that had none — from 45 without a cuisine down to 17. It is not curation: it
-> is an approval queue, invisible to the visitor under RN-31 until Michael confirms it. Total pending
-> suggestions: **173**. The remaining 17 are the ones that neither the name nor public knowledge
-> resolves, and they are listed in the migration's footer.
+> **Cuisine coverage, and how it got there.** S08 suggested 28 cuisines from name and type
+> (`20260807140000`), taking published food places without one from 45 down to 17. S10 researched
+> those 17 online — a source URL and a quoted line per tag, with abstention required over guessing —
+> and added 53 assignments across 16 places (`20260809120000`), taking the gap from 17 down to **4**.
+> Of 56 published food places, **52 now carry a cuisine**. Total pending suggestions: **226**, none
+> confirmed.
+>
+> **None of it is visible yet.** Under RN-31 a `suggested` tag reaches no public surface, so the
+> cuisine facet still does not render for a visitor. It appears the moment the first one is
+> confirmed, with no deploy — the panel already reads it. See RN-32.
+>
+> **The four that remain are documented exceptions, not oversights.** `Gina's on Congress` (DP-10,
+> three independent closure signals) plus `Cosmo`, `Ranch 616` and `Space Cowboy`, which the
+> vocabulary cannot describe — a pan-global buffet, a self-described South Texas ice house whose own
+> menu denies being Tex-Mex, and a deliberately cross-cultural kitchen. That is DP-11.
 
 ---
 
@@ -478,6 +491,28 @@ Recorded in `docs/BACKLOG.md`, each with the reason for the cut: Google Places A
 - **RN-08** — Validation applies on promotion to `published`, never on insertion. Importing while demanding complete validation is impossible.
 - **RN-09** — A published place needs a city. Guaranteed by constraint.
 - **RN-10** — Every published place must be reachable through at least one literal facet — cuisine, city, place type or price. A place reachable only through a `character` tag is a bug.
+- **RN-32** — **A published place that serves food carries at least one `cuisine` tag, and that tag is
+  filterable by the visitor.** RN-10 is satisfied by city or place type alone, and that turned out to
+  be too weak: "restaurants in Austin" is 273 rows and answers nobody's question, while "tacos in
+  East Austin" is the question people actually arrive with. Edu's requirement, stated twice in S10.
+  Scope is the food types — `restaurant`, `bar`, `food_truck`, `dessert`, `winery`; a state park does
+  not need a cuisine and never will.
+
+  **Two things have to be true at once, and they fail independently.** Coverage is a data problem:
+  a place with no cuisine tag cannot be reached. Visibility is RN-31's doing: a cuisine that exists
+  only as `suggested` is invisible to the visitor, so the facet does not render and the guide behaves
+  as if the tag were not there. Meeting this rule means clearing both, and the second one is a human
+  act by definition.
+
+  **Machine research fills the queue; a person clears it.** Cuisine is the one facet a pipeline can
+  honestly propose — a menu is checkable, unlike `vibe` or `character`, which require having been
+  there (BL-34). Suggestions arrive with a source URL per tag and enter as `suggested`; confirming
+  them is the curator's call. Edu confirms cuisine specifically, decided in S10: verifying a
+  researched fact is not the same as tagging in Michael's place.
+
+  **Legitimate exceptions exist and are not failures.** Four published food places carry no cuisine
+  today, and inventing a slug for them would be worse than the gap — see DP-11. A place the
+  vocabulary genuinely cannot describe stays uncovered until the vocabulary grows.
 - **RN-11** — Novelty interactions (Roulette) are additive shortcuts. Nothing is reachable exclusively through them.
 
 ### 14.3 Vocabulary
