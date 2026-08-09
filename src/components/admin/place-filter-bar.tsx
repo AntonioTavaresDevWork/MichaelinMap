@@ -10,14 +10,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { FACET_LABEL, FACET_ORDER } from '@/hooks/use-tags'
+import { FACET_LABEL } from '@/hooks/use-tags'
 import {
   DEFAULT_FILTERS,
   hasActiveFilters,
   tagKey,
   type PlaceFilters,
+  type TagOptionGroup,
 } from '@/lib/place-filters'
-import type { PlaceStatus, PlaceType, Tag, Tier } from '@/types'
+import { formatNumber } from '@/lib/utils'
+import type { PlaceStatus, PlaceType, Tier } from '@/types'
 
 const STATUSES: PlaceStatus[] = ['unreviewed', 'published', 'closed', 'hidden']
 
@@ -48,20 +50,14 @@ interface Props {
   onChange: (next: PlaceFilters) => void
   tiers: Tier[]
   cities: { city: string; count: number }[]
-  tags: Tag[]
+  /** Already narrowed to what the other filters leave standing — see tagOptions. */
+  tagGroups: TagOptionGroup[]
 }
 
-export function PlaceFilterBar({ filters, onChange, tiers, cities, tags }: Props) {
+export function PlaceFilterBar({ filters, onChange, tiers, cities, tagGroups }: Props) {
   function set<K extends keyof PlaceFilters>(key: K, value: PlaceFilters[K]) {
     onChange({ ...filters, [key]: value })
   }
-
-  // Grouped by facet, in the same order the place editor uses, so the curator
-  // reads one vocabulary in one order wherever tags appear.
-  const byFacet = FACET_ORDER.map((facet) => ({
-    facet,
-    tags: tags.filter((tag) => tag.facet === facet && tag.active),
-  })).filter((group) => group.tags.length > 0)
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -173,12 +169,17 @@ export function PlaceFilterBar({ filters, onChange, tiers, cities, tags }: Props
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">Any tag</SelectItem>
-          {byFacet.map((group) => (
+          {tagGroups.map((group) => (
             <SelectGroup key={group.facet}>
               <SelectLabel>{FACET_LABEL[group.facet]}</SelectLabel>
-              {group.tags.map((tag) => (
-                <SelectItem key={tag.id} value={tagKey(tag)}>
+              {group.options.map(({ tag, count }) => (
+                // Zero survives only for the currently selected tag, so the
+                // control that undoes a filter never disappears under it.
+                <SelectItem key={tag.id} value={tagKey(tag)} disabled={count === 0}>
                   {tag.label}
+                  <span className="ml-2 font-mono text-[11px] text-muted-foreground">
+                    {formatNumber(count)}
+                  </span>
                 </SelectItem>
               ))}
             </SelectGroup>

@@ -14,7 +14,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { PlaceFilterBar } from '@/components/admin/place-filter-bar'
 import { usePlaces } from '@/hooks/use-places'
-import { useConfirmSuggestions, usePlaceTags, useTags } from '@/hooks/use-tags'
+import { FACET_ORDER, useConfirmSuggestions, usePlaceTags, useTags } from '@/hooks/use-tags'
 import { useTiers } from '@/hooks/use-tiers'
 import {
   applyFilters,
@@ -25,6 +25,7 @@ import {
   filtersFromParams,
   filtersToParams,
   tagKey,
+  tagOptions,
   type PlaceFilters,
 } from '@/lib/place-filters'
 import { formatNumber } from '@/lib/utils'
@@ -57,6 +58,13 @@ export function PlacesPage() {
   )
 
   const cities = useMemo(() => cityOptions(places.data ?? []), [places.data])
+
+  // Narrowed by everything except the tag filter itself, so picking a place type
+  // shrinks the tag list to what that type actually carries.
+  const tagGroups = useMemo(
+    () => tagOptions(places.data ?? [], filters, index, tags.data ?? [], FACET_ORDER),
+    [places.data, filters, index, tags.data],
+  )
   const tierLabel = useMemo(
     () => new Map((tiers.data ?? []).map((tier) => [tier.slug, tier.label])),
     [tiers.data],
@@ -88,7 +96,7 @@ export function PlacesPage() {
         onChange={updateFilters}
         tiers={tiers.data ?? []}
         cities={cities}
-        tags={tags.data ?? []}
+        tagGroups={tagGroups}
       />
 
       <BulkConfirmBar

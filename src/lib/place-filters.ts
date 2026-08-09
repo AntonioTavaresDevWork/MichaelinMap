@@ -1,4 +1,4 @@
-import type { Place, PlaceStatus, PlaceTag, PlaceType, Tag } from '@/types'
+import type { Place, PlaceStatus, PlaceTag, PlaceType, Tag, TagFacet } from '@/types'
 
 export type FlagFilter = 'all' | 'conflict' | 'no-cuisine' | 'untagged' | 'unvisited' | 'suggested'
 
@@ -137,26 +137,39 @@ function matchesFlag(place: Place, flag: FlagFilter, index: TagIndex): boolean {
   }
 }
 
+/**
+ * Everything except the tag filter.
+ *
+ * Split out because the tag options need counts computed against the *other*
+ * facets — counting against the tag filter itself would zero out every sibling
+ * the moment one is picked.
+ */
+function matchesExceptTag(place: Place, filters: PlaceFilters, index: TagIndex): boolean {
+  const needle = filters.q.trim().toLowerCase()
+
+  if (needle && !place.name.toLowerCase().includes(needle)) return false
+  if (filters.status !== 'all' && place.status !== filters.status) return false
+  if (filters.type !== 'all' && place.place_type !== filters.type) return false
+
+  if (filters.tier !== 'all') {
+    if (filters.tier === 'none' ? place.tier !== null : place.tier !== filters.tier) return false
+  }
+
+  if (filters.city !== 'all' && place.city !== filters.city) return false
+  if (filters.starred === 'yes' && !place.starred) return false
+  if (filters.starred === 'no' && place.starred) return false
+  if (!matchesFlag(place, filters.flag, index)) return false
+
+  return true
+}
+
 export function applyFilters(
   places: Place[],
   filters: PlaceFilters,
   index: TagIndex,
 ): Place[] {
-  const needle = filters.q.trim().toLowerCase()
-
   return places.filter((place) => {
-    if (needle && !place.name.toLowerCase().includes(needle)) return false
-    if (filters.status !== 'all' && place.status !== filters.status) return false
-    if (filters.type !== 'all' && place.place_type !== filters.type) return false
-
-    if (filters.tier !== 'all') {
-      if (filters.tier === 'none' ? place.tier !== null : place.tier !== filters.tier) return false
-    }
-
-    if (filters.city !== 'all' && place.city !== filters.city) return false
-    if (filters.starred === 'yes' && !place.starred) return false
-    if (filters.starred === 'no' && place.starred) return false
-    if (!matchesFlag(place, filters.flag, index)) return false
+    if (!matchesExceptTag(place, filters, index)) return false
 
     if (filters.tag !== 'all') {
       // An unresolvable key returns nothing rather than everything: a stale
@@ -171,6 +184,61 @@ export function applyFilters(
 
     return true
   })
+}
+
+export interface TagOption {
+  tag: Tag
+  count: number
+}
+
+export interface TagOptionGroup {
+  facet: TagFacet
+  options: TagOption[]
+}
+
+/**
+ * The tags worth offering, given everything else the curator has already
+ * narrowed to.
+ *
+ * This is RN-26 and RN-17 borrowed from the public panel and pointed at the
+ * admin: a facet with nothing behind it is not rendered, and an option that
+ * would return zero is disabled rather than hidden. The list therefore narrows
+ * itself when a place type is chosen — filtering to Restaurant stops offering
+ * tags no restaurant carries — without anybody hardcoding which facets "belong"
+ * to which type. That map would be a guess, and it would rot as tagging grows;
+ * this grows with it instead.
+ *
+ * Counts respect `tagSource`, so narrowing to Suggested shows how much of each
+ * tag is still a machine guess — which is the number the bulk bar acts on.
+ */
+export function tagOptions(
+  places: Place[],
+  filters: PlaceFilters,
+  index: TagIndex,
+  tags: Tag[],
+  facetOrder: TagFacet[],
+): TagOptionGroup[] {
+  const pool = places.filter((place) => matchesExceptTag(place, filters, index))
+
+  const counts = new Map<string, number>()
+  for (const place of pool) {
+    for (const pt of index.byPlace.get(place.id) ?? []) {
+      if (filters.tagSource !== 'all' && pt.source !== filters.tagSource) continue
+      counts.set(pt.tag_id, (counts.get(pt.tag_id) ?? 0) + 1)
+    }
+  }
+
+  return facetOrder
+    .map((facet) => ({
+      facet,
+      options: tags
+        .filter((tag) => tag.facet === facet && tag.active)
+        .map((tag) => ({ tag, count: counts.get(tag.id) ?? 0 }))
+        // A tag nothing carries is noise in a 94-item list. The selected one
+        // always survives, or picking it would erase the control that undoes it.
+        .filter((option) => option.count > 0 || tagKey(option.tag) === filters.tag),
+    }))
+    .filter((group) => group.options.length > 0)
 }
 
 /** Cities present in the data, most populated first — mirrors the public city gate. */
