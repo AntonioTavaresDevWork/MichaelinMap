@@ -376,10 +376,12 @@ star or the `destination` tier — Austin 52, St. Augustine 3, Los Angeles 1, Mo
 Oxfordshire 1. It was not new judgment: tier and star came from Michael's own guides and the import
 simply had not revealed them. Reversible with `UPDATE places SET status = 'unreviewed'`.
 
-> **That batch is not in any migration** (`BL-35`, found in S09). It came from an ad-hoc `UPDATE` and
-> lives only in the live database, so a rebuild against an empty project returns 511 unreviewed
-> places and a public guide that renders empty while looking healthy. The criterion above is the
-> whole recipe; it is worth turning into a versioned migration.
+> **That batch is now a migration** — `20260808120000_publish_launch_batch.sql`, written in S10,
+> which closed `BL-35`. Until then it came from an ad-hoc `UPDATE` and lived only in the live
+> database, so a rebuild against an empty project returned 511 unreviewed places and a public guide
+> that rendered empty while looking healthy. The criterion above turned out to be the whole recipe:
+> verified against the live data, it reproduces exactly these 58 with no difference in either
+> direction.
 
 ⚠️ **None of the 58 has `the_dish` or `curator_note`.** The guide is populated but mute — it shows the
 verdicts, not the voice. Per §1.1, that is what separates an artifact of personality from an organized

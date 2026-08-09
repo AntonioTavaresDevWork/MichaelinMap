@@ -262,8 +262,10 @@ session closes all three, and it is the highest-value thing anyone can do next.
 - [x] **Pipeline de pesquisa para o Opus 5** escrito e rodado sobre os 17 publicados sem cozinha:
       53 sugestões com fonte e citação por tag, **ainda não aplicadas** (`BL-38`)
 - [x] **Gate:** `npm run build` e `npm run lint` limpos. Bundle 761 → 768 kB (222 kB gzip)
-- [x] **Zero migration, zero mudança de schema, zero RLS nova.** O banco terminou a sessão
-      idêntico a como começou
+- [x] **`BL-35` fechado** — o lote de lançamento virou `20260808120000_publish_launch_batch.sql`,
+      com 6 gates e rollback escrito. Aplicada afetando zero linhas: o efeito era registrar, não mudar
+- [x] **O banco terminou a sessão idêntico a como começou** — 511 lugares, 58 publicados, 173 tags,
+      zero do curador. A única escrita foi a migration, e ela foi um no-op contra o estado vivo
 - [ ] ⚠️ **Nada do que foi entregue foi visto rodando no admin** — `BL-31`
 
 ---
@@ -317,9 +319,9 @@ panel. Same question, two symptoms, both one-liners once the principle is settle
 1. **Take a database backup** (`OP-05`). This is the only pending item that can cost irreplaceable
    data, and it becomes urgent the moment the database is repointed at another project. Also confirm
    in the dashboard whether this project has automatic backups at all — nobody has checked.
-2. **Turn the launch batch into a migration** (`BL-35`). The 58 published places exist only in the
-   live database, so a rebuild returns an empty guide that looks perfectly healthy. The criterion is
-   one statement.
+2. ~~Turn the launch batch into a migration~~ — **done in S10** (`BL-35` closed). The 5 migrations
+   now reproduce the whole product; only the auth account and anything Michael writes from here on
+   fall outside them.
 3. **Click `/admin/codes` and `/admin/reports` while logged in** (`BL-31`). The login works now. For
    the reports queue to show anything, a `pending` free-text answer has to exist first.
 4. **Disable signup and turn on leaked-password protection** (`OP-01`) — two dashboard toggles.
@@ -373,9 +375,16 @@ Judgment distribution: 22 stars (4.3%), 42 unvisited, 279 with a tier (`fair` 18
 
 ⚠️ **None of the 58 has `the_dish` or `curator_note`.** The guide is populated but mute: it shows the verdicts, not the voice. Writing those sentences for 8-10 of the strongest is what separates the demo from an organized list — and it is human work, not CLI work.
 
-Live migrations — **4**: `20260806120000_f01_schema_rls_rpc`, `20260806120100_f01_seed_and_import`,
-`20260806130000_f01_seed_curator` and `20260807140000_suggest_cuisine_published` (S08).
-`schema_migrations` sanitized after the apply, versions aligned with the file names.
+Live migrations — **5**: `20260806120000_f01_schema_rls_rpc`, `20260806120100_f01_seed_and_import`,
+`20260806130000_f01_seed_curator`, `20260807140000_suggest_cuisine_published` (S08) and
+`20260808120000_publish_launch_batch` (S10). `schema_migrations` sanitized after every apply,
+versions aligned with the file names.
+
+**Since S10 the migrations reproduce the whole product.** The launch batch was the last thing that
+lived only in the live database; a clone plus these 5 rebuilds every place, every verdict, the
+vocabulary and which 58 places the guide opens with. What they still do not carry is the auth
+account — `20260806130000` aborts on purpose if it does not exist first — and anything Michael
+writes from now on.
 
 F-02 and F-03 **did not change the schema** — they are frontend on top of F-01's database. `place_tags`
 still holds the 145 `suggested` rows from the import: curation has not started writing.
