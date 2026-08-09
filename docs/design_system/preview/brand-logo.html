@@ -1,0 +1,29 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+body{margin:0;padding:24px;background:var(--bg-0);font-family:var(--font-body);display:grid;gap:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:center}
+.tile{border-radius:12px;padding:18px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border-1);min-height:70px}
+.tile img{max-width:100%;max-height:46px;display:block}
+.lbl{font-family:var(--font-mono);font-size:10px;color:var(--fg-3);text-align:center;margin-top:6px}
+.col{display:flex;flex-direction:column}
+.note{font-family:Inter,sans-serif;font-size:11px;color:#55637A;padding:8px 10px;border:1px dashed #29323B;border-radius:6px}
+</style>
+<template id="__bundler_thumbnail" data-bg-color="#0F141B">
+  <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+    <rect width="120" height="120" fill="#0F141B"/>
+    <path d="M30 38 L60 38 L60 52 L42 52 L42 60 L56 60 L56 72 L42 72 L42 88 L30 88 Z" fill="#F4F6F8"/>
+    <circle cx="82" cy="44" r="8" fill="#ACDE40"/>
+  </svg>
+</template>
+</head><body>
+<div class="note">Lime é reservada para destaques — nunca usar como background do logo.</div>
+<div class="row">
+  <div class="col"><div class="tile" style="background:#FFFFFF"><img src="../assets/feedback-logo-dark.png" alt="logo ink on white"></div><div class="lbl">logo · ink+lime on white</div></div>
+  <div class="col"><div class="tile" style="background:#29323B"><img src="../assets/feedback-logo-white.png" alt="logo white on ink"></div><div class="lbl">logo · white on ink</div></div>
+</div>
+<div class="row">
+  <div class="col"><div class="tile" style="background:#FFFFFF"><img src="../assets/feedback-mark-dark.png" alt="mark ink" style="max-height:54px"></div><div class="lbl">mark · ink #29323B</div></div>
+  <div class="col"><div class="tile" style="background:#29323B"><img src="../assets/feedback-mark-white.png" alt="mark white" style="max-height:54px"></div><div class="lbl">mark · white</div></div>
+</div>
+</body></html>

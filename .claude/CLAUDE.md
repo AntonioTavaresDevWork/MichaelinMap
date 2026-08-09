@@ -134,9 +134,13 @@ supabase/  migrations/  rollbacks/
 | `michaelinmap-rls-policy` | Before writing or reviewing an RLS policy |
 | `michaelinmap-rpc` | Before creating or modifying a `SECURITY DEFINER` RPC |
 | `michaelinmap-naming` | When naming a table/column/RPC/component/hook/file, or formatting a number/date/currency |
+| `michaelinmap-design-system` | Before writing or reviewing any component, screen or CSS in `src/`, or when choosing a colour, surface, radius or badge treatment |
 
-All four were rewritten in S04 against the real objects of this database (`BL-14` closed). The fifth,
-`michaelinmap-spec-format`, is marked **not used** — ADR-04 dispenses with per-feature specs.
+The first four were rewritten in S04 against the real objects of this database (`BL-14` closed).
+`michaelinmap-spec-format` is marked **not used** — ADR-04 dispenses with per-feature specs.
+`michaelinmap-design-system` was instantiated in S10 from `docs/design_system/`, which is the
+Feedback agency's design system and is **reference material, not law**: it mandates a PT-BR UI and BR
+number formats, both of which contradict ADR-02. The skill records the two deliberate departures.
 
 ## Workflow
 

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feedback DS — Swatch lime + glass</title>
+<style>
+  /* ===== Tokens (espelho de colors_and_type.css) ===== */
+  :root{
+    --lime-50:#F5FBEA;--lime-100:#E8F6CB;--lime-200:#D5EEA0;--lime-300:#C0E670;
+    --lime-400:#ACDE40;--lime-500:#93C22E;--lime-600:#79A423;--lime-700:#5C8118;
+    --lime-800:#425E12;--lime-900:#293B0C;
+    --ink-0:#0F141B;--ink-1:#1A222B;--ink-2:#222B36;--ink-3:#29323B;--ink-4:#3C4856;--ink-5:#55637A;
+    --success:#34C759;--warning:#F5A524;--danger:#E5484D;--info:#4C9AFF;
+    --chart-1:#ACDE40;--chart-2:#4C9AFF;--chart-3:#F5A524;--chart-4:#E5484D;--chart-5:#9B8AFB;--chart-6:#26C6DA;
+    --fg-1:#F4F6F8;--fg-2:#A5AEBC;--fg-3:#6B7588;
+    --font:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--ink-0);color:var(--fg-1);font-family:var(--font);
+       -webkit-font-smoothing:antialiased;padding:40px;line-height:1.5}
+  .wrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:44px}
+  h1{font-size:30px;font-weight:800;letter-spacing:-.02em}
+  h1 .dot{color:var(--lime-400)}
+  .sub{color:var(--fg-3);font-size:13px;margin-top:6px}
+  h2{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-3);margin-bottom:14px}
+
+  /* ramp */
+  .ramp{display:grid;grid-template-columns:repeat(10,1fr);gap:8px}
+  .stop{border-radius:10px;overflow:hidden;border:1px solid var(--ink-3)}
+  .stop .chip{height:64px}
+  .stop .meta{padding:8px 6px;background:var(--ink-1);font-size:10px;text-align:center}
+  .stop .meta b{display:block;color:var(--fg-1);font-weight:600}
+  .stop .meta span{color:var(--fg-3);font-family:ui-monospace,Menlo,monospace;font-size:9px}
+  .star{outline:2px solid var(--lime-400);outline-offset:2px}
+
+  /* semantic + chart rows */
+  .swrow{display:flex;gap:14px;flex-wrap:wrap}
+  .sw{flex:1;min-width:120px;background:var(--ink-1);border:1px solid var(--ink-3);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px}
+  .sw .dab{width:34px;height:34px;border-radius:8px;flex:none}
+  .sw .t{font-size:13px;font-weight:600}
+  .sw .h{font-size:11px;color:var(--fg-3);font-family:ui-monospace,Menlo,monospace}
+
+  /* glass demo */
+  .stage{position:relative;border-radius:16px;border:1px solid var(--ink-3);overflow:hidden;
+         background:
+           radial-gradient(700px 300px at 15% -10%, rgba(172,222,64,.10), transparent 60%),
+           var(--ink-0);padding:26px;min-height:340px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .kpi{background:var(--ink-1);border:1px solid var(--ink-3);border-radius:14px;padding:18px}
+  .kpi .lab{font-size:11px;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em}
+  .kpi .num{font-size:34px;font-weight:800;letter-spacing:-.02em;margin-top:8px}
+  .kpi .num.acc{color:var(--lime-400)}
+  .kpi .delta{font-size:12px;margin-top:6px}
+  .kpi .delta.up{color:var(--success)}
+  .kpi .delta.dn{color:var(--danger)}
+  .tag{font-size:9px;color:var(--ink-0);background:var(--lime-400);font-weight:700;
+       padding:2px 7px;border-radius:999px;text-transform:uppercase;letter-spacing:.04em}
+
+  /* the floating glass surface (command palette) */
+  .palette{position:absolute;left:50%;top:54%;transform:translate(-50%,-50%);width:min(440px,86%);
+    background:rgba(26,33,44,.70);
+    -webkit-backdrop-filter:blur(18px) saturate(1.25);backdrop-filter:blur(18px) saturate(1.25);
+    border:1px solid rgba(255,255,255,.11);border-radius:16px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 24px 60px -20px rgba(0,0,0,.75);
+    overflow:hidden}
+  .palette .search{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+  .palette .search input{background:none;border:none;outline:none;color:var(--fg-1);font-family:var(--font);font-size:14px;width:100%}
+  .palette .search .k{font-size:10px;color:var(--fg-3);border:1px solid var(--ink-4);border-radius:5px;padding:2px 6px;font-family:ui-monospace,monospace}
+  .palette .opt{display:flex;align-items:center;gap:11px;padding:11px 16px;font-size:13px;color:var(--fg-2)}
+  .palette .opt:hover,.palette .opt.sel{background:rgba(172,222,64,.10);color:var(--fg-1)}
+  .palette .opt .ic{width:18px;height:18px;border-radius:5px;background:var(--ink-2);flex:none;display:grid;place-items:center;font-size:11px}
+  .palette .opt.sel .ic{background:var(--lime-400);color:var(--ink-0)}
+  .legend{font-size:12px;color:var(--fg-3);margin-top:12px;display:flex;gap:18px;flex-wrap:wrap}
+  .legend b{color:var(--fg-2);font-weight:600}
+  .note{font-size:12px;color:var(--fg-3);border-left:2px solid var(--lime-700);padding-left:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Feedback — Design System <span class="dot">·</span> swatch</h1>
+    <div class="sub">Rampa lime re-derivada em torno do oficial <b style="color:var(--lime-400)">#ACDE40</b> · success virou verde próprio · glass escopado em superfície flutuante</div>
+  </header>
+
+  <!-- LIME RAMP -->
+  <section>
+    <h2>Rampa lime (50 → 900)</h2>
+    <div class="ramp">
+      <div class="stop"><div class="chip" style="background:var(--lime-50)"></div><div class="meta"><b>50</b><span>#F5FBEA</span></div></div>
+      <div class="stop"><div class="chip" style="background:var(--lime-100)"></div><div class="meta"><b>100</b><span>#E8F6CB</span></div></div>
+      <div class="stop"><div class="chip" style="background:var(--lime-200)"></div><div class="meta"><b>200</b><span>#D5EEA0</span></div></div>
+      <div class="stop"><div class="chip" style="background:var(--lime-300)"></div><div class="meta"><b>300</b><span>#C0E670</span></div></div>
+      <div class="stop star"><div class="chip" style="background:var(--lime-400)"></div><div class="meta"><b>400 ★</b><span>#ACDE40</span></div></div>
+      <div class="stop"><div class="chip" style="background:var(--lime-500)"></div><div class="meta"><b>500</b><span>#93C22E</span></div></div>
+      <div class="stop"><div class="chip" style="background:var(--lime-600)"></div><div class="meta"><b>600</b><span>#79A423</span></div></div>
+      <div class="stop"><div class="chip" style="background:var(--lime-700)"></div><div class="meta"><b>700</b><span>#5C8118</span></div></div>
+      <div class="stop"><div class="chip" style="background:var(--lime-800)"></div><div class="meta"><b>800</b><span>#425E12</span></div></div>
+      <div class="stop"><div class="chip" style="background:var(--lime-900)"></div><div class="meta"><b>900</b><span>#293B0C</span></div></div>
+    </div>
+    <div class="note" style="margin-top:14px">400 é o lime oficial da marca (★). Os demais stops foram derivados por script para progressão suave de luminosidade, hue travado em ~79°.</div>
+  </section>
+
+  <!-- SEMANTIC -->
+  <section>
+    <h2>Cores semânticas</h2>
+    <div class="swrow">
+      <div class="sw"><div class="dab" style="background:var(--success)"></div><div><div class="t">Success</div><div class="h">#34C759</div></div></div>
+      <div class="sw"><div class="dab" style="background:var(--warning)"></div><div><div class="t">Warning</div><div class="h">#F5A524</div></div></div>
+      <div class="sw"><div class="dab" style="background:var(--danger)"></div><div><div class="t">Danger</div><div class="h">#E5484D</div></div></div>
+      <div class="sw"><div class="dab" style="background:var(--info)"></div><div><div class="t">Info</div><div class="h">#4C9AFF</div></div></div>
+    </div>
+    <div class="note" style="margin-top:14px">Success agora é um verde distinto do lime da marca — não confundir o "está ok" com o accent.</div>
+  </section>
+
+  <!-- CHART -->
+  <section>
+    <h2>Série de gráfico (Power BI / WisePEI)</h2>
+    <div class="swrow">
+      <div class="sw"><div class="dab" style="background:var(--chart-1)"></div><div><div class="t">chart-1</div><div class="h">#ACDE40 · marca</div></div></div>
+      <div class="sw"><div class="dab" style="background:var(--chart-2)"></div><div><div class="t">chart-2</div><div class="h">#4C9AFF</div></div></div>
+      <div class="sw"><div class="dab" style="background:var(--chart-3)"></div><div><div class="t">chart-3</div><div class="h">#F5A524</div></div></div>
+      <div class="sw"><div class="dab" style="background:var(--chart-4)"></div><div><div class="t">chart-4</div><div class="h">#E5484D</div></div></div>
+      <div class="sw"><div class="dab" style="background:var(--chart-5)"></div><div><div class="t">chart-5</div><div class="h">#9B8AFB</div></div></div>
+      <div class="sw"><div class="dab" style="background:var(--chart-6)"></div><div><div class="t">chart-6</div><div class="h">#26C6DA</div></div></div>
+    </div>
+  </section>
+
+  <!-- GLASS DEMO -->
+  <section>
+    <h2>Glass escopado — superfície flutuante sobre conteúdo sólido</h2>
+    <div class="stage">
+      <!-- conteúdo primário: SÓLIDO -->
+      <div class="grid">
+        <div class="kpi"><div class="lab">MRR</div><div class="num acc">R$ 38.400</div><div class="delta up">▲ 12,4% vs. mês anterior</div></div>
+        <div class="kpi"><div class="lab">Ordens abertas</div><div class="num">127</div><div class="delta dn">▼ 3 atrasadas</div></div>
+        <div class="kpi"><div class="lab">SLA cumprido</div><div class="num">96<span style="font-size:18px">%</span></div><div class="delta up">▲ meta 95%</div></div>
+      </div>
+      <!-- superfície flutuante: GLASS -->
+      <div class="palette">
+        <div class="search">
+          <span class="tag">⌘K</span>
+          <input value="criar ordem de" readonly>
+          <span class="k">esc</span>
+        </div>
+        <div class="opt sel"><span class="ic">+</span> Criar ordem de serviço</div>
+        <div class="opt"><span class="ic">▣</span> Abrir estoque · insumos</div>
+        <div class="opt"><span class="ic">↗</span> Exportar relatório (CSV BR)</div>
+        <div class="opt"><span class="ic">◷</span> Agendar manutenção preventiva</div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><b>Sólido:</b> cards, KPIs, tabelas, conteúdo primário</span>
+      <span><b>Glass:</b> command palette, modal, dropdown, header scrollado</span>
+    </div>
+    <div class="note" style="margin-top:12px">Glass = hierarquia espacial, não decoração. Blur sutil (18px), borda fina + brilho no topo, sombra de elevação, contraste do texto preservado. Conteúdo nunca é vidro.</div>
+  </section>
+
+</div>
+</body>
+</html>

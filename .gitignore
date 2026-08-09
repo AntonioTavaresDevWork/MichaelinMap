@@ -27,3 +27,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Design system: o .zip e o export de logo duplicam material ja extraido em
+# docs/design_system/ (preview/ e assets/). Referencia sim, binario redundante nao.
+docs/design_system/*.zip
+docs/design_system/Feedback Brand Logo.html

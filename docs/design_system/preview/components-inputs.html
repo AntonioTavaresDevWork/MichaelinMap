@@ -1,0 +1,18 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+body{margin:0;padding:24px;background:var(--bg-0);font-family:var(--font-body);display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fld{display:flex;flex-direction:column;gap:6px}
+label{font-size:12px;color:var(--fg-2);font-weight:500}
+input,select,textarea{height:40px;padding:0 12px;background:#222B36;border:1px solid #29323B;border-radius:8px;color:#F4F6F8;font-family:var(--font-body);font-size:14px;outline:none;transition:all 150ms}
+input:focus,select:focus{border-color:#ACDE40;box-shadow:0 0 0 3px rgba(172,222,64,0.15)}
+input::placeholder{color:#6B7588}
+.hint{font-size:11px;color:#6B7588}
+.err{border-color:#E5484D !important}
+.errtxt{font-size:11px;color:#E5484D}
+</style></head><body>
+<div class="fld"><label>Nome Completo</label><input placeholder="Eduardo Mello"></div>
+<div class="fld"><label>Email</label><input placeholder="voce@empresa.com.br" value="contato@feedback.com.vc"></div>
+<div class="fld"><label>Cargo</label><select><option>Coordenador(a) Pedagógico(a)</option></select></div>
+<div class="fld"><label>Qtd. Alunos com PEI</label><input class="err" value="abc"><div class="errtxt">Use apenas números</div></div>
+</body></html>

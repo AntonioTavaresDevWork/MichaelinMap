@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>WisePEI · Coordenação</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../colors_and_type.css">
+<style>
+  body { margin: 0; background: var(--bg-0); color: var(--fg-1); font-family: var(--font-body); }
+  .app { display: flex; min-height: 100vh; }
+  .main { flex: 1; display: flex; flex-direction: column; }
+  .content { padding: 20px 28px 32px; display: flex; flex-direction: column; gap: 14px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="Sidebar.jsx"></script>
+<script type="text/babel" src="Topbar.jsx"></script>
+<script type="text/babel" src="StatCards.jsx"></script>
+<script type="text/babel" src="Charts.jsx"></script>
+<script type="text/babel">
+function App() {
+  return (
+    <div className="app">
+      <Sidebar/>
+      <div className="main">
+        <Topbar/>
+        <div className="content">
+          <StatCards/>
+          <div className="grid2">
+            <PEIStatusDonut/>
+            <ProgressoBarras/>
+          </div>
+          <div className="grid2">
+            <AtividadesChart/>
+            <NeedsPie/>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+setTimeout(() => ReactDOM.createRoot(document.getElementById('root')).render(<App/>), 50);
+</script>
+</body>
+</html>

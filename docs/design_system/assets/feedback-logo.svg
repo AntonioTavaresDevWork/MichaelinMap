@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" width="420" height="120">
+  <rect x="4" y="4" width="112" height="112" rx="24" fill="#ACDE40"></rect>
+  <path d="M32 38 Q32 30 40 30 L80 30 Q88 30 88 38 L88 68 Q88 76 80 76 L54 76 L42 86 L44 76 L40 76 Q32 76 32 68 Z" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"></path>
+  <path d="M48 54 L56 62 L72 46" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
+  
+  <text x="140" y="65" font-family="Manrope, system-ui, sans-serif" font-size="36" font-weight="800" fill="currentColor" letter-spacing="-1">feedback</text>
+  <text x="140" y="95" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="500" fill="currentColor" opacity="0.6" letter-spacing="0.5">comunicação · ai-first</text>
+</svg>

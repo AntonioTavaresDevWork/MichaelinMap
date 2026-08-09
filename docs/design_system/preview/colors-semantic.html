@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+body{margin:0;padding:24px;background:var(--bg-0);font-family:var(--font-body);display:grid;gap:16px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.sw{display:flex;flex-direction:column;gap:6px}
+.chip{height:80px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#0F141B;font-family:var(--font-display);font-weight:700;font-size:18px}
+.name{font-size:12px;font-weight:600;color:var(--fg-1)}
+.hex{font-family:var(--font-mono);font-size:11px;color:var(--fg-3)}
+h3{margin:0;font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--fg-2);letter-spacing:0.04em;text-transform:uppercase}
+</style></head><body>
+<h3>Semantic · status</h3>
+<div class="grid">
+  <div class="sw"><div class="chip" style="background:#ACDE40">Success</div><div class="name">Success</div><div class="hex">#ACDE40 · lime-400</div></div>
+  <div class="sw"><div class="chip" style="background:#F5A524">Warning</div><div class="name">Warning</div><div class="hex">#F5A524</div></div>
+  <div class="sw"><div class="chip" style="background:#E5484D;color:#fff">Danger</div><div class="name">Danger</div><div class="hex">#E5484D</div></div>
+  <div class="sw"><div class="chip" style="background:#4C9AFF;color:#fff">Info</div><div class="name">Info</div><div class="hex">#4C9AFF</div></div>
+</div>
+</body></html>
