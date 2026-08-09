@@ -109,6 +109,7 @@ supabase/  migrations/  rollbacks/
 - **RLS is mandatory on every table.** Model: curator allowlist through `is_curator()` — see bible §11.
 - **`codes` never has public SELECT** (RN-20). Validation only through `rpc_redeem_code()`.
 - **`field_reports` never has direct public INSERT** (RN-23). Only through `rpc_submit_field_report()`, which derives the status on the server.
+- **RLS does not deny — it empties the result set, and silent success is worse than a loud error.** A write the policy blocks matches zero rows, and PostgREST answers 204 with no error. **Every mutation must ask for its rows back with `.select()` and report the count it actually wrote**, never the count it requested. Reporting the request is what let a blocked confirmation show a green toast in S11 while the database took nothing — and a stale JWT is enough to cause it, because `ProtectedRoute` still passes on a client-side session object that PostgREST no longer honours. Third time this failure shape appeared here: S09's commit that never landed while the files stayed staged, S10's gate that failed my arithmetic rather than the data, and this. Anything that can succeed quietly must be made to prove it.
 - Signup disabled in Supabase. Writing is only for whoever is in `curators`.
 - Soft delete through `status`, not `deleted_at` (ADR-03).
 

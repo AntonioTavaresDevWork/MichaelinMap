@@ -1,0 +1,210 @@
+[
+  {
+    "id": "001",
+    "name": "54th Street",
+    "address_city": "San Marcos",
+    "status": "open",
+    "cuisine": ["burgers"],
+    "evidence": [
+      {
+        "slug": "burgers",
+        "tier": "A",
+        "url": "https://www.54thstreetrestaurants.com/menu.html",
+        "quote": "fire-grilled burgers, over nine craft sandwich selections"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Official location page confirms 1303 Interstate 35 Frontage Rd with current hours; menu is chain-wide."
+  },
+  {
+    "id": "002",
+    "name": "54th Street",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["burgers", "southern-comfort"],
+    "evidence": [
+      {
+        "slug": "burgers",
+        "tier": "B",
+        "url": "https://communityimpact.com/austin/southwest-austin-dripping-springs/business/2024/08/30/54th-street-restaurant-drafthouse-now-open-in-south-austin/",
+        "quote": "craft sandwiches, burgers and Southern-inspired comfort food"
+      },
+      {
+        "slug": "southern-comfort",
+        "tier": "B",
+        "url": "https://communityimpact.com/austin/southwest-austin-dripping-springs/dining/2023/06/16/54th-street-restaurant-drafthouse-announces-opening-date-for-south-austin-location/",
+        "quote": "craft burgers, steaks, sandwiches and Southern dishes"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Opened Aug 26 2024; official locations page lists 127 E Ralph Ablanedo Drive as NOW OPEN."
+  },
+  {
+    "id": "003",
+    "name": "Allday",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["pizza"],
+    "evidence": [
+      {
+        "slug": "pizza",
+        "tier": "B",
+        "url": "https://whatnow.com/austin/restaurants/allday-pizza-eyeing-speedway-location/",
+        "quote": "We sell full pies and pizza by the slice"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Trades as Allday Pizza; official site allday.pizza lists 4300 Speedway with current Hyde Park hours."
+  },
+  {
+    "id": "004",
+    "name": "Alpine Haus Restaurant",
+    "address_city": "New Braunfels",
+    "status": "open",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://www.alpine-haus.com/",
+        "quote": "We specialize in Bavarian style cooking with influences from Germany, Austria and Switzerland"
+      }
+    ],
+    "no_slug_fits": true,
+    "suggested_label": "german",
+    "confidence": "none",
+    "notes": "The 37-slug set has no German/Austrian/Alpine category, and modern-european would misdescribe a traditional schnitzel-and-sauerbraten kitchen. Official hours page current, so status is open. Two later records (Friedhelm's Bavarian Inn, Krause's Cafe) will likely hit the same gap."
+  },
+  {
+    "id": "005",
+    "name": "Andice General Store",
+    "address_city": "Florence",
+    "status": "open",
+    "cuisine": ["burgers"],
+    "evidence": [
+      {
+        "slug": "burgers",
+        "tier": "C",
+        "url": "https://www.menupix.com/texas/restaurants/map/380189551/Andice-General-Store-Florence-TX/",
+        "quote": "Andice General Store ($) Burgers"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "No official website found, so the tag rests on an aggregator category string plus consistent review evidence. Recent hours and 2025-2026 reviews support open. Also listed under Andice/Georgetown 78633 rather than the Florence 76527 address in the input."
+  },
+  {
+    "id": "006",
+    "name": "Anthem",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["cocktails-bar-food"],
+    "evidence": [
+      {
+        "slug": "cocktails-bar-food",
+        "tier": "A",
+        "url": "https://www.toasttab.com/local/order/flagship-restaurant-group-anthem/r-93142328-9e95-45b7-adfb-e1d6325d5360",
+        "quote": "Anthem is a pub that honors American comfort food"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "Deliberately crossed kitchen (Texan, Asian and Latin on one menu), so no national slug was applied and new-american was avoided per the vocabulary guidance. Official site shows current hours for 91 Rainey St Ste 120."
+  },
+  {
+    "id": "007",
+    "name": "APT 115",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["new-american"],
+    "evidence": [
+      {
+        "slug": "new-american",
+        "tier": "A",
+        "url": "https://www.apartmentonefifteen.com/location/apartment-115/",
+        "quote": "a la carte options inspired by local farms and ranches"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "Seasonal chef-driven tasting menu supports new-american, but the MICHELIN Guide classifies the cuisine as Fusion, so the tag is not unambiguous. A 2024 city-guide listing claims wine and snacks only with no food menu; the official site and current reservation listings contradict it."
+  },
+  {
+    "id": "008",
+    "name": "Aris",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["steakhouse", "mediterranean"],
+    "evidence": [
+      {
+        "slug": "steakhouse",
+        "tier": "C",
+        "url": "https://www.austintexas.org/listings/aris/15419/",
+        "quote": "Aris is a modern Mediterranean steakhouse located in Downtown Austin"
+      },
+      {
+        "slug": "mediterranean",
+        "tier": "C",
+        "url": "https://www.opentable.com/r/iris-austin",
+        "quote": "Mediterranean"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "Both slugs rest on directory and aggregator category strings rather than the restaurant's own site, which I could not retrieve. Recent listings show current hours at 1111 W 6th St."
+  },
+  {
+    "id": "009",
+    "name": "Bar Toti",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["cocktails-bar-food"],
+    "evidence": [
+      {
+        "slug": "cocktails-bar-food",
+        "tier": "A",
+        "url": "https://www.bartoti.com/about/",
+        "quote": "a lively neighborhood bistro inspired by the bar cultures of Spain, France and Mexico"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Kitchen is deliberately crossed across Spanish, French and Mexican influences, so no single national slug was applied."
+  },
+  {
+    "id": "010",
+    "name": "Bartlett's",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["steakhouse", "burgers"],
+    "evidence": [
+      {
+        "slug": "steakhouse",
+        "tier": "A",
+        "url": "https://bartlettsaustin.com/",
+        "quote": "Must-Visit Steakhouse in Austin, TX"
+      },
+      {
+        "slug": "burgers",
+        "tier": "B",
+        "url": "https://www.timeout.com/austin/restaurants/bartletts",
+        "quote": "a lunch of the restaurant's top-flight burgers"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": null
+  }
+]

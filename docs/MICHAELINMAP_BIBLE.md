@@ -279,6 +279,8 @@ A controlled, faceted vocabulary. Creating a tag from free text is disabled by d
 
 Seed: 93 tags (37 cuisine, 14 occasion, 11 vibe, 11 logistics, 9 character, 7 format, 4 dietary) + `Hype trap` in `character` with `admin_only = true`.
 
+The vocabulary is seeded, not frozen (RN-13 controls *who* adds, not *whether*). **Live today: 94 tags, 38 cuisine** — `german` was added in S11 (`20260809130000`) after research hit three Hill Country German kitchens the 37 could not describe. A count in this section describes the seed; measure the database before quoting one as current.
+
 ### 9.4 `curators`
 
 `user_id` uuid PK → `auth.users` · `name` text · `created_at`.
@@ -416,12 +418,19 @@ Tiers: destination 43, experience 36, fair 198, cool 30. Stars 22. Unvisited 42.
 > (`20260807140000`), taking published food places without one from 45 down to 17. S10 researched
 > those 17 online — a source URL and a quoted line per tag, with abstention required over guessing —
 > and added 53 assignments across 16 places (`20260809120000`), taking the gap from 17 down to **4**.
-> Of 56 published food places, **52 now carry a cuisine**. Total pending suggestions: **226**, none
-> confirmed.
+> Of 56 published food places, **52 now carry a cuisine**. Of 226 assignments, **5 are the
+> curator's** and 221 are still pending.
 >
-> **None of it is visible yet.** Under RN-31 a `suggested` tag reaches no public surface, so the
-> cuisine facet still does not render for a visitor. It appears the moment the first one is
-> confirmed, with no deploy — the panel already reads it. See RN-32.
+> **The cuisine facet renders publicly as of S11**, on those 5: `Breakfast & Diner`, confirmed by
+> Edu in the admin's bulk bar across 24 Diner, Colleen's Kitchen, Geraldine's, June's All Day and
+> Laurel Restaurant. They are the first curator tags in the project's history — `place_tags` had
+> carried zero since S04 — and RN-32 is satisfied end to end for the first time. Everything else is
+> still `suggested` and still invisible under RN-31, appearing as it is confirmed, with no deploy.
+>
+> Getting there took a fix worth remembering: the first confirmation reported success and wrote
+> nothing. The session's JWT had stopped refreshing, PostgREST treated the request as `anon`, and the
+> policy made the rows disappear rather than raise — **RLS does not deny, it empties the result set**.
+> Without `.select()` the write is unverifiable and green. See `d9e49cd`.
 >
 > **The four that remain are documented exceptions, not oversights.** `Gina's on Congress` (DP-10,
 > three independent closure signals) plus `Cosmo`, `Ranch 616` and `Space Cowboy`, which the

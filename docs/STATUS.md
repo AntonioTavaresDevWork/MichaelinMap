@@ -7,11 +7,11 @@
 
 ## 🗓️ Last update
 
-**Date:** 2026-08-08
-**Session:** S10 — redesign do frontend sobre o design system da Feedback, e o filtro por tag
+**Date:** 2026-08-09
+**Session:** S11 — a primeira tag do curador, a escrita silenciosa que o RLS engolia, e a pesquisa dos 117
 **Version:** `0.1.0` — kept by Edu's decision; bump only when the product goes live
 **Updated by:** Claude Code (orchestrator)
-**Last commit:** `a306b47`
+**Last commit:** `d9e49cd`
 
 ---
 
@@ -20,18 +20,25 @@
 **All seven MVP features are closed**, and S10 added the first work after them: a full frontend
 redesign and one admin sub-feature. No new product feature is planned.
 
-**The critical path is still human, but it moved one step.** None of the 58 published places has
-`the_dish` or `curator_note`, and of 173 tag assignments **zero** are the curator's. What changed in
-S10 is that the queue is now workable: the admin can filter the list by a single tag and confirm it
-across every filtered place at once, so 173 unrelated decisions became roughly 20 coherent batches.
-Whether Michael works them is the open question — the tool is no longer the excuse.
+**The critical path is still human, and in S11 a human walked one step of it.** Of 226 tag
+assignments, **5 are now the curator's** — `Breakfast & Diner`, confirmed by Edu across five places
+in one click — and the cuisine facet renders publicly for the first time. `place_tags` had carried
+zero curator rows since S04, and that zero was the fact every prior session cited as the definition
+of the bottleneck. It is gone.
+
+What remains unchanged is the harder half: **none of the 58 published places has `the_dish` or
+`curator_note`.** The guide shows verdicts and no voice, and those sentences are Michael's alone.
+The 221 tags still pending are ~20 coherent batches thanks to S10's filter, and Edu has taken
+`cuisine` specifically — verifying a researched fact is not the same act as tagging in Michael's
+place.
 
 **The handover track from S09 continues.** Both the deploy and the database are expected to move to
 a company organization; `README.md` documents what travels and what does not.
 
-**Three surfaces have never been seen running** — the 7 restyled admin screens, the new tag filter,
-and `/admin/codes`, open since F-05. All are behind the curator login (`BL-31`). One logged-in
-session closes all three, and it is the highest-value thing anyone can do next.
+**`BL-31` shrank in S11.** Edu logged in and worked six admin screens, including the tag filter and
+the bulk-confirm bar, end to end. What is still unseen is `/admin/codes`, open since F-05 — and it
+is the likely explanation for a divergence recorded below: the `DEMO` code is gone from the database
+and no session recorded deleting it.
 
 ---
 
@@ -268,6 +275,31 @@ session closes all three, and it is the highest-value thing anyone can do next.
       zero do curador. A única escrita foi a migration, e ela foi um no-op contra o estado vivo
 - [ ] ⚠️ **Nada do que foi entregue foi visto rodando no admin** — `BL-31`
 
+### Session 11 — A primeira tag do curador, e a escrita que o RLS engolia ✅
+
+- [x] **As 5 primeiras tags de curador da história do projeto.** Edu confirmou `Breakfast & Diner`
+      em 24 Diner, Colleen's Kitchen, Geraldine's, June's All Day e Laurel Restaurant. A faceta
+      Cuisine passou a renderizar no guia público. `place_tags` tinha zero desde o S04
+- [x] **Bug crítico: uma escrita bloqueada pelo RLS reportava sucesso** (`d9e49cd`). A sessão parou
+      de renovar o JWT, o PostgREST tratou a requisição como `anon`, a policy fez as linhas
+      **sumirem em vez de levantar erro**, e sem `.select()` o retorno é 204. O código mostrava o
+      número que *pediu*. As quatro mutações de tag agora pedem as linhas de volta e contam
+- [x] **Seis telas do admin vistas rodando** — `BL-31` encolheu para só `/admin/codes`
+- [x] **`german` no vocabulário** (`20260809130000`, 6 gates, rollback escrito). 38 slugs de cuisine.
+      Três cozinhas alemãs do Hill Country não tinham slug, e isso é estrutural: New Braunfels e
+      Fredericksburg são colônias alemãs. Metade da `DP-11` respondida
+- [x] **Pipeline de pesquisa dos 117 restaurantes não revisados** — escopo, prompt e resultados em
+      `docs/research/`, 10 de 117 prontos (`BL-41`)
+- [x] **Checksum reprovou a transcrição do lote e estava certo.** Três apóstrofos curvos digitados
+      retos e um espaço duplo antes do CEP em 76 dos 117 endereços. Os apóstrofos teriam quebrado o
+      join por nome na migration
+- [x] **Registros desatualizados corrigidos:** bíblia §9.3 e §12, `BL-30`, `BL-38`, `DP-09`, `DP-11`
+- [x] **Gate:** `npm run build` e `npm run lint` limpos
+- [ ] ⚠️ **`codes` está em 0 e todo registro anterior dizia 1** (`DEMO`). Divergência reportada, não
+      corrigida
+- [ ] ⚠️ **As 5 tags de curador só existem no banco vivo.** Nenhuma migration as reproduz, por
+      princípio — `OP-05` deixou de ser hipotético
+
 ---
 
 ## 🔄 In progress
@@ -278,19 +310,29 @@ Nothing running.
 
 ## ⏭️ Next action
 
-**The single highest-value action is Edu logging into the admin and clicking.** Three surfaces have
-never been seen running and one session closes all of them: the 7 restyled screens from S10, the new
-tag filter with its bulk-confirm bar, and `/admin/codes`, unseen since F-05. Everything passes build,
-lint and a colour audit; none of it passed an eye. S08 is the precedent — 61 assertions passed and
-the eye still found two interface defects assertions cannot reach. Closes `BL-31`.
+**Resume the cuisine research pass — 10 of 117 done.** Everything needed is in `docs/research/`,
+which is written to be picked up with no context from S11: paste `cuisine-117-prompt.md` (revision 2)
+into the research model, attach the next ten rows of `cuisine-117-batch.csv`, append the JSON to
+`cuisine-117-results.json`. **Do not regenerate the CSV** — its `id` is the join key and re-cutting
+it silently re-points every result at the wrong restaurant. Ten per response is deliberate. `BL-41`.
 
-**Two decisions belong to Michael and block the 53 tag suggestions** (`BL-38`):
+Three items from the first ten need handling before the next migration, all listed in the research
+README: **004 Alpine Haus** is taggable now that `german` exists; **006 Anthem and 009 Bar Toti**
+need re-running, because `cocktails-bar-food` was used as a crossed-kitchen fallback; **008 Aris**
+cites an OpenTable page for a different business (*Iris*) and just needs that evidence row dropped.
 
-1. **`DP-10` — is `Gina's on Congress` still open?** It is published and starred right now, with
-   three independent closure signals against one counter-signal. A phone call settles it.
-2. **`DP-11` — the cuisine vocabulary does not cover the top of the guide.** Seven of 17 researched
-   places had no adequate slug, and `interior-mexican` is becoming a dump for "Mexican that is not
-   Tex-Mex". The concrete hole is a missing `latin-american`.
+**`OP-05` stopped being hypothetical.** Until today the migrations rebuilt everything; as of the 5
+curator tags, they do not. Every confirmation from here widens the gap between the repository and the
+only irreplaceable thing in the system. Both remaining actions are Edu's and neither is CLI work.
+
+**Two decisions still belong to Michael:**
+
+1. **`DP-10` — is `Gina's on Congress` still open?** Published and starred right now, three
+   independent closure signals against one counter-signal. A phone call settles it.
+2. **`DP-11`, second half** — `german` was added in S11 as a factual category. What remains is the
+   boundary judgment: a missing `latin-american`, and `interior-mexican` becoming a dump for
+   "Mexican that is not Tex-Mex". `BL-42` adds a sibling: `cocktails-bar-food` is a format claim
+   living in the cuisine facet, and it attracts whatever the vocabulary cannot describe.
 
 **One decision belongs to Edu:** what a Code has the right to repaint (`BL-37`). `--brand-ink` and
 `--secondary` sit outside `MANAGED_PROPERTIES`, and a dark code with no `mapStyle` gets a light map
@@ -354,18 +396,16 @@ network IP. Noted in `.claude/CLAUDE.md` so the next visual check does not lose 
 
 ## 📊 Database state
 
-Re-checked through MCP in S10 (`list_tables`, `list_migrations`, live counts). RLS enabled on all 8
-tables. **S10 applied no migration and wrote nothing** — every figure below is byte-identical to the
-S09 close, verified at both ends of the session.
+Re-measured through MCP at the close of S11. RLS enabled on all 8 tables.
 
 | Table | Rows | Note |
 |---|---|---|
 | `places` | 511 | **58 `published`** (launch batch, S05), 453 `unreviewed` |
-| `tags` | 94 | 93 public + `Hype trap` admin-only |
+| `tags` | **95** | 94 public + `Hype trap` admin-only. **38 cuisine** since `german` (S11) |
 | `questions` | 38 | 4 with `requires_review` (the free-text ones) |
 | `tiers` | 4 | `destination`, `experience`, `fair`, `cool` |
-| `place_tags` | **173** | all `source = 'suggested'` — 145 from the F-01 import, 28 from S08's cuisine batch. **Zero from the curator.** S10 built the surface to change that (`DP-09`) but confirmed nothing itself |
-| `codes` | 1 | `DEMO`, for the RPC smoke test. S07 created 4 test codes and **deleted all four** at the end |
+| `place_tags` | **226** | **5 `curator`**, 221 `suggested`. The 5 are `Breakfast & Diner`, confirmed by Edu in S11 — the first curator tags the project has ever had. The 221: 145 from the F-01 import, 28 from S08, 53 from S10's research batch (`DP-09`) |
+| `codes` | **0** | ⚠️ **Divergence.** Every prior session recorded 1 (`DEMO`, seeded by F-01 for the RPC smoke test). It is gone and no session log records deleting it. Most likely Edu cleaning up while exploring `/admin/codes`, which `BL-31` says has never been walked through. Not acted on — reported per workflow rule 6. Practical effect: `BL-33` (DEMO's invalid `mapStyle`) is moot, and a redeem test now needs a code created first |
 | `curators` | 1 | `Michael` — `mikemyday@mikecofone.com`, account confirmed |
 | `field_reports` | 0 | S08 created test rows through the RPC and through SQL and **deleted them all** at the end; the table went back to zero, verified |
 
@@ -375,19 +415,18 @@ Judgment distribution: 22 stars (4.3%), 42 unvisited, 279 with a tier (`fair` 18
 
 ⚠️ **None of the 58 has `the_dish` or `curator_note`.** The guide is populated but mute: it shows the verdicts, not the voice. Writing those sentences for 8-10 of the strongest is what separates the demo from an organized list — and it is human work, not CLI work.
 
-Live migrations — **5**: `20260806120000_f01_schema_rls_rpc`, `20260806120100_f01_seed_and_import`,
-`20260806130000_f01_seed_curator`, `20260807140000_suggest_cuisine_published` (S08) and
-`20260808120000_publish_launch_batch` (S10). `schema_migrations` sanitized after every apply,
-versions aligned with the file names.
+Live migrations — **7**: the three from F-01, `20260807140000_suggest_cuisine_published` (S08),
+`20260808120000_publish_launch_batch` (S10), `20260809120000_suggest_researched_tags` (S10) and
+`20260809130000_add_german_cuisine` (S11). `schema_migrations` sanitized after every apply, versions
+aligned with the file names — S11's apply was rewritten to `20260809051551`, which would have sorted
+*before* its predecessor, and was corrected.
 
-**Since S10 the migrations reproduce the whole product.** The launch batch was the last thing that
-lived only in the live database; a clone plus these 5 rebuilds every place, every verdict, the
-vocabulary and which 58 places the guide opens with. What they still do not carry is the auth
-account — `20260806130000` aborts on purpose if it does not exist first — and anything Michael
-writes from now on.
-
-F-02 and F-03 **did not change the schema** — they are frontend on top of F-01's database. `place_tags`
-still holds the 145 `suggested` rows from the import: curation has not started writing.
+**The migrations no longer reproduce the whole product, and S11 is where that changed.** They rebuild
+every place, verdict, vocabulary entry and the 58 published — but the **5 curator tags exist only in
+the live database.** They are judgment (§1.1) and no migration will ever carry them, by design: a
+migration that wrote curator tags would be an automated routine writing the judgment layer. This is
+exactly the future `OP-05` was raised against, and it stopped being hypothetical today. A clone plus
+these 7 now gives back a product missing the only five decisions a human has made in it.
 
 ---
 
