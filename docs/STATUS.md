@@ -8,26 +8,30 @@
 ## 🗓️ Last update
 
 **Date:** 2026-08-08
-**Session:** S09 — README, database handover and the documentation moved to English
+**Session:** S10 — redesign do frontend sobre o design system da Feedback, e o filtro por tag
 **Version:** `0.1.0` — kept by Edu's decision; bump only when the product goes live
 **Updated by:** Claude Code (orchestrator)
+**Last commit:** `a306b47`
 
 ---
 
 ## 📍 Current phase
 
-**All seven MVP features are closed.** Admin, public side, faceted filter, Codes, Roulette and
-field reports. There is no next feature planned.
+**All seven MVP features are closed**, and S10 added the first work after them: a full frontend
+redesign and one admin sub-feature. No new product feature is planned.
 
-**The critical path is now entirely human** and it is not code: none of the 58 published places has
-`the_dish` or `curator_note`, and the tag assignments are all still `suggested`. The guide shows
-the verdicts, not the voice.
+**The critical path is still human, but it moved one step.** None of the 58 published places has
+`the_dish` or `curator_note`, and of 173 tag assignments **zero** are the curator's. What changed in
+S10 is that the queue is now workable: the admin can filter the list by a single tag and confirm it
+across every filtered place at once, so 173 unrelated decisions became roughly 20 coherent batches.
+Whether Michael works them is the open question — the tool is no longer the excuse.
 
-**A second track opened in S09: the project is being prepared to change hands.** Edu asked what a
-handover would require, and the answer produced a `README.md`, a documented path for repointing the
-database at another Supabase project, and the decision to move the whole repository to English
-(ADR-02 amended). Both the deploy and the database are expected to move to a company organization.
-Nothing here blocks the product from going live — it is preparation, not an impediment.
+**The handover track from S09 continues.** Both the deploy and the database are expected to move to
+a company organization; `README.md` documents what travels and what does not.
+
+**Three surfaces have never been seen running** — the 7 restyled admin screens, the new tag filter,
+and `/admin/codes`, open since F-05. All are behind the curator login (`BL-31`). One logged-in
+session closes all three, and it is the highest-value thing anyone can do next.
 
 ---
 
@@ -235,6 +239,33 @@ Nothing here blocks the product from going live — it is preparation, not an im
 - [x] `docs/MICHAELINMAP_BIBLIA.md` → `docs/MICHAELINMAP_BIBLE.md`, with 16 references in 12 files
 - [x] **Gate:** `npm run build` and `npm run lint` clean. No code touched, no migration applied
 
+### Session 10 — Redesign do frontend, e o filtro que destrava a fila ✅
+
+- [x] **`docs/design_system/` (Feedback Comunicação) adicionado como referência**, e instanciado na
+      skill `michaelinmap-design-system` — a lei visual do projeto, com as duas divergências
+      registradas: a UI continua en-US (ADR-02) e este produto reserva uma segunda cor
+- [x] **Duas alternativas de identidade apresentadas antes de escrever código**, com previews em
+      dados reais de Austin. Edu escolheu a clara (papel/bege); o ink stack não foi descartado —
+      virou a superfície que um Code pinta
+- [x] **`src/index.css` reescrito**: era o tema default do shadcn intocado (`oklch(0.145 0 0)`,
+      croma zero, light-first). Agora tokens de papel em `:root`, ink stack no `.dark`
+- [x] **A regra das duas cores** — lime é a interface falando, âmbar é o julgamento falando e é
+      reservado. Nenhum arquivo de `components/ui/` referencia `--verdict*`
+- [x] **15 primitivos shadcn e 13 telas migrados**; glass só nas três superfícies que flutuam
+- [x] **Varredura de cor**: zero cor da paleta crua do Tailwind em `src/`. `sky` e `emerald` do
+      admin viraram tokens `--info` e `--success`; **não existe `--warning`** porque aquele matiz
+      pertence ao julgamento
+- [x] **Auditoria adversarial com contexto independente reprovou o trabalho** em dois pontos reais,
+      ambos corrigidos — ver o log da sessão
+- [x] **Filtro por tag no admin + confirmação em lote** (`?tag=cuisine:tacos&tagSource=suggested`),
+      17 checks em harness descartável
+- [x] **Pipeline de pesquisa para o Opus 5** escrito e rodado sobre os 17 publicados sem cozinha:
+      53 sugestões com fonte e citação por tag, **ainda não aplicadas** (`BL-38`)
+- [x] **Gate:** `npm run build` e `npm run lint` limpos. Bundle 761 → 768 kB (222 kB gzip)
+- [x] **Zero migration, zero mudança de schema, zero RLS nova.** O banco terminou a sessão
+      idêntico a como começou
+- [ ] ⚠️ **Nada do que foi entregue foi visto rodando no admin** — `BL-31`
+
 ---
 
 ## 🔄 In progress
@@ -245,7 +276,27 @@ Nothing running.
 
 ## ⏭️ Next action
 
-**There is no next feature.** The MVP is over. What the product needs now is not code:
+**The single highest-value action is Edu logging into the admin and clicking.** Three surfaces have
+never been seen running and one session closes all of them: the 7 restyled screens from S10, the new
+tag filter with its bulk-confirm bar, and `/admin/codes`, unseen since F-05. Everything passes build,
+lint and a colour audit; none of it passed an eye. S08 is the precedent — 61 assertions passed and
+the eye still found two interface defects assertions cannot reach. Closes `BL-31`.
+
+**Two decisions belong to Michael and block the 53 tag suggestions** (`BL-38`):
+
+1. **`DP-10` — is `Gina's on Congress` still open?** It is published and starred right now, with
+   three independent closure signals against one counter-signal. A phone call settles it.
+2. **`DP-11` — the cuisine vocabulary does not cover the top of the guide.** Seven of 17 researched
+   places had no adequate slug, and `interior-mexican` is becoming a dump for "Mexican that is not
+   Tex-Mex". The concrete hole is a missing `latin-american`.
+
+**One decision belongs to Edu:** what a Code has the right to repaint (`BL-37`). `--brand-ink` and
+`--secondary` sit outside `MANAGED_PROPERTIES`, and a dark code with no `mapStyle` gets a light map
+panel. Same question, two symptoms, both one-liners once the principle is settled.
+
+---
+
+**Beyond that, what the product needs is still not code:**
 
 1. **The voice, and only Michael can give it.** None of the 58 published places has `the_dish` or
    `curator_note`. It is two questions from memory per place — "what do I order here?", "why does this
@@ -301,7 +352,9 @@ network IP. Noted in `.claude/CLAUDE.md` so the next visual check does not lose 
 
 ## 📊 Database state
 
-Re-checked through MCP in S06 (`list_tables`, `list_migrations`). RLS enabled on all 8 tables.
+Re-checked through MCP in S10 (`list_tables`, `list_migrations`, live counts). RLS enabled on all 8
+tables. **S10 applied no migration and wrote nothing** — every figure below is byte-identical to the
+S09 close, verified at both ends of the session.
 
 | Table | Rows | Note |
 |---|---|---|
@@ -309,7 +362,7 @@ Re-checked through MCP in S06 (`list_tables`, `list_migrations`). RLS enabled on
 | `tags` | 94 | 93 public + `Hype trap` admin-only |
 | `questions` | 38 | 4 with `requires_review` (the free-text ones) |
 | `tiers` | 4 | `destination`, `experience`, `fair`, `cool` |
-| `place_tags` | **173** | all `source = 'suggested'` — 145 from the F-01 import, 28 from S08's cuisine batch. **Zero from the curator** |
+| `place_tags` | **173** | all `source = 'suggested'` — 145 from the F-01 import, 28 from S08's cuisine batch. **Zero from the curator.** S10 built the surface to change that (`DP-09`) but confirmed nothing itself |
 | `codes` | 1 | `DEMO`, for the RPC smoke test. S07 created 4 test codes and **deleted all four** at the end |
 | `curators` | 1 | `Michael` — `mikemyday@mikecofone.com`, account confirmed |
 | `field_reports` | 0 | S08 created test rows through the RPC and through SQL and **deleted them all** at the end; the table went back to zero, verified |
@@ -340,6 +393,7 @@ still holds the 145 `suggested` rows from the import: curation has not started w
 | F-04 | Faceted filters | ✅ Complete (S06) | ~0.5 |
 | F-05 | Complete Codes + Roulette | ✅ Complete (S07) | ~1 |
 | F-06 | Field reports | ✅ Complete (S08) | ~1 |
+| — | Frontend redesign + admin tag filter | ✅ Complete (S10) | ~1 |
 
 Total estimate: ~10 sessions — **the seven features closed in 7 CLI sessions**, ahead of the estimate.
 The last two were budgeted at ~2 each and came in at ~1, for the same reason: neither needed schema
@@ -350,6 +404,107 @@ of the content.
 ---
 
 ## 📝 Session log
+
+### 2026-08-08 — S10: O redesign do frontend, e o filtro que destrava a fila
+
+**O que foi feito:** o frontend saiu do tema default do shadcn e ganhou um sistema visual; o admin
+ganhou o filtro por tag que faltava. Três commits, zero migration, banco intocado.
+
+**O diagnóstico que definiu a sessão.** Edu pediu para tirar o "AI slop" do frontend. O código não
+era o problema — a copy estava escrita, as regras respeitadas, a estrutura das telas certa. O que
+não existia era sistema visual: `src/index.css` era o tema default do shadcn intocado,
+`oklch(0.145 0 0)`, cinza puro, croma zero, light-first. É literalmente o que todo app scaffoldado
+nasce sendo. E o sintoma que mais importava: **o veredito era a coisa mais fraca da tela** — o tier
+renderizava como pill cinza `secondary`, mais apagado que o nome do tipo do lugar ao lado, num
+produto cujo valor inteiro é o julgamento de uma pessoa.
+
+**Duas alternativas foram apresentadas antes de qualquer código**, com previews em dados reais de
+Austin. Edu escolheu a clara. O ink stack não foi jogado fora: virou a superfície que um Code pinta,
+que antes era o cinza stock do shadcn — ou seja, qualquer código escuro caía fora do design system.
+
+**A regra das duas cores é a única ideia da sessão que não é herdada do design system da Feedback.**
+Lime é a interface falando (ação primária, foco, faceta ativa, "Picked for you"); âmbar é o
+julgamento falando (a estrela, o prato, o veredito) e é reservado. Nenhum arquivo de
+`components/ui/` referencia `--verdict*`, porque um primitivo nunca é um julgamento. O corolário é
+que saturação passou a significar alguma coisa.
+
+**Seis defeitos reais apareceram só quando a página foi aberta**, e nenhum deles seria pego por
+asserção: input com `bg-transparent` sumia sobre card no chão de papel; a aba ativa lia como
+afundada porque `data-active:bg-background` põe a aba no chão da página, mais escuro que o card; o
+botão primário **desbotava** no hover, porque `bg-primary/80` compõe o lime contra o fundo; o toast
+com `theme="system"` escolhia claro/escuro pelo SO e brigava com a paleta; o scrim do dialog a 10%
+praticamente não escurecia nada sobre bege; e o contador de caracteres usava âmbar ao estourar o
+limite — o que, sob a regra das duas cores, seria o guia dizendo que estourar o limite é uma
+honraria.
+
+**A auditoria adversarial reprovou o trabalho, e estava certa.** Um crítico com contexto
+independente atacou a entrega e derrubou dois pontos que eu não tinha visto. O primeiro é
+desqualificante: a facet selecionada, que é a interação central do guia, tinha ido de ~16:1 para
+**1,07:1** — e o rótulo trocava de matiz com luminância idêntica (1,02:1), o que **some por completo
+em deuteranopia**. Eu tinha trocado acessibilidade por estética e ainda piorado removendo o
+preenchimento condicional da estrela. O segundo: a estrela, marca mais significativa do produto,
+era a de **menor contraste da página** (2,05:1). Ambos corrigidos, mais quatro achados menores que
+se confirmaram na conferência à mão — `--muted` byte-idêntico a `--secondary` (todo `hover:bg-muted`
+sobre controle `bg-secondary` era no-op), `--input` a 1,27:1 contra a página, `--destructive` a
+4,10:1 no ink, e o anel do pin no mapa que eu tinha "melhorado" para derivar de `--primary` e com
+isso sumia quando o curador escolhia a mesma cor para accent e pin.
+
+**A lição virou regra no `CLAUDE.md`:** trabalho visual passa por crítico adversarial com contexto
+independente, do mesmo jeito que migration crítica. Quem fez não enxerga o que fez.
+
+**Depois do redesign, uma pergunta do Edu mudou o enquadramento do gargalo.** Ele perguntou se dava
+para filtrar os lugares mal tagueados no app. A checagem revelou uma assimetria que ninguém tinha
+notado: **o visitante tinha filtro facetado completo por cozinha e o curador não tinha filtro por
+tag nenhum.** A pessoa que precisa mexer em tag era a única que não conseguia encontrá-las. Por isso
+a fila de 173 sugestões nunca andou — não era volume, era que ela é uma lista plana onde aprovar
+significa abrir lugar por lugar.
+
+O filtro entregue (`?tag=cuisine:tacos&tagSource=suggested`) transforma isso em ~20 lotes coerentes.
+Três decisões valem o registro: a chave é `facet:slug` e não `slug`, porque o UNIQUE da tabela é
+`(facet, slug)` e a unicidade global é acidental; o filtro **falha fechado**, então chave que não
+resolve devolve lista vazia em vez da lista inteira; e a confirmação em lote é uma sentença só com
+`source = 'suggested'` no WHERE além do SET, o que a torna idempotente e incapaz de sobrescrever uma
+decisão que o Michael já tomou. **Confirma em lote, rejeita um a um** — porque rejeitar apaga a
+linha e confirmar só move o `source`.
+
+**Uma pipeline de pesquisa foi escrita para o Opus 5** e rodada sobre os 17 lugares publicados sem
+cozinha. Voltaram 53 sugestões com URL e citação por tag, e o modelo se saiu bem justamente no que
+mais preocupava: **recusou-se a preencher lacuna quatro vezes** e sinalizou as próprias inferências.
+Dois achados saíram dali e nenhum é uma tag:
+
+1. **`Gina's on Congress`, publicado e com estrela, pode estar fechado** — três sinais independentes
+   contra um contrassinal (`DP-10`).
+2. **O vocabulário de cuisine não cobre o topo do guia.** Sete dos 17 não têm slug adequado, e
+   `interior-mexican` está virando depósito de "mexicano que não é Tex-Mex" — classificação falsa
+   com cara de precisa (`DP-11`).
+
+**A recomendação sobre rodar os 453 restantes foi NÃO, e o motivo vale ficar escrito:** os não
+revisados não são o guia, são backlog, e o painel público só computa facetas sobre publicados.
+Taguear os 453 não mudaria nada visível e levaria a fila para ~700 itens. Se o Michael não trabalhou
+173, não vai trabalhar 700. O próximo lote útil são os **39 publicados que já têm cozinha mas estão
+sem `format`, `logistics` e `dietary`** — as três facetas que têm 1, 0 e 0 atribuições no banco
+inteiro. E mais valioso que qualquer tagging: uma varredura de fechamento sobre os 58 publicados,
+porque o Gina's apareceu por acidente e 511 lugares vindos de álbuns acumulados ao longo de anos
+dificilmente têm só um fechado.
+
+**Sobre o CSV:** conferido no banco, os 511 lugares estão idênticos ao arquivo que o Edu tem —
+todos `apple_csv`, nenhum criado depois do import, e os únicos 58 editados são exatamente os
+publicados no S05, onde só o `status` mudou. O CSV dele não envelheceu.
+
+**O que ficou aberto de propósito:** o `H-02` da auditoria (`--brand-ink` e `--secondary` fora do
+`MANAGED_PROPERTIES`, então um Code não alcança a facet selecionada, o badge "Picked for you", a nav
+do admin nem os campos de formulário) não foi corrigido porque mexe em `code-effects.ts`, que tem o
+harness de 60 checks do F-05 em volta, e porque é decisão de produto — a mesma do `mapStyle`. E o
+Inter nunca foi aprovado como dependência: perguntei duas vezes, sem resposta, então declarei a
+premissa e segui no Geist.
+
+**Uma correção de percurso que vale registrar:** afirmei que `places.source` não existia no banco
+depois de um erro de SQL meu. A coluna existe; a consulta é que estava malformada. Corrigido na
+hora.
+
+**Commits:** `17558f5` (design system + skill), `6add1e6` (redesign) e `a306b47` (filtro por tag).
+Todos locais — `main` está 4 commits à frente do `origin`, contando o fecho do S09 que nunca foi
+pusheado.
 
 ### 2026-08-08 — S09: Handover, and the documentation in English
 
