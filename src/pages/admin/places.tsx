@@ -190,11 +190,11 @@ function BulkConfirmBar({
     confirm.mutate(
       { tagId: tag.id, placeIds: pendingIds },
       {
-        onSuccess: () => {
+        // The count comes back from the write, not from what was asked for.
+        // Reporting the request would let a blocked update look like a done one.
+        onSuccess: (written) => {
           setOpen(false)
-          toast.success(
-            `${tag.label} confirmed on ${pendingIds.length} place${pendingIds.length === 1 ? '' : 's'}.`,
-          )
+          toast.success(`${tag.label} confirmed on ${written} place${written === 1 ? '' : 's'}.`)
         },
         onError: (error: Error) => toast.error(error.message),
       },

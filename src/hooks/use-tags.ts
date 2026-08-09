@@ -63,7 +63,7 @@ export function usePlaceTags() {
   })
 }
 
-function useTagMutation<TVars>(fn: (vars: TVars) => Promise<void>) {
+function useTagMutation<TVars, TResult = void>(fn: (vars: TVars) => Promise<TResult>) {
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -77,6 +77,34 @@ function useTagMutation<TVars>(fn: (vars: TVars) => Promise<void>) {
 }
 
 /**
+ * RLS does not raise — it disappears rows.
+ *
+ * An UPDATE the policy blocks matches zero rows and PostgREST answers success.
+ * With a stale session (`is_curator()` is false the moment the JWT stops
+ * refreshing) a write that changed nothing returns green, and the interface
+ * reports a number that never happened. This is the same failure shape S09
+ * recorded for a commit that never landed while looking exactly like one that
+ * did, so every write here asks for its rows back and counts them.
+ */
+function assertWritten(rows: unknown[] | null, expected: number): number {
+  const written = rows?.length ?? 0
+
+  if (written === 0) {
+    throw new Error(
+      'Nothing was written — your session may have expired. Sign out, sign back in, and try again.',
+    )
+  }
+
+  if (written < expected) {
+    throw new Error(
+      `Only ${written} of ${expected} were written. Reload and check before trying again.`,
+    )
+  }
+
+  return written
+}
+
+/**
  * Assigning always writes `source = 'curator'`.
  *
  * A curator touching a tag is the judgment layer being exercised — the whole
@@ -85,26 +113,30 @@ function useTagMutation<TVars>(fn: (vars: TVars) => Promise<void>) {
  */
 export function useAssignTag() {
   return useTagMutation(async ({ placeId, tagId }: { placeId: string; tagId: string }) => {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('place_tags')
       .upsert(
         { place_id: placeId, tag_id: tagId, source: 'curator' },
         { onConflict: 'place_id,tag_id' },
       )
+      .select('place_id')
 
     if (error) throw error
+    assertWritten(data, 1)
   })
 }
 
 export function useRemoveTag() {
   return useTagMutation(async ({ placeId, tagId }: { placeId: string; tagId: string }) => {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('place_tags')
       .delete()
       .eq('place_id', placeId)
       .eq('tag_id', tagId)
+      .select('place_id')
 
     if (error) throw error
+    assertWritten(data, 1)
   })
 }
 
@@ -116,13 +148,15 @@ export function useRemoveTag() {
  */
 export function useConfirmSuggestion() {
   return useTagMutation(async ({ placeId, tagId }: { placeId: string; tagId: string }) => {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('place_tags')
       .update({ source: 'curator' })
       .eq('place_id', placeId)
       .eq('tag_id', tagId)
+      .select('place_id')
 
     if (error) throw error
+    assertWritten(data, 1)
   })
 }
 
@@ -140,16 +174,22 @@ export function useConfirmSuggestion() {
  * connection cannot leave half a batch confirmed.
  */
 export function useConfirmSuggestions() {
-  return useTagMutation(async ({ tagId, placeIds }: { tagId: string; placeIds: string[] }) => {
-    if (!placeIds.length) return
+  return useTagMutation(
+    async ({ tagId, placeIds }: { tagId: string; placeIds: string[] }): Promise<number> => {
+      if (!placeIds.length) return 0
 
-    const { error } = await supabase
-      .from('place_tags')
-      .update({ source: 'curator' })
-      .eq('tag_id', tagId)
-      .eq('source', 'suggested')
-      .in('place_id', placeIds)
+      const { data, error } = await supabase
+        .from('place_tags')
+        .update({ source: 'curator' })
+        .eq('tag_id', tagId)
+        .eq('source', 'suggested')
+        .in('place_id', placeIds)
+        // `.select()` is what makes the write verifiable: without it PostgREST
+        // returns 204 and the caller cannot tell a blocked update from a done one.
+        .select('place_id')
 
-    if (error) throw error
-  })
+      if (error) throw error
+      return assertWritten(data, placeIds.length)
+    },
+  )
 }
