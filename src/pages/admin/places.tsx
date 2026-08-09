@@ -1,23 +1,34 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { AlertTriangleIcon, SparklesIcon, StarIcon } from 'lucide-react'
+import { AlertTriangleIcon, CheckIcon, SparklesIcon, StarIcon } from 'lucide-react'
+import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import { PlaceFilterBar } from '@/components/admin/place-filter-bar'
 import { usePlaces } from '@/hooks/use-places'
-import { usePlaceTags, useTags } from '@/hooks/use-tags'
+import { useConfirmSuggestions, usePlaceTags, useTags } from '@/hooks/use-tags'
 import { useTiers } from '@/hooks/use-tiers'
 import {
   applyFilters,
+  assignmentFor,
   buildTagIndex,
   CONFLICT_MARKER,
   cityOptions,
   filtersFromParams,
   filtersToParams,
+  tagKey,
   type PlaceFilters,
 } from '@/lib/place-filters'
 import { formatNumber } from '@/lib/utils'
-import type { Place, PlaceStatus } from '@/types'
+import type { Place, PlaceStatus, Tag } from '@/types'
 
 const STATUS_VARIANT: Record<PlaceStatus, 'default' | 'secondary' | 'outline' | 'destructive'> = {
   published: 'default',
@@ -77,6 +88,14 @@ export function PlacesPage() {
         onChange={updateFilters}
         tiers={tiers.data ?? []}
         cities={cities}
+        tags={tags.data ?? []}
+      />
+
+      <BulkConfirmBar
+        filters={filters}
+        visible={visible}
+        index={index}
+        tags={tags.data ?? []}
       />
 
       {error && (
@@ -115,6 +134,101 @@ export function PlacesPage() {
         </ul>
       )}
     </div>
+  )
+}
+
+/**
+ * Confirm one tag across the filtered places, in one go.
+ *
+ * Deliberately asymmetric: you confirm in bulk, you reject one at a time. A
+ * well-generated batch is mostly right, so approving wholesale is the win — and
+ * rejecting *deletes* the row, where confirming only moves `source`. The few
+ * wrong ones are worth opening individually.
+ */
+function BulkConfirmBar({
+  filters,
+  visible,
+  index,
+  tags,
+}: {
+  filters: PlaceFilters
+  visible: Place[]
+  index: ReturnType<typeof buildTagIndex>
+  tags: Tag[]
+}) {
+  const [open, setOpen] = useState(false)
+  const confirm = useConfirmSuggestions()
+
+  const tag = useMemo(
+    () => tags.find((t) => tagKey(t) === filters.tag) ?? null,
+    [tags, filters.tag],
+  )
+
+  // Exactly the rows the statement will write — the count on the button and the
+  // rows updated come from the same predicate, so the number is never a guess.
+  const pendingIds = useMemo(
+    () =>
+      visible
+        .filter((place) => assignmentFor(place, filters, index)?.source === 'suggested')
+        .map((place) => place.id),
+    [visible, filters, index],
+  )
+
+  if (!tag || pendingIds.length === 0) return null
+
+  function run() {
+    if (!tag) return
+
+    confirm.mutate(
+      { tagId: tag.id, placeIds: pendingIds },
+      {
+        onSuccess: () => {
+          setOpen(false)
+          toast.success(
+            `${tag.label} confirmed on ${pendingIds.length} place${pendingIds.length === 1 ? '' : 's'}.`,
+          )
+        },
+        onError: (error: Error) => toast.error(error.message),
+      },
+    )
+  }
+
+  return (
+    <>
+      <div className="flex flex-wrap items-center gap-3 rounded-lg border border-info/30 bg-info/5 px-4 py-3">
+        <SparklesIcon className="size-4 shrink-0 text-info" />
+        <p className="flex-1 text-sm">
+          <span className="font-mono">{formatNumber(pendingIds.length)}</span> of these are still a
+          machine guess at <span className="font-medium">{tag.label}</span>.
+        </p>
+        <Button size="sm" onClick={() => setOpen(true)} disabled={confirm.isPending}>
+          <CheckIcon className="size-4" />
+          Confirm on all {formatNumber(pendingIds.length)}
+        </Button>
+      </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm {tag.label}?</DialogTitle>
+            <DialogDescription>
+              This turns the suggestion into your call on {formatNumber(pendingIds.length)} place
+              {pendingIds.length === 1 ? '' : 's'}, and they become visible to visitors. Places
+              where you already confirmed this tag are left alone.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex flex-wrap justify-end gap-2">
+            <Button variant="outline" size="sm" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button size="sm" onClick={run} disabled={confirm.isPending}>
+              {confirm.isPending ? 'Confirming…' : `Confirm ${formatNumber(pendingIds.length)}`}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 

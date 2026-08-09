@@ -11,6 +11,16 @@ export interface PlaceFilters {
   city: string
   starred: 'all' | 'yes' | 'no'
   flag: FlagFilter
+  /**
+   * One tag, keyed `facet:slug`, or `all`.
+   *
+   * The compound key mirrors the table's `UNIQUE (facet, slug)` rather than
+   * relying on slugs being unique on their own — they happen to be today, and
+   * the schema does not promise it.
+   */
+  tag: string
+  /** Narrows the tag above to a machine guess or a curator call. */
+  tagSource: 'all' | 'suggested' | 'curator'
 }
 
 export const DEFAULT_FILTERS: PlaceFilters = {
@@ -21,6 +31,13 @@ export const DEFAULT_FILTERS: PlaceFilters = {
   city: 'all',
   starred: 'all',
   flag: 'all',
+  tag: 'all',
+  tagSource: 'all',
+}
+
+/** The `facet:slug` key a tag is addressed by in the filter and the URL. */
+export function tagKey(tag: Pick<Tag, 'facet' | 'slug'>): string {
+  return `${tag.facet}:${tag.slug}`
 }
 
 /** Marker the F-01 import wrote for the 28 places that carried a tier while unvisited. */
@@ -48,6 +65,9 @@ export function filtersFromParams(params: URLSearchParams): PlaceFilters {
     city: params.get('city') ?? DEFAULT_FILTERS.city,
     starred: (params.get('starred') as PlaceFilters['starred']) ?? DEFAULT_FILTERS.starred,
     flag: (params.get('flag') as FlagFilter) ?? DEFAULT_FILTERS.flag,
+    tag: params.get('tag') ?? DEFAULT_FILTERS.tag,
+    tagSource:
+      (params.get('tagSource') as PlaceFilters['tagSource']) ?? DEFAULT_FILTERS.tagSource,
   }
 }
 
@@ -61,6 +81,8 @@ export function hasActiveFilters(filters: PlaceFilters): boolean {
 export interface TagIndex {
   byPlace: Map<string, PlaceTag[]>
   cuisineTagIds: Set<string>
+  /** `facet:slug` → tag id, so the filter can travel as a readable URL. */
+  idByKey: Map<string, string>
 }
 
 export function buildTagIndex(placeTags: PlaceTag[], tags: Tag[]): TagIndex {
@@ -72,8 +94,28 @@ export function buildTagIndex(placeTags: PlaceTag[], tags: Tag[]): TagIndex {
   }
 
   const cuisineTagIds = new Set(tags.filter((t) => t.facet === 'cuisine').map((t) => t.id))
+  const idByKey = new Map(tags.map((tag) => [tagKey(tag), tag.id]))
 
-  return { byPlace, cuisineTagIds }
+  return { byPlace, cuisineTagIds, idByKey }
+}
+
+/**
+ * The assignment of the filtered tag on a place, if any.
+ *
+ * Shared by the filter and the bulk action so both agree on what "this place
+ * carries this tag" means — the bulk bar counts exactly the rows it will write.
+ */
+export function assignmentFor(
+  place: Place,
+  filters: PlaceFilters,
+  index: TagIndex,
+): PlaceTag | null {
+  if (filters.tag === 'all') return null
+
+  const tagId = index.idByKey.get(filters.tag)
+  if (!tagId) return null
+
+  return (index.byPlace.get(place.id) ?? []).find((pt) => pt.tag_id === tagId) ?? null
 }
 
 function matchesFlag(place: Place, flag: FlagFilter, index: TagIndex): boolean {
@@ -115,6 +157,17 @@ export function applyFilters(
     if (filters.starred === 'yes' && !place.starred) return false
     if (filters.starred === 'no' && place.starred) return false
     if (!matchesFlag(place, filters.flag, index)) return false
+
+    if (filters.tag !== 'all') {
+      // An unresolvable key returns nothing rather than everything: a stale
+      // bookmark should show an empty list, not silently drop the filter and
+      // look like the whole guide matched.
+      if (!index.idByKey.has(filters.tag)) return false
+
+      const assignment = assignmentFor(place, filters, index)
+      if (!assignment) return false
+      if (filters.tagSource !== 'all' && assignment.source !== filters.tagSource) return false
+    }
 
     return true
   })

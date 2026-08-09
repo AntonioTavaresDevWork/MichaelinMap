@@ -125,3 +125,31 @@ export function useConfirmSuggestion() {
     if (error) throw error
   })
 }
+
+/**
+ * Confirms one tag across many places at once.
+ *
+ * The queue is only workable in batches: a hundred unrelated suggestions is a
+ * hundred decisions, while "every place suggested as Tacos" is one decision with
+ * one mental model loaded. This is the curator exercising judgment on a group,
+ * not a routine writing to the judgment layer on its own.
+ *
+ * Two guards, both in the statement rather than in the caller. `source` is
+ * matched as well as set, so the update is idempotent and can never overwrite a
+ * call the curator already made; and it is a single round trip, so a slow
+ * connection cannot leave half a batch confirmed.
+ */
+export function useConfirmSuggestions() {
+  return useTagMutation(async ({ tagId, placeIds }: { tagId: string; placeIds: string[] }) => {
+    if (!placeIds.length) return
+
+    const { error } = await supabase
+      .from('place_tags')
+      .update({ source: 'curator' })
+      .eq('tag_id', tagId)
+      .eq('source', 'suggested')
+      .in('place_id', placeIds)
+
+    if (error) throw error
+  })
+}

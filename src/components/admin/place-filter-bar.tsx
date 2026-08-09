@@ -4,16 +4,20 @@ import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { FACET_LABEL, FACET_ORDER } from '@/hooks/use-tags'
 import {
   DEFAULT_FILTERS,
   hasActiveFilters,
+  tagKey,
   type PlaceFilters,
 } from '@/lib/place-filters'
-import type { PlaceStatus, PlaceType, Tier } from '@/types'
+import type { PlaceStatus, PlaceType, Tag, Tier } from '@/types'
 
 const STATUSES: PlaceStatus[] = ['unreviewed', 'published', 'closed', 'hidden']
 
@@ -44,12 +48,20 @@ interface Props {
   onChange: (next: PlaceFilters) => void
   tiers: Tier[]
   cities: { city: string; count: number }[]
+  tags: Tag[]
 }
 
-export function PlaceFilterBar({ filters, onChange, tiers, cities }: Props) {
+export function PlaceFilterBar({ filters, onChange, tiers, cities, tags }: Props) {
   function set<K extends keyof PlaceFilters>(key: K, value: PlaceFilters[K]) {
     onChange({ ...filters, [key]: value })
   }
+
+  // Grouped by facet, in the same order the place editor uses, so the curator
+  // reads one vocabulary in one order wherever tags appear.
+  const byFacet = FACET_ORDER.map((facet) => ({
+    facet,
+    tags: tags.filter((tag) => tag.facet === facet && tag.active),
+  })).filter((group) => group.tags.length > 0)
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -145,6 +157,47 @@ export function PlaceFilterBar({ filters, onChange, tiers, cities }: Props) {
               {flag.label}
             </SelectItem>
           ))}
+        </SelectContent>
+      </Select>
+
+      <Select
+        value={filters.tag}
+        onValueChange={(v) =>
+          // Clearing the tag clears its source with it — a lone "suggested"
+          // narrowing nothing would be a filter with no visible effect.
+          onChange({ ...filters, tag: v, tagSource: v === 'all' ? 'all' : filters.tagSource })
+        }
+      >
+        <SelectTrigger className="w-52" aria-label="Filter by tag">
+          <SelectValue placeholder="Tag" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Any tag</SelectItem>
+          {byFacet.map((group) => (
+            <SelectGroup key={group.facet}>
+              <SelectLabel>{FACET_LABEL[group.facet]}</SelectLabel>
+              {group.tags.map((tag) => (
+                <SelectItem key={tag.id} value={tagKey(tag)}>
+                  {tag.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select
+        value={filters.tagSource}
+        onValueChange={(v) => set('tagSource', v as PlaceFilters['tagSource'])}
+        disabled={filters.tag === 'all'}
+      >
+        <SelectTrigger className="w-40" aria-label="Filter by who assigned the tag">
+          <SelectValue placeholder="Assigned by" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Anyone</SelectItem>
+          <SelectItem value="suggested">Suggested</SelectItem>
+          <SelectItem value="curator">Confirmed</SelectItem>
         </SelectContent>
       </Select>
 
