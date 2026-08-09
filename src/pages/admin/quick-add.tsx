@@ -136,14 +136,14 @@ export function QuickAddPage() {
   return (
     <div className="mx-auto flex max-w-lg flex-col gap-5 pb-28">
       <div>
-        <h1 className="font-heading text-2xl font-semibold tracking-tight">Add a place</h1>
+        <h1 className="font-heading text-3xl font-extrabold tracking-[-0.025em]">Add a place</h1>
         <p className="text-sm text-muted-foreground">
           Catch it now, judge it later. Everything lands unreviewed.
         </p>
       </div>
 
       {lastSaved && (
-        <Card className="border-emerald-500/40 bg-emerald-500/5">
+        <Card className="border-success/40 bg-success/5">
           <CardContent className="flex flex-wrap items-center gap-3 py-4 text-sm">
             <span className="flex-1">
               Saved <strong>{lastSaved.name}</strong>.
@@ -204,7 +204,7 @@ export function QuickAddPage() {
         )}
 
         {!picked && (search.data?.length ?? 0) > 0 && (
-          <ul className="divide-y overflow-hidden rounded-md border">
+          <ul className="divide-y overflow-hidden rounded-lg border bg-card">
             {search.data!.map((result) => (
               <li key={`${result.lat},${result.lng}`}>
                 <button
@@ -286,7 +286,7 @@ export function QuickAddPage() {
         </Select>
       </div>
 
-      <label className="flex items-center justify-between gap-3 rounded-md border px-4 py-3">
+      <label className="flex items-center justify-between gap-3 rounded-lg border bg-card px-4 py-3">
         <span className="text-sm">
           <span className="font-medium">Already been</span>
           <span className="block text-xs text-muted-foreground">

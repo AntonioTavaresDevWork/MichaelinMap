@@ -63,7 +63,7 @@ export function PlacesPage() {
     <div className="flex flex-col gap-5">
       <div className="flex items-end justify-between gap-4">
         <div>
-          <h1 className="font-heading text-2xl font-semibold tracking-tight">Places</h1>
+          <h1 className="font-heading text-3xl font-extrabold tracking-[-0.025em]">Places</h1>
           <p className="text-sm text-muted-foreground">
             {loading
               ? 'Loading…'
@@ -94,13 +94,13 @@ export function PlacesPage() {
       )}
 
       {!loading && !error && visible.length === 0 && (
-        <p className="rounded-md border border-dashed p-8 text-center text-sm text-muted-foreground">
+        <p className="rounded-md border border-dashed bg-card p-8 text-center text-sm text-muted-foreground">
           Nothing matches that combination.
         </p>
       )}
 
       {!loading && visible.length > 0 && (
-        <ul className="divide-y rounded-md border">
+        <ul className="divide-y overflow-hidden rounded-lg border bg-card">
           {visible.map((place) => (
             <PlaceRow
               key={place.id}
@@ -132,23 +132,23 @@ function PlaceRow({ place, tierLabel, tagCount, suggestedCount }: RowProps) {
     <li>
       <Link
         to={`/admin/place/${place.slug}`}
-        className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/50"
+        className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted"
       >
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <span className="truncate font-medium">{place.name}</span>
             {place.starred && (
-              <StarIcon className="size-4 shrink-0 fill-current text-amber-500" aria-label="Starred" />
+              <StarIcon className="size-4 shrink-0 fill-current text-verdict" aria-label="Starred" />
             )}
             {hasConflict && (
               <AlertTriangleIcon
-                className="size-4 shrink-0 text-amber-600"
+                className="size-4 shrink-0 text-destructive"
                 aria-label="Tier conflict from import"
               />
             )}
             {suggestedCount > 0 && (
               <SparklesIcon
-                className="size-4 shrink-0 text-sky-600"
+                className="size-4 shrink-0 text-info"
                 aria-label={`${suggestedCount} suggested tags awaiting review`}
               />
             )}

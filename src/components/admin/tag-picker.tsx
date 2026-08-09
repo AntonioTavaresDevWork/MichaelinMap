@@ -77,8 +77,8 @@ export function TagPicker({ placeId, tags, assigned }: Props) {
       </div>
 
       {suggestedCount > 0 && (
-        <p className="rounded-md border border-sky-500/30 bg-sky-500/5 px-3 py-2 text-xs text-muted-foreground">
-          <SparklesIcon className="mr-1 inline size-3.5 text-sky-600" />
+        <p className="rounded-md border border-info/30 bg-info/5 px-3 py-2 text-xs text-muted-foreground">
+          <SparklesIcon className="mr-1 inline size-3.5 text-info" />
           Suggested tags came from the import, not from you. Confirm the ones that are right and
           drop the rest — they stay marked until you do.
         </p>
@@ -111,7 +111,7 @@ export function TagPicker({ placeId, tags, assigned }: Props) {
                       'inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs transition-colors',
                       link
                         ? isSuggested
-                          ? 'border-sky-500/50 bg-sky-500/10 text-foreground'
+                          ? 'border-info/50 bg-info/10 text-foreground'
                           : 'border-foreground/20 bg-foreground text-background'
                         : 'border-input text-muted-foreground hover:bg-accent hover:text-foreground',
                       isSuggested && 'rounded-r-none border-r-0',
@@ -130,7 +130,7 @@ export function TagPicker({ placeId, tags, assigned }: Props) {
                       type="button"
                       variant="outline"
                       size="sm"
-                      className="h-[26px] rounded-l-none border-sky-500/50 bg-sky-500/10 px-1.5"
+                      className="h-[26px] rounded-l-none border-info/50 bg-info/10 px-1.5"
                       onClick={() =>
                         confirmSuggestion.mutate({ placeId, tagId: tag.id }, { onError })
                       }

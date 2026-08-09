@@ -30,11 +30,21 @@ export function AdminLayout() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="border-b">
-        <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-6 px-4">
-          <Link to="/admin" className="font-heading font-semibold tracking-tight">
-            Michaelin Map
-            <span className="ml-2 text-xs font-normal text-muted-foreground">admin</span>
+      <header className="sticky top-0 z-40 border-b bg-card/80 backdrop-blur-md">
+        <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-6 px-4">
+          <Link to="/admin" className="flex shrink-0 items-center gap-2.5">
+            <span
+              aria-hidden
+              className="grid size-6 place-items-center rounded-md bg-primary text-[13px] font-extrabold text-primary-foreground"
+            >
+              M
+            </span>
+            <span className="font-heading font-bold tracking-[-0.02em]">
+              Michaelin Map
+              <span className="ml-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                admin
+              </span>
+            </span>
           </Link>
 
           {/* Scrolls instead of wrapping: the header has to survive a phone. */}
@@ -46,10 +56,11 @@ export function AdminLayout() {
                 end={item.end}
                 className={({ isActive }) =>
                   cn(
-                    'rounded-md px-3 py-1.5 text-sm transition-colors',
+                    'rounded-md px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors',
+                    // The active tab is the interface reporting where you are.
                     isActive
-                      ? 'bg-accent text-accent-foreground'
-                      : 'text-muted-foreground hover:text-foreground',
+                      ? 'bg-primary/15 text-brand-ink'
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                   )
                 }
               >

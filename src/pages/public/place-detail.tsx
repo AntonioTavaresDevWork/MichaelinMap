@@ -73,28 +73,39 @@ export function PlaceDetailPage() {
         </Link>
       )}
 
-      <header className="mt-4 flex flex-col gap-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <h1 className="font-heading text-3xl font-semibold tracking-tight">{place.name}</h1>
+      <header className="mt-4 flex flex-col gap-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="font-heading text-4xl font-extrabold tracking-[-0.025em] text-balance">
+            {place.name}
+          </h1>
+          {/* The star is the scarce honour — 22 places out of 511 — so it is the
+              scarcest colour on the page. Nothing but the judgment uses it. */}
           {place.starred && (
-            <StarIcon className="size-6 fill-current text-amber-500" aria-label="Top pick" />
+            <StarIcon className="size-6 shrink-0 fill-current text-verdict" aria-label="Top pick" />
           )}
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          {tierLabel && <Badge>{tierLabel}</Badge>}
-          <Badge variant="outline">{place.place_type.replace('_', ' ')}</Badge>
-          {place.price_band && <Badge variant="outline">{place.price_band}</Badge>}
-          {!place.visited && <Badge variant="outline">On the try list</Badge>}
+          {tierLabel && <Badge variant="tier">{tierLabel}</Badge>}
+          <Badge variant="meta">{place.place_type.replace('_', ' ')}</Badge>
+          {place.price_band && <Badge variant="meta">{place.price_band}</Badge>}
+          {!place.visited && <Badge variant="meta">On the try list</Badge>}
         </div>
       </header>
 
+      {/* The dish is the reason to go, so it gets the page's only coloured
+          surface. The rail and the label are the judgment speaking. */}
       {place.the_dish && (
-        <p className="mt-8 font-heading text-xl leading-snug">Order the {place.the_dish}.</p>
+        <div className="mt-8 rounded-lg border border-verdict/25 border-l-2 border-l-verdict bg-verdict-wash px-5 py-4">
+          <span className="block text-[11px] font-semibold tracking-[0.11em] uppercase text-verdict-ink">
+            The dish
+          </span>
+          <p className="mt-2 text-lg leading-snug">Order the {place.the_dish}.</p>
+        </div>
       )}
 
       {place.curator_note && (
-        <p className="mt-4 max-w-prose leading-relaxed">{place.curator_note}</p>
+        <p className="mt-6 max-w-prose text-[15px] leading-relaxed">{place.curator_note}</p>
       )}
 
       {place.story && (
@@ -116,8 +127,10 @@ export function PlaceDetailPage() {
 
       <Separator className="my-8" />
 
-      <footer className="flex flex-col gap-3 text-sm text-muted-foreground">
-        {place.address && <p>{place.address}</p>}
+      <footer className="flex flex-col gap-4 text-sm text-muted-foreground">
+        {/* Metadata is subordinate to the verdict: mono, smaller, quieter. It
+            never competes with the reason to go. */}
+        {place.address && <p className="font-mono text-xs">{place.address}</p>}
 
         <div className="flex flex-wrap gap-2">
           <DirectionsButton place={place} />
@@ -131,7 +144,7 @@ export function PlaceDetailPage() {
         </div>
 
         {place.last_visited && (
-          <p className="text-xs">Last visited {formatMonthYear(place.last_visited)}.</p>
+          <p className="font-mono text-xs">Last visited {formatMonthYear(place.last_visited)}.</p>
         )}
       </footer>
 

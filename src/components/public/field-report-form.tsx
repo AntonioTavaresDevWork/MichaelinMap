@@ -61,7 +61,7 @@ export function FieldReportQuestion({
 
   if (done) {
     return (
-      <div className="flex items-start gap-2 rounded-lg border border-dashed px-4 py-3 text-sm text-muted-foreground">
+      <div className="flex items-start gap-2 rounded-lg border border-dashed bg-card px-4 py-3 text-sm text-muted-foreground">
         <CheckIcon className="mt-0.5 size-4 shrink-0" />
         <p>
           {done === 'pending' ? (
@@ -80,8 +80,13 @@ export function FieldReportQuestion({
   }
 
   return (
-    <div className="rounded-lg border px-4 py-4">
-      <Label htmlFor={`q-${question.id}`} className="text-sm font-normal leading-snug">
+    <div className="rounded-lg border bg-card px-5 py-4">
+      {/* The prompt is the question itself, not a field label — it keeps the
+          body size and colour the default Label would have taken away. */}
+      <Label
+        htmlFor={`q-${question.id}`}
+        className="text-sm font-normal leading-snug text-foreground"
+      >
         {question.prompt}
       </Label>
 
@@ -248,8 +253,10 @@ export function AnswerInput({
           <p
             className={cn(
               'mt-1 text-xs',
+              // Hitting the limit is a warning, not a verdict — so it uses the
+              // destructive token, never the reserved judgment amber.
               typeof value === 'string' && value.length >= TEXT_ANSWER_MAX
-                ? 'text-amber-600'
+                ? 'text-destructive'
                 : 'text-muted-foreground',
             )}
           >

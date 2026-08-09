@@ -1,4 +1,4 @@
-import { SlidersHorizontalIcon, StarIcon, XIcon } from 'lucide-react'
+import { CheckIcon, SlidersHorizontalIcon, StarIcon, XIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn, formatNumber } from '@/lib/utils'
@@ -32,7 +32,7 @@ export function GuideFilterPanel({
   if (!groups.length) return null
 
   return (
-    <div className="rounded-lg border">
+    <div className="overflow-hidden rounded-lg border bg-card">
       <div className="flex items-center gap-3 px-4 py-3">
         <button
           type="button"
@@ -51,7 +51,8 @@ export function GuideFilterPanel({
         </button>
 
         <span className="text-sm text-muted-foreground">
-          {formatNumber(resultCount)} {resultCount === 1 ? 'place' : 'places'}
+          <span className="font-mono">{formatNumber(resultCount)}</span>{' '}
+          {resultCount === 1 ? 'place' : 'places'}
         </span>
 
         {active > 0 && (
@@ -69,7 +70,7 @@ export function GuideFilterPanel({
         <div className="flex flex-col gap-5">
           {groups.map((group) => (
             <fieldset key={group.key}>
-              <legend className="mb-2 font-heading text-xs uppercase tracking-wide text-muted-foreground">
+              <legend className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.11em] text-muted-foreground">
                 {group.title}
               </legend>
 
@@ -84,29 +85,40 @@ export function GuideFilterPanel({
                     onClick={() => onToggle(group.key, option.value)}
                     className={cn(
                       'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors',
-                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                      // Selected state carries on three channels, not one.
+                      //
+                      // A lime wash alone was 1.07:1 against the panel and the
+                      // label swap was 1.02:1 — a pure hue change at equal
+                      // luminance, which disappears completely under
+                      // deuteranopia. Colour may reinforce the state; it may not
+                      // be the state. Hence the filled ground, the full-strength
+                      // border and the check glyph.
                       option.selected
-                        ? 'border-foreground bg-foreground text-background'
-                        : 'hover:bg-accent',
+                        ? 'border-brand-ink bg-brand-ink font-medium text-background'
+                        : 'hover:bg-muted',
                       // Disabled, never hidden (RN-17): a greyed-out option
                       // teaches the shape of the guide. Removing it would make
                       // the panel silently change size as you click.
                       option.disabled && 'cursor-not-allowed opacity-40 hover:bg-transparent',
                     )}
                   >
-                    {group.key === 'star' && (
-                      <StarIcon
-                        className={cn(
-                          'size-3.5',
-                          option.selected ? 'fill-current' : 'fill-amber-500 text-amber-500',
-                        )}
-                      />
+                    {option.selected ? (
+                      <CheckIcon className="size-3.5 shrink-0" />
+                    ) : (
+                      group.key === 'star' && (
+                        // The star depicts the judgment, so it keeps the verdict
+                        // colour — but only while it is not the state indicator.
+                        <StarIcon className="size-3.5 shrink-0 fill-verdict text-verdict" />
+                      )
                     )}
                     {option.label}
                     <span
                       className={cn(
-                        'text-xs tabular-nums',
-                        option.selected ? 'text-background/70' : 'text-muted-foreground',
+                        'font-mono text-[11px]',
+                        // 70% of the ink failed AA at 11px (3.35:1). The count is
+                        // the only part of the chip that is purely a figure.
+                        option.selected ? 'text-background/80' : 'text-muted-foreground',
                       )}
                     >
                       {formatNumber(option.count)}

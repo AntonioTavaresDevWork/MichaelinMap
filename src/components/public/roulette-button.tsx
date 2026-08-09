@@ -49,18 +49,23 @@ export function RouletteButton({ places, tierLabel, onLocate }: Props) {
                 <DialogTitle className="flex flex-wrap items-center gap-2 text-xl">
                   {landed.name}
                   {landed.starred && (
-                    <StarIcon className="size-5 fill-current text-amber-500" aria-label="Top pick" />
+                    <StarIcon className="size-5 fill-current text-verdict" aria-label="Top pick" />
                   )}
                 </DialogTitle>
               </DialogHeader>
 
               <div className="flex flex-wrap items-center gap-2">
-                {tier && <Badge variant="secondary">{tier}</Badge>}
-                <Badge variant="outline">{landed.place_type.replace('_', ' ')}</Badge>
-                {landed.area && <Badge variant="outline">{landed.area}</Badge>}
+                {tier && <Badge variant="tier">{tier}</Badge>}
+                <Badge variant="meta">{landed.place_type.replace('_', ' ')}</Badge>
+                {landed.area && <Badge variant="meta">{landed.area}</Badge>}
               </div>
 
-              {landed.the_dish && <p className="font-heading text-base">Order the {landed.the_dish}.</p>}
+              {landed.the_dish && (
+                <p className="text-base">
+                  Order the{' '}
+                  <span className="font-medium text-verdict-ink">{landed.the_dish}</span>.
+                </p>
+              )}
 
               {!landed.the_dish && landed.curator_note && (
                 <p className="text-sm text-muted-foreground">{landed.curator_note}</p>

@@ -94,7 +94,7 @@ export function OverviewPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-heading text-2xl font-semibold tracking-tight">Overview</h1>
+        <h1 className="font-heading text-3xl font-extrabold tracking-[-0.025em]">Overview</h1>
         <p className="text-sm text-muted-foreground">
           {formatNumber(stats.published.length)} of {formatNumber(stats.total)} places are public.
         </p>
@@ -110,7 +110,7 @@ export function OverviewPage() {
         </CardHeader>
         <CardContent>
           <div className="flex items-baseline gap-2">
-            <span className="font-heading text-3xl font-semibold">{stats.launchPublished}</span>
+            <span className="font-mono text-3xl font-bold tracking-[-0.02em]">{stats.launchPublished}</span>
             <span className="text-muted-foreground">of {stats.launch.length} published</span>
           </div>
           <Bar value={stats.launchPublished} total={stats.launch.length} className="mt-3" />
@@ -144,7 +144,7 @@ export function OverviewPage() {
 
             <div className="mt-2 flex items-center gap-3 border-t pt-3 text-sm">
               <span className="flex w-28 shrink-0 items-center gap-1">
-                <StarIcon className="size-3.5 fill-current text-amber-500" />
+                <StarIcon className="size-3.5 fill-current text-verdict" />
                 Starred
               </span>
               <Bar value={stats.starred} total={stats.total} className="flex-1" />
@@ -156,7 +156,7 @@ export function OverviewPage() {
             <p
               className={cn(
                 'text-xs',
-                stats.starRatio > STAR_TARGET ? 'text-amber-600' : 'text-muted-foreground',
+                stats.starRatio > STAR_TARGET ? 'text-destructive' : 'text-muted-foreground',
               )}
             >
               {stats.published.length === 0
@@ -200,14 +200,14 @@ export function OverviewPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <QueueCard
-          icon={<AlertTriangleIcon className="size-4 text-amber-600" />}
+          icon={<AlertTriangleIcon className="size-4 text-destructive" />}
           title="Tier conflicts"
           count={stats.conflicts}
           to="/admin?flag=conflict"
           description="Carried a tier while marked not visited. The tier was dropped on import."
         />
         <QueueCard
-          icon={<SparklesIcon className="size-4 text-sky-600" />}
+          icon={<SparklesIcon className="size-4 text-info" />}
           title="Suggested tags"
           count={stats.pendingSuggestions}
           to="/admin?flag=suggested"
@@ -221,7 +221,7 @@ export function OverviewPage() {
           description="Cannot be published: “unclassified” is not a facet anyone can filter by."
         />
         <QueueCard
-          icon={<MessageSquareIcon className="size-4 text-emerald-600" />}
+          icon={<MessageSquareIcon className="size-4 text-success" />}
           title="Field reports"
           count={pendingReports}
           to="/admin/reports"
@@ -307,7 +307,7 @@ function QueueCard({
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
-        <span className="font-heading text-3xl font-semibold">{count}</span>
+        <span className="font-mono text-3xl font-bold tracking-[-0.02em]">{count}</span>
         <p className="text-xs text-muted-foreground">{description}</p>
         {count > 0 && (
           <Link to={to} className="text-sm underline underline-offset-4 hover:no-underline">

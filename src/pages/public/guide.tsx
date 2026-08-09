@@ -1,6 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { ArrowLeftIcon, MapPinIcon, StarIcon } from 'lucide-react'
+import { ArrowLeftIcon, MapPinIcon, SlidersHorizontalIcon, StarIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -216,11 +216,14 @@ export function GuidePage() {
         All cities
       </Link>
 
-      <h1 className="mt-4 font-heading text-3xl font-semibold tracking-tight">{cityName}</h1>
+      <h1 className="mt-4 font-heading text-4xl font-extrabold tracking-[-0.025em] text-balance">
+        {cityName}
+      </h1>
 
-      <div className="mt-2 flex flex-wrap items-center gap-3">
+      <div className="mt-3 flex flex-wrap items-center gap-4">
         <p className="text-sm text-muted-foreground">
-          {formatNumber(inCity.length)} {inCity.length === 1 ? 'place' : 'places'}
+          <span className="font-mono">{formatNumber(inCity.length)}</span>{' '}
+          {inCity.length === 1 ? 'place' : 'places'}
         </p>
 
         {/* Spins over `visible`, so it can only ever hand back something the
@@ -252,10 +255,10 @@ export function GuidePage() {
 
           {sections.map((section) => (
             <section key={section.title} className="mb-8">
-              <h2 className="font-heading text-sm uppercase tracking-wide text-muted-foreground">
+              <h2 className="text-[11px] font-semibold uppercase tracking-[0.11em] text-muted-foreground">
                 {section.title}
               </h2>
-              <ul className="mt-3 divide-y rounded-lg border">
+              <ul className="mt-3 divide-y overflow-hidden rounded-lg border">
                 {section.places.map((place) => (
                   <PlaceLine
                     key={place.id}
@@ -277,7 +280,9 @@ export function GuidePage() {
 
         {/* Sticky beside the list on a desktop, a fixed band above it on a phone. */}
         <div className="order-1 lg:order-2">
-          <div className="h-[45vh] overflow-hidden rounded-lg border lg:sticky lg:top-6 lg:h-[calc(100vh-8rem)]">
+          {/* top-20 clears the sticky header (h-16) with the grid's 16px gap.
+              Only the frame changed here — the map's own behaviour is untouched. */}
+          <div className="h-[45vh] overflow-hidden rounded-lg border bg-card lg:sticky lg:top-20 lg:h-[calc(100vh-9rem)]">
             <Suspense fallback={<Skeleton className="size-full rounded-none" />}>
               <GuideMap
                 places={visible}
@@ -306,8 +311,9 @@ export function GuidePage() {
 function NothingMatches({ filtered, onClear }: { filtered: boolean; onClear: () => void }) {
   if (!filtered) {
     return (
-      <div className="rounded-lg border border-dashed px-6 py-12 text-center">
-        <p className="font-heading text-lg">Nothing here yet.</p>
+      <div className="flex flex-col items-center rounded-lg border border-dashed bg-card px-6 py-12 text-center">
+        <MapPinIcon className="size-8 text-muted-foreground" strokeWidth={1.5} />
+        <p className="mt-4 text-base font-semibold">Nothing here yet.</p>
         <p className="mt-2 text-sm text-muted-foreground">
           This city is on the map but not yet written up.
         </p>
@@ -316,13 +322,14 @@ function NothingMatches({ filtered, onClear }: { filtered: boolean; onClear: () 
   }
 
   return (
-    <div className="rounded-lg border border-dashed px-6 py-12 text-center">
-      <p className="font-heading text-lg">Nothing is all of those things.</p>
-      <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
+    <div className="flex flex-col items-center rounded-lg border border-dashed bg-card px-6 py-12 text-center">
+      <SlidersHorizontalIcon className="size-8 text-muted-foreground" strokeWidth={1.5} />
+      <p className="mt-4 text-base font-semibold">Nothing is all of those things.</p>
+      <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
         Michael has opinions, not miracles. Every filter you add is one more thing that has to be
         true at the same time — let go of one and the guide comes back.
       </p>
-      <Button variant="outline" size="sm" className="mt-5" onClick={onClear}>
+      <Button variant="outline" size="sm" className="mt-6" onClick={onClear}>
         Clear filters
       </Button>
     </div>
@@ -343,27 +350,40 @@ function PlaceLine({ place, tierLabel, selected, picked, onLocate, registerRef }
   return (
     <li
       ref={registerRef}
-      className={cn('flex items-stretch transition-colors', selected && 'bg-accent')}
+      className={cn(
+        'flex items-stretch border-l-2 border-l-transparent bg-card transition-colors',
+        // The selected rail is lime: being selected is the interface's doing,
+        // not a verdict about the place.
+        selected && 'border-l-primary bg-muted',
+      )}
     >
-      <Link to={`/place/${place.slug}`} className="flex flex-1 flex-col gap-1 px-5 py-4 hover:bg-accent/50">
+      <Link
+        to={`/place/${place.slug}`}
+        className="flex min-w-0 flex-1 flex-col gap-1.5 px-5 py-4 transition-colors hover:bg-muted"
+      >
         <div className="flex flex-wrap items-center gap-2">
-          <span className="font-heading text-lg">{place.name}</span>
+          <span className="text-base font-semibold tracking-[-0.01em]">{place.name}</span>
           {place.starred && (
-            <StarIcon className="size-4 shrink-0 fill-current text-amber-500" aria-label="Top pick" />
+            <StarIcon className="size-4 shrink-0 fill-current text-verdict" aria-label="Top pick" />
           )}
-          {tierLabel && <Badge variant="secondary" className="shrink-0">{tierLabel}</Badge>}
-          {picked && <Badge className="shrink-0">Picked for you</Badge>}
+          {tierLabel && <Badge variant="tier" className="shrink-0">{tierLabel}</Badge>}
+          {picked && <Badge variant="picked" className="shrink-0">Picked for you</Badge>}
         </div>
 
         {/* The dish leads when it exists — it is the reason to go, and the
-            address is never the headline. */}
-        {place.the_dish && <p className="text-sm">Order the {place.the_dish}.</p>}
+            address is never the headline. The dish itself carries the judgment
+            colour; the sentence around it does not. */}
+        {place.the_dish && (
+          <p className="text-sm">
+            Order the <span className="font-medium text-verdict-ink">{place.the_dish}</span>.
+          </p>
+        )}
 
         {!place.the_dish && place.curator_note && (
           <p className="line-clamp-2 text-sm text-muted-foreground">{place.curator_note}</p>
         )}
 
-        <p className="text-xs text-muted-foreground">
+        <p className="font-mono text-[11px] text-muted-foreground">
           {[place.area, place.place_type.replace('_', ' '), place.price_band]
             .filter(Boolean)
             .join(' · ')}
@@ -373,7 +393,7 @@ function PlaceLine({ place, tierLabel, selected, picked, onLocate, registerRef }
       <button
         type="button"
         onClick={onLocate}
-        className="shrink-0 px-4 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+        className="shrink-0 border-l px-4 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         aria-label={`Show ${place.name} on the map`}
         aria-pressed={selected}
       >

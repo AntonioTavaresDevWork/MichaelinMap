@@ -55,14 +55,16 @@ export function FieldReportPanel({ place }: { place: Place }) {
     <section className="mt-4">
       <Separator className="my-8" />
 
-      <h2 className="font-heading text-lg font-semibold tracking-tight">Field reports</h2>
-      <p className="mt-1 max-w-prose text-sm text-muted-foreground">
+      <h2 className="text-[11px] font-semibold uppercase tracking-[0.11em] text-muted-foreground">
+        Field reports
+      </h2>
+      <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground">
         Measurements taken by people who were here. None of them say whether the place is any good —
         that is Michael&rsquo;s job, and he has already done it above.
       </p>
 
       {published.length > 0 && (
-        <div className="mt-6 divide-y rounded-lg border">
+        <div className="mt-6 divide-y overflow-hidden rounded-lg border bg-card">
           {published.map((row) => (
             <AggregateRow key={row.question_id} row={row} />
           ))}

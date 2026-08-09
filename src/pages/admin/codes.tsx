@@ -53,7 +53,7 @@ export function CodesPage() {
     <div>
       <div className="flex items-center gap-4">
         <div className="flex-1">
-          <h1 className="font-heading text-2xl font-semibold tracking-tight">Codes</h1>
+          <h1 className="font-heading text-3xl font-extrabold tracking-[-0.025em]">Codes</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             A code restyles the guide, pre-picks a filter and highlights places. It never hides
             anything from anyone without it.
@@ -75,15 +75,15 @@ export function CodesPage() {
       )}
 
       {codes.data?.length === 0 && (
-        <div className="mt-8 rounded-lg border border-dashed px-6 py-12 text-center">
-          <p className="font-heading text-lg">No codes yet.</p>
+        <div className="mt-8 rounded-lg border border-dashed bg-card px-6 py-12 text-center">
+          <p className="text-base font-semibold">No codes yet.</p>
           <p className="mt-2 text-sm text-muted-foreground">
             Make one the next time you show someone the guide.
           </p>
         </div>
       )}
 
-      <ul className="mt-8 divide-y rounded-lg border">
+      <ul className="mt-8 divide-y overflow-hidden rounded-lg border bg-card">
         {(codes.data ?? []).map((code) => (
           <li key={code.id}>
             <button
@@ -92,7 +92,7 @@ export function CodesPage() {
               className="flex w-full flex-col gap-1 px-5 py-4 text-left transition-colors hover:bg-accent/50"
             >
               <div className="flex flex-wrap items-center gap-2">
-                <span className="font-heading text-lg tracking-[0.15em]">{code.code}</span>
+                <span className="font-mono text-lg font-semibold tracking-[0.15em]">{code.code}</span>
                 {!code.active && <Badge variant="outline">Off</Badge>}
                 {code.theme?.primary && (
                   <span
@@ -350,7 +350,7 @@ function CodeEditor({ code, onClose }: { code: Code | null; onClose: () => void 
                   value={form.code}
                   maxLength={24}
                   onChange={(event) => set('code', event.target.value.toUpperCase())}
-                  className="font-heading tracking-[0.15em] uppercase"
+                  className="font-mono tracking-[0.15em] uppercase"
                 />
               </div>
 
@@ -381,7 +381,7 @@ function CodeEditor({ code, onClose }: { code: Code | null; onClose: () => void 
           </section>
 
           <section className="flex flex-col gap-3 border-t pt-5">
-            <h2 className="font-heading text-sm uppercase tracking-wide text-muted-foreground">
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.11em] text-muted-foreground">
               Look
             </h2>
 
@@ -459,7 +459,7 @@ function CodeEditor({ code, onClose }: { code: Code | null; onClose: () => void 
           </section>
 
           <section className="flex flex-col gap-3 border-t pt-5">
-            <h2 className="font-heading text-sm uppercase tracking-wide text-muted-foreground">
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.11em] text-muted-foreground">
               Filter it starts on
             </h2>
 
@@ -482,7 +482,7 @@ function CodeEditor({ code, onClose }: { code: Code | null; onClose: () => void 
           </section>
 
           <section className="flex flex-col gap-3 border-t pt-5">
-            <h2 className="font-heading text-sm uppercase tracking-wide text-muted-foreground">
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.11em] text-muted-foreground">
               Highlights
             </h2>
 
@@ -511,7 +511,7 @@ function CodeEditor({ code, onClose }: { code: Code | null; onClose: () => void 
                       type="button"
                       onClick={() => toggleHighlight(place.id)}
                       className={cn(
-                        'flex w-full items-center gap-2 rounded-md border px-3 py-2 text-left text-sm transition-colors',
+                        'flex w-full items-center gap-2 rounded-md border bg-card px-3 py-2 text-left text-sm transition-colors',
                         picked ? 'border-foreground bg-accent' : 'hover:bg-accent/50',
                       )}
                     >
@@ -526,7 +526,7 @@ function CodeEditor({ code, onClose }: { code: Code | null; onClose: () => void 
           </section>
 
           <section className="flex flex-col gap-3 border-t pt-5">
-            <h2 className="font-heading text-sm uppercase tracking-wide text-muted-foreground">
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.11em] text-muted-foreground">
               When it works
             </h2>
 

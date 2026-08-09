@@ -259,7 +259,7 @@ export function PlaceEditorPage() {
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        <h1 className="font-heading text-2xl font-semibold tracking-tight">{place.data.name}</h1>
+        <h1 className="font-heading text-3xl font-extrabold tracking-[-0.025em]">{place.data.name}</h1>
         <Badge variant={place.data.status === 'published' ? 'default' : 'secondary'}>
           {place.data.status}
         </Badge>
@@ -274,8 +274,8 @@ export function PlaceEditorPage() {
       </div>
 
       {hasConflict && (
-        <p className="rounded-md border border-amber-500/40 bg-amber-500/5 px-3 py-2 text-sm">
-          <AlertTriangleIcon className="mr-1.5 inline size-4 text-amber-600" />
+        <p className="rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-sm">
+          <AlertTriangleIcon className="mr-1.5 inline size-4 text-destructive" />
           The import found this place carrying a tier while marked “not visited”. The tier was
           dropped. Confirm you have been here, or accept that the tier was aspirational.
         </p>
@@ -326,7 +326,7 @@ export function PlaceEditorPage() {
         </CardContent>
       </Card>
 
-      <Card className="border-amber-500/30">
+      <Card className="border-verdict/40">
         <CardHeader>
           <CardTitle>Judgment</CardTitle>
           <CardDescription>

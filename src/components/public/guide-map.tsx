@@ -51,7 +51,7 @@ function markerElement(
   if (custom) {
     el.style.backgroundColor = custom
   } else if (place.starred) {
-    el.classList.add('bg-amber-500')
+    el.classList.add('bg-verdict')
   } else if (place.tier === 'destination' || place.tier === 'experience') {
     el.classList.add('bg-foreground')
   } else {
@@ -61,6 +61,13 @@ function markerElement(
   if (highlighted) {
     // A ring rather than a different colour, so a highlighted place still shows
     // its tier — the code adds emphasis without overwriting the verdict.
+    // Deliberately a fixed colour, not the code's `--primary`.
+    //
+    // Deriving it from the theme looked tidier and was wrong twice: a curator
+    // who sets the accent and the pin to the same hex — the natural thing to do
+    // — got a pin ringed in its own colour, silently erasing the one emphasis
+    // RN-21 allows a code. And reading it back through `getComputedStyle` inside
+    // the marker loop forced a style recalc per pin on every tap.
     el.style.boxShadow = `0 0 0 3px ${pinStyle?.highlightColor ?? 'rgb(245 158 11 / 0.55)'}`
   }
 

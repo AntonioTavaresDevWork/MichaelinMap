@@ -5,9 +5,43 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/**
+ * Design tokens — Michaelin Map
+ *
+ * Derived from docs/design_system (Feedback), with two deliberate departures
+ * recorded in the michaelinmap-design-system skill: the UI stays en-US (ADR-02),
+ * and this product reserves a second colour the design system does not have.
+ *
+ * The two-colour rule, which everything below serves:
+ *   --primary / --brand-ink  the interface speaking (actions, focus, filters,
+ *                            anything a code or a filter produced)
+ *   --verdict / --verdict-ink  the judgment speaking (star, dish, curator's
+ *                            verdict). Reserved. Nothing else may use it.
+ *
+ * Ground is paper; `.dark` is the ink stack. That is not a light/dark pair a
+ * visitor can toggle — `.dark` is the surface a Code paints on (BL-23, and see
+ * code-effects.ts, which owns the class).
+ */
+
 @theme inline {
     --font-heading: var(--font-sans);
+    /* One family, hierarchy by weight and size — the design system's "família
+       única". The alias stays so existing markup keeps working. */
     --font-sans: 'Geist Variable', sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+    /* The judgment layer's colour, exposed to Tailwind so a screen can write
+       `text-verdict-ink` instead of an arbitrary hex. */
+    --color-verdict: var(--verdict);
+    --color-verdict-ink: var(--verdict-ink);
+    --color-verdict-wash: var(--verdict-wash);
+    --color-brand-ink: var(--brand-ink);
+
+    /* Admin queue states. Not a third accent — these never appear on the public
+       side, and they exist so the admin stops reaching into raw Tailwind. */
+    --color-success: var(--success);
+    --color-info: var(--info);
+
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,73 +82,136 @@
     --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/**
+ * Paper — the product's ground.
+ *
+ * A warm neutral biased toward the olive end of the accent, so the beige reads
+ * as chosen rather than as an off-white default. Depth comes from lightness and
+ * a hairline: the page recedes, the card lifts. Shadow is reserved for surfaces
+ * that genuinely float.
+ */
 :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+    --background: #F2EFE6;
+    --foreground: #1C1A15;
+    --card: #FBF9F4;
+    --card-foreground: #1C1A15;
+    --popover: #FBF9F4;
+    --popover-foreground: #1C1A15;
+
+    /* Brand lime as a FILL with ink on top. As type it fails contrast on paper,
+       which is what --brand-ink is for. */
+    --primary: #ACDE40;
+    --primary-foreground: #12160C;
+
+    --secondary: #EAE5D8;
+    --secondary-foreground: #1C1A15;
+    --muted: #E4DED0;
+    --muted-foreground: #5A5449;
+
+    /* shadcn's `accent` is the subtle hover ground, not the brand accent.
+       Painting it lime would turn every hover green. */
+    --accent: #E4DED0;
+    --accent-foreground: #1C1A15;
+
+    --destructive: #B3261E;
+    --border: #DCD5C3;
+    /* Deliberately darker than --border. A hairline between two rows is
+       decoration and may be faint; the boundary of a form control is
+       information, and WCAG 1.4.11 wants 3:1 for it. At --border's value an
+       input sitting on the page (quick-add, which uses no Card) was 1.27:1. */
+    --input: #847D6C;
+    --ring: #425E12;
+
+    /* The deep end of the same lime ramp — 6.4:1 on paper. Links, active facet
+       labels, anything the interface says in type rather than in fill. Not
+       code-managed: a code owns fills, not the whole type palette. */
+    --brand-ink: #425E12;
+
+    /* The judgment. Saturated as a shape, ochre as type (5.0:1 on paper). */
+    --verdict: #AD7D08;
+    --verdict-ink: #8A5E00;
+    --verdict-wash: rgb(232 164 0 / 0.14);
+
+    /* Admin-only. Note there is no `warning` amber: that hue belongs to the
+       judgment, and a conflict badge sitting next to a star would be the exact
+       collision the two-colour rule exists to prevent. A tier conflict is a data
+       problem, so it is `destructive`. */
+    --success: #2E7D32;
+    --info: #1E5FA8;
+
+    --radius: 0.75rem;
+
+    --chart-1: #ACDE40;
+    --chart-2: #1E5FA8;
+    --chart-3: #E8A400;
+    --chart-4: #B3261E;
+    --chart-5: #5A5449;
+
+    --sidebar: #FBF9F4;
+    --sidebar-foreground: #1C1A15;
+    --sidebar-primary: #ACDE40;
+    --sidebar-primary-foreground: #12160C;
+    --sidebar-accent: #EAE5D8;
+    --sidebar-accent-foreground: #1C1A15;
+    --sidebar-border: #DCD5C3;
+    --sidebar-ring: #425E12;
 }
 
+/**
+ * Ink — the surface a Code paints on.
+ *
+ * Not a visitor-facing theme: `code-effects.ts` adds this class when a redeemed
+ * code carries a dark background, and removes it on the way out. Before this it
+ * was the stock shadcn grey, so a dark code dropped out of the design system
+ * entirely. On ink the accents move back to the bright end of their ramps.
+ */
 .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
+    --background: #0F141B;
+    --foreground: #F4F6F8;
+    --card: #1A222B;
+    --card-foreground: #F4F6F8;
+    --popover: #1A222B;
+    --popover-foreground: #F4F6F8;
+
+    --primary: #ACDE40;
+    --primary-foreground: #12160C;
+
+    --secondary: #222B36;
+    --secondary-foreground: #F4F6F8;
+    --muted: #2B3644;
+    --muted-foreground: #A5AEBC;
+
+    --accent: #2B3644;
+    --accent-foreground: #F4F6F8;
+
+    --destructive: #F2666B;
+    --border: #29323B;
+    --input: #29323B;
+    --ring: #ACDE40;
+
+    --brand-ink: #ACDE40;
+
+    --verdict: #F5C518;
+    --verdict-ink: #F5C518;
+    --verdict-wash: rgb(245 197 24 / 0.12);
+
+    --success: #34C759;
+    --info: #4C9AFF;
+
+    --chart-1: #ACDE40;
+    --chart-2: #4C9AFF;
+    --chart-3: #F5A524;
+    --chart-4: #E5484D;
+    --chart-5: #A5AEBC;
+
+    --sidebar: #1A222B;
+    --sidebar-foreground: #F4F6F8;
+    --sidebar-primary: #ACDE40;
+    --sidebar-primary-foreground: #12160C;
+    --sidebar-accent: #222B36;
+    --sidebar-accent-foreground: #F4F6F8;
+    --sidebar-border: #29323B;
+    --sidebar-ring: #ACDE40;
 }
 
 @layer base {
@@ -123,8 +220,14 @@
     }
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
     }
   html {
     @apply font-sans;
+    }
+  /* Counts, prices and aggregates line up in columns wherever they appear. */
+  .font-mono {
+    font-variant-numeric: tabular-nums;
     }
 }

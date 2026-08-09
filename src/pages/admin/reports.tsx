@@ -49,7 +49,7 @@ export function ReportsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-heading text-2xl font-semibold tracking-tight">Field reports</h1>
+        <h1 className="font-heading text-3xl font-extrabold tracking-[-0.025em]">Field reports</h1>
         <p className="text-sm text-muted-foreground">
           Free text waits for you. Everything else went live on arrival.
         </p>
@@ -109,10 +109,10 @@ function ReviewQueue({ pending }: { pending: QueuedReport[] }) {
         const isDish = report.questions?.prompt === DISH_PROMPT
 
         return (
-          <Card key={report.id} className={isDish ? 'border-amber-500/60' : undefined}>
+          <Card key={report.id} className={isDish ? 'border-verdict/50' : undefined}>
             <CardHeader className="pb-3">
               <CardTitle className="flex flex-wrap items-center gap-2 text-base">
-                {isDish && <UtensilsIcon className="size-4 text-amber-600" />}
+                {isDish && <UtensilsIcon className="size-4 text-verdict-ink" />}
                 {report.places?.slug ? (
                   <Link to={`/admin/place/${report.places.slug}`} className="hover:underline">
                     {report.places.name}
@@ -121,7 +121,7 @@ function ReviewQueue({ pending }: { pending: QueuedReport[] }) {
                   (report.places?.name ?? 'Unknown place')
                 )}
                 {isDish && (
-                  <Badge variant="outline" className="border-amber-500/60 text-amber-700">
+                  <Badge variant="outline" className="border-verdict/50 text-verdict-ink">
                     Feeds your call
                   </Badge>
                 )}
@@ -132,7 +132,7 @@ function ReviewQueue({ pending }: { pending: QueuedReport[] }) {
             </CardHeader>
 
             <CardContent className="flex flex-wrap items-center justify-between gap-4">
-              <p className="font-heading text-lg">
+              <p className="text-base font-semibold">
                 &ldquo;{formatAnswer(report.answer?.value)}&rdquo;
                 {report.judgment && (
                   <span className="ml-2 text-sm font-normal text-muted-foreground">
@@ -239,7 +239,7 @@ function SeedPanel({ reports }: { reports: QueuedReport[] }) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <SproutIcon className="size-4 text-emerald-600" />
+          <SproutIcon className="size-4 text-success" />
           Seed a place
         </CardTitle>
         <CardDescription>
@@ -274,7 +274,7 @@ function SeedPanel({ reports }: { reports: QueuedReport[] }) {
           <>
             <div className="flex flex-col gap-3">
               {open.map((question) => (
-                <div key={question.id} className="rounded-lg border px-4 py-3">
+                <div key={question.id} className="rounded-lg border bg-card px-4 py-3">
                   <p className="text-sm leading-snug">{question.prompt}</p>
                   <div className="mt-2">
                     <AnswerInput
@@ -298,7 +298,7 @@ function SeedPanel({ reports }: { reports: QueuedReport[] }) {
                       }
                       placeholder={question.judgment_prompt}
                       maxLength={40}
-                      className="mt-2 w-full rounded-md border bg-transparent px-3 py-1.5 text-sm"
+                      className="mt-2 w-full rounded-md border bg-secondary px-3 py-1.5 text-sm"
                     />
                   )}
                 </div>
