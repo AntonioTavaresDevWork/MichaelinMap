@@ -13,9 +13,20 @@ monetized, and it is not indexed by search engines. It exists so that one person
 > `place_tags` are the whole point of the product. No automated routine writes to those fields
 > without explicit authorization from the owner. In any trade-off, the judgment wins.
 
+## Live
+
+**https://michaelin-map.vercel.app/**
+
+Deployed on Vercel from `main`, built from the two `VITE_` variables set in the project's
+environment. **Deliberately unlisted** — `robots.txt` and a `noindex` meta tag both say so (ADR-07).
+Michael hands the link to people; search engines do not.
+
+The SPA rewrite in `vercel.json` is what makes a shared deep link work. Without it,
+`/city/austin` returns 404, which is exactly the shape of a link someone was sent.
+
 ## Status
 
-All seven MVP features are complete: foundation, schema and data import, admin, public guide,
+Live since S14. All seven MVP features are complete: foundation, schema and data import, admin, public guide,
 faceted filters, Codes with Roulette, and field reports. The database holds 511 places, of which
 58 are published.
 

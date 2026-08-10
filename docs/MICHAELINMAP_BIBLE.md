@@ -82,7 +82,7 @@ GitHub:        AntonioTavaresDevWork/MichaelinMap (private) — Edu's account
 Local folder:  C:\Users\tomme\OneDrive\Documents\Projects\Michaelin Map
 Supabase ID:   woapimgpmlgqqvauckdy
 Supabase URL:  https://woapimgpmlgqqvauckdy.supabase.co
-Deploy:        Vercel — to be configured after F-03
+Deploy:        Vercel — LIVE since S14 at https://michaelin-map.vercel.app/
 Indexing:      noindex (unlisted) — see ADR-07
 ```
 

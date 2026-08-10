@@ -8,12 +8,13 @@
 ## 🗓️ Last update
 
 **Date:** 2026-08-09
-**Session:** S14 — as duas migrations aplicadas, e a curadoria andando ao vivo do outro lado
-**Version:** `0.1.0` — unchanged. The session produced no product code, schema or feature; docs and research artifacts only
+**Session:** S14 — o guia foi ao ar
+**Version:** `1.0.0` — **bumped because the product went live.** `CLAUDE.md` had said since S02 that
+the version moves only when that happens. It happened in S14.
+**Live at:** **https://michaelin-map.vercel.app/** — Vercel, deployed from `main`, unlisted by
+`robots.txt` and a `noindex` meta tag (ADR-07)
 **Updated by:** Claude Code (orchestrator)
-**Last commit:** S12 closed at `fea79fb` and was pushed. S13's hash goes here on the next boot.
-**Version unchanged at `0.1.0`:** no product code, no schema applied — the vocabulary migration is
-written and waiting for a session with MCP.
+**Last commit:** S14 closed on top of `e7868d5`; this session's own hash goes here on the next boot.
 
 ---
 
@@ -334,6 +335,24 @@ thing anyone could do to the guide, because those are the ones a visitor can rea
 - [x] **Gate:** `npm run build` e `npm run lint` limpos. Nenhum arquivo em `src/` tocado
 - [ ] ⚠️ **O MCP do Supabase não carregou** — banco intocado, nenhuma migration escrita ou aplicada
 
+### Session 14 (fecho) — O guia foi ao ar ✅
+
+- [x] **Deploy na Vercel, e o guia está público: https://michaelin-map.vercel.app/** — `OP-04`
+      fechada. Edu criou a conta, integrou o GitHub e configurou as duas variáveis `VITE_`
+- [x] **Verificado de fora, e a checagem que importava passou:** `/city/austin` devolve o shell do
+      app e **não 404**, ou seja o rewrite de SPA do `vercel.json` está funcionando. Sem ele todo
+      link compartilhado quebraria, que é justamente o formato de um link compartilhado
+- [x] **`robots.txt` serve `Disallow: /` em produção** — a ADR-07 valendo no ar, não só no repositório
+- [x] **Versão `0.1.0` → `1.0.0`** — o `CLAUDE.md` dizia desde o S02 que a versão só se moveria
+      quando o produto fosse ao ar
+- [x] **A URL foi registrada no README e na bíblia §3.** Um projeto no ar cuja documentação não diz
+      onde ele está é uma lacuna de handover, e era a única que restava
+- [x] **`OP-01` subiu de prioridade:** o signup continua aberto no Supabase e agora o site é público
+- [ ] ⚠️ **Não consegui verificar se os dados renderizam** — é SPA e o fetch não executa JS. Edu
+      abrindo e vendo as 5 cidades é a confirmação que falta
+
+---
+
 ### Session 14 (fecho) — O backup do banco ✅
 
 - [x] **Backup lógico das 8 tabelas gravado e verificado** — `C:/Users/tomme/Backups/MichaelinMap/20260809-2055/`,
@@ -444,92 +463,29 @@ Nothing running.
 
 ## ⏭️ Next action
 
-**Nothing is blocked. Both migrations are applied and the database now holds the research.**
+**The guide is live at https://michaelin-map.vercel.app/ and is waiting on Michael.** Edu submitted
+it for his approval at the close of S14; the final adjustments come back from him.
 
-The critical path is human again, and for the first time it is moving: **the curator confirmed 131
-tags during S14** (5 → 136) while the migrations were being applied. The public guide went from one
-cuisine option to **ten**, and from 5 published places with a visible cuisine to **39 of 58**.
+**Three things are already known to be waiting for that conversation:**
 
-**What is worth doing next, in order of value:**
+1. **Three published restaurants are closed and still clickable** (`BL-44`) — `Gina's on Congress`
+   (which was also starred), `Vince Young Steakhouse` and `Chez L'Amour`. Setting
+   `status = 'closed'` is a statement about a real business, so it was deliberately not done. One
+   `UPDATE` of three rows, the moment he confirms.
+2. **Three tag suggestions were left pending on purpose** — the `Yellow Ranger` one is very likely
+   wrong (a rule assigned `cocktails-bar-food` because its `place_type` is `bar`; it describes
+   itself as a Chinese-American dive) and it is the only one of the three a visitor can see.
+3. **The voice.** None of the 58 published places has `the_dish` or `curator_note`. The filter works,
+   the tags are live, the guide is populated — and it still shows verdicts without a sentence.
+   Unchanged since S08 and now the only large thing missing.
 
-1. **The closure sweep over the 58 published places** (`BL-44`, `BL-48`). S13 found `009 Chez
-   L'Amour` closed **and published in the guide right now** — one in ten, the same rate as the
-   unreviewed set, which projects to roughly six of the 58. A visitor can click a restaurant that
-   does not exist. The scope is frozen and checksummed in `docs/research/facets-58-batch.csv`.
-2. **The ten closures from the 117** (`BL-44`) — `status = 'closed'` is the curator's call, not a
-   migration's.
-3. **The voice** — none of the 58 published places has `the_dish` or `curator_note`. Unchanged since
-   S08 and still the thing that separates the guide from an organised list.
+**Two operational items, both Edu's and both small:**
 
-**One decision still open:** `090 Santa Catarina` was tagged `tex-mex` against its own site's claim of
-"interior Mexico". Deliberate, flagged, and one query flips it.
-
-**The ten closures do not ride along in that migration** (`BL-44`). A `status = 'closed'` is a
-statement about a real business and ten at once changes what the guide claims — that is Michael's.
-
-**Three vocabulary questions are now Michael's, and all three are better documented than they were:**
-
-1. **`BL-46` — `cajun-creole`.** One self-described Cajun restaurant with nothing to take, and the
-   gap surfaced twice. Exactly the case `german` already answered on three instances.
-2. **`BL-45` — there is no plain `american`.** Five ordinary American places had no honest slug while
-   `new-american` was used 18 times in 117, more than any other slug.
-3. **`DP-11` — `interior-mexican`**, now documented from four directions and down to **one**
-   defensible instance in 117 places.
-
-**`BL-42` can be closed by example rather than by argument** — S12 produced four correct uses of
-`cocktails-bar-food` and one that coexists with a cuisine, against the two known misuses.
-
-**`OP-05` stopped being hypothetical.** Until today the migrations rebuilt everything; as of the 5
-curator tags, they do not. Every confirmation from here widens the gap between the repository and the
-only irreplaceable thing in the system. Both remaining actions are Edu's and neither is CLI work.
-
-**Two decisions still belong to Michael:**
-
-1. **`DP-10` — is `Gina's on Congress` still open?** Published and starred right now, three
-   independent closure signals against one counter-signal. A phone call settles it.
-2. **`DP-11`, second half** — `german` was added in S11 as a factual category. What remains is the
-   boundary judgment: a missing `latin-american`, and `interior-mexican` becoming a dump for
-   "Mexican that is not Tex-Mex". `BL-42` adds a sibling: `cocktails-bar-food` is a format claim
-   living in the cuisine facet, and it attracts whatever the vocabulary cannot describe.
-
-**One decision belongs to Edu:** what a Code has the right to repaint (`BL-37`). `--brand-ink` and
-`--secondary` sit outside `MANAGED_PROPERTIES`, and a dark code with no `mapStyle` gets a light map
-panel. Same question, two symptoms, both one-liners once the principle is settled.
-
----
-
-**Beyond that, what the product needs is still not code:**
-
-1. **The voice, and only Michael can give it.** None of the 58 published places has `the_dish` or
-   `curator_note`. It is two questions from memory per place — "what do I order here?", "why does this
-   one matter?" — on 8 to 10 of the strongest. It requires neither opening the admin nor having
-   anything at hand. It is the project's smallest task with the largest return, and with the Codes
-   ready it is exactly what a code delivers to a person.
-2. **Tagging — also only him.** Edu cannot substitute (S08): he has never been to these places. Of the
-   145 assignments, zero are the curator's. Under RN-31 none of them appears to a visitor any more, so
-   the panel has three facets until curation starts (`BL-30`). **What can be advanced without him** is
-   suggesting `cuisine` in bulk as an approval queue — `BL-34`.
-3. **Two queues with data waiting on Michael:** the 28 tier conflicts (`DP-08`) and the 145 suggested
-   tags (`DP-09`). Both already have a surface on the Overview.
-4. **Seeding field reports** (`BL-20`): the surface exists at `/admin/reports`; the values are
-   observations and have to be typed by someone who was there.
-
-**On the technical side, what is left is operational, and S09 reordered it:**
-
-1. **Take a database backup** (`OP-05`). This is the only pending item that can cost irreplaceable
-   data, and it becomes urgent the moment the database is repointed at another project. Also confirm
-   in the dashboard whether this project has automatic backups at all — nobody has checked.
-2. ~~Turn the launch batch into a migration~~ — **done in S10** (`BL-35` closed). The 5 migrations
-   now reproduce the whole product; only the auth account and anything Michael writes from here on
-   fall outside them.
-3. **Click `/admin/codes` and `/admin/reports` while logged in** (`BL-31`). The login works now. For
-   the reports queue to show anything, a `pending` free-text answer has to exist first.
-4. **Disable signup and turn on leaked-password protection** (`OP-01`) — two dashboard toggles.
-5. **Deploy** (`OP-04`) — **deferred by Edu's decision:** it will use the company's Vercel account,
-   not a personal one, and the database is expected to move to the company's organization as well.
-   The repository is ready; the README documents what the move requires.
-
----
+- **`OP-01` — signup is still enabled in Supabase**, and the site is now public. Not a data hole
+  (S04 proved an account outside the allowlist sees nothing), but two toggles.
+- **`OP-05` — half done.** The dump exists and is verified; what remains is thirty seconds
+  confirming in the dashboard whether the project has automatic backups. **A one-off backup ages** —
+  the one taken in S14 was stale the moment the curator confirmed the next tag.
 
 ## 🚫 Blockers
 

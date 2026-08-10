@@ -113,6 +113,21 @@ supabase/  migrations/  rollbacks/
 - Signup disabled in Supabase. Writing is only for whoever is in `curators`.
 - Soft delete through `status`, not `deleted_at` (ADR-03).
 
+## A mass UPDATE that erases its own provenance needs a snapshot, or it is irreversible
+
+S14 flipped 209 `place_tags` rows from `source = 'suggested'` to `'curator'`. **After that ran,
+nothing in the database distinguishes a row the migration confirmed from one confirmed by hand weeks
+earlier** — the column that carried the difference is the column that was overwritten.
+
+The rollbacks exist only because the affected pairs were captured, by natural key, in the seconds
+before applying. Without that capture the operation had no undo at all, on a database whose only
+backup is whatever was taken by hand.
+
+Before any bulk write that overwrites the field distinguishing one class of row from another:
+capture the affected set first, and generate the rollback from the capture. State the race window in
+the rollback header if the data can move underneath you — in S14 the curator was confirming tags by
+hand while the migration ran.
+
 ## Reading evidence — the mirror of the rule above
 
 The security rule says anything that can succeed quietly must be made to prove it. The same failure

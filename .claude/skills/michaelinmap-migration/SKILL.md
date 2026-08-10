@@ -261,6 +261,28 @@ Without that second gate, a slug the migration's author did not know about keeps
 nothing complains. Add a gate asserting the existing relative order too, so an insertion cannot
 silently become a rearrangement of the facet a visitor sees.
 
+## Measure the join key against the live database before writing the migration
+
+A data migration that resolves places by natural key is only as good as the key. **Measure it, do not
+assume it.** S14 measured three candidates over 117 rows before writing a line of SQL:
+
+```
+name alone                    108 of 117 matched one place, 9 AMBIGUOUS
+(name, address) exact          42 of 117 matched, 75 FAILED SILENTLY
+(name, normalised address)    117 of 117 matched exactly one, 0 ambiguous
+```
+
+Name alone is unsafe wherever a brand runs two locations — and two of those pairs carried different
+tags or had one member closed, so a name join would have tagged both.
+
+**The exact address is the dangerous one.** The batch CSV had been whitespace-normalised during an
+earlier checksum verification while the database kept a double space before the ZIP. An exact join
+would have inserted 42 rows, raised no error, and looked exactly like success. Hence
+`regexp_replace(btrim(address), '\s+', ' ', 'g')` on both sides — and a check that the resulting key
+is UNIQUE across the whole table, so the join cannot silently fan out.
+
+The check costs one query. Discovering it afterwards costs a migration that appears to have worked.
+
 ## Before writing any SQL
 
 **Live schema first.** `list_tables` + `list_migrations` through MCP. Convention is not a substitute
