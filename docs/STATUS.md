@@ -11,7 +11,9 @@
 **Session:** S12 — a pesquisa dos 117 fechada, dez restaurantes fechados, e o erro que o próprio método não pegou
 **Version:** `0.1.0` — unchanged. The session produced no product code, schema or feature; docs and research artifacts only
 **Updated by:** Claude Code (orchestrator)
-**Last commit:** `4b207dd` (S11's close, still the tip — S12's commit hash goes here when it lands)
+**Last commit:** `0aa2402`, the session's substantive one, followed by a one-line commit recording
+this hash. **Pushed to `origin/main` at the close of S12**, along with S11's close (`4b207dd`), which
+had been sitting local since the previous session. `main` and `origin/main` are level.
 
 ---
 
