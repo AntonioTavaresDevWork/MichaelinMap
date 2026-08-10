@@ -368,6 +368,13 @@ Nothing running.
 **Apply two migrations, in this order, in a session where the Supabase MCP actually loads.** Check
 for `mcp__supabase__*` tools **before anything else** — they were absent in S09, S12 and S13.
 
+**If they are absent again, do not re-investigate the config: `OP-06` already did, end to end, and
+everything on the project side is verified working** — valid `.mcp.json`, working token, approval in
+place, and the server itself completes the MCP handshake in 2.0s returning all 20 tools when launched
+by hand with the exact configured command. **Run `/mcp` instead.** That reports each server as
+connected, failed or never attempted, which is the one piece of information the investigation could
+not get from outside the client.
+
 1. **`20260810120000_extend_cuisine_vocabulary.sql`** — written in S13, **never validated against the
    live schema**, and its header says so in capitals. Adds seven slugs: `american`, `mexican`,
    `cajun-creole`, `georgian`, `sandwiches`, `wine-bar`, `brewery`. Gate G2 (expects exactly 45
