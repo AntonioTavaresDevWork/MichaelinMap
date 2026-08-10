@@ -354,7 +354,17 @@ thing anyone could do to the guide, because those are the ones a visitor can rea
 
 **O efeito no guia público, somando tudo que aconteceu na sessão:**
 
-- [x] `place_tags` de curador: **5 → 322**
+- [x] **`20260810150000` aplicada** — mais 23 confirmadas fora de restaurantes (14 `rooftop`,
+      3 `night-out`, 5 `bakery-pastry`, 1 `food-truck`), **e 3 deixadas de fora de propósito**
+- [x] **A revisão das 26 restantes achou uma tag errada, e era justamente a única visível:** o
+      `Yellow Ranger` é `published` e a regra do S08 deu `Cocktails & Bar Food` porque o
+      `place_type` é `bar` — mas ele se descreve como *"Chinese-American dive"*. Ficou como sugestão
+- [x] **Também ficaram de fora** os dois `Vacation` no Aeroporto de Fernando de Noronha e na Pousada
+      Alamoa: `unclassified`, e não são comida
+- [x] **A procedência das 26 foi conferida contra o CSV congelado**: ~19 vieram da coluna `Tags` da
+      Apple Maps e ~6 da migration por regra do S08. **Nenhuma veio de pesquisa** — ao contrário das
+      186, que têm URL e citação verbatim por tag
+- [x] `place_tags` de curador: **5 → 345 · restam 3 sugestões, todas deliberadas**
 - [x] Publicados com cozinha visível: **5 → 51 de 58**
 - [x] Facetas visíveis: 1 → **4** (`cuisine`, `format`, `logistics`, `dietary`) — as três dormentes
       do `BL-30` saíram do zero pela primeira vez
