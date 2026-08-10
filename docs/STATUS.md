@@ -8,7 +8,7 @@
 ## 🗓️ Last update
 
 **Date:** 2026-08-09
-**Session:** S13 — a cobertura de gênero fechada em 106 de 106, e as sete palavras que faltavam no vocabulário
+**Session:** S14 — as duas migrations aplicadas, e a curadoria andando ao vivo do outro lado
 **Version:** `0.1.0` — unchanged. The session produced no product code, schema or feature; docs and research artifacts only
 **Updated by:** Claude Code (orchestrator)
 **Last commit:** S12 closed at `fea79fb` and was pushed. S13's hash goes here on the next boot.
@@ -334,6 +334,31 @@ thing anyone could do to the guide, because those are the ones a visitor can rea
 - [x] **Gate:** `npm run build` e `npm run lint` limpos. Nenhum arquivo em `src/` tocado
 - [ ] ⚠️ **O MCP do Supabase não carregou** — banco intocado, nenhuma migration escrita ou aplicada
 
+### Session 14 — As duas migrations aplicadas, e a curadoria andando ao vivo ✅
+
+- [x] **O MCP do Supabase voltou** — o Edu rodou `/mcp` e ele reconectou. Três sessões de bloqueio
+      terminaram; a `OP-06` guarda a investigação para quem precisar dela de novo
+- [x] **`20260810120000_extend_cuisine_vocabulary` aplicada** — 8 gates de 8. Vocabulário 38 → **45**,
+      45 posições distintas, ordem relativa dos 38 antigos preservada
+- [x] **`20260810130000_suggest_researched_cuisine_117` aplicada** — 5 gates de 5. **122 atribuições
+      em 106 lugares**, todas `suggested`. `place_tags` 226 → **348**, aumento de exatamente 122
+- [x] **A chave de join foi medida antes de escrever, e foi isso que salvou a migration:** nome
+      sozinho deixava 9 linhas ambíguas; endereço **exato** casava só 42 de 117 por causa do espaço
+      duplo antes do CEP que o checksum do S11 normalizou no CSV. Com espaços normalizados: 117 de 117
+- [x] **Rollback escrito, e ele não consegue apagar tag confirmada** — `source = 'suggested'` no WHERE,
+      e ele relata quantas linhas poupou. 122 pares, conjunto idêntico ao da migration
+- [x] **`BL-43` fechado.** `schema_migrations` saneado nas duas aplicações
+- [ ] ⚠️ **Reapliquei a migration do vocabulário por engano** ao rodar um script auxiliar sem conferir
+      o alvo. Idempotente, dado intacto, entrada duplicada removida — mas foi descuido
+
+**E o que aconteceu do outro lado, sem CLI nenhum envolvido:**
+
+- [x] **O curador confirmou 131 tags durante a sessão** — de 5 para **136**
+- [x] **O guia público saiu de 1 opção de cozinha para 10**, e de 5 para **39 dos 58** publicados com
+      cozinha visível
+
+---
+
 ### Session 13 — A cobertura de gênero fechada, e as sete palavras que faltavam ✅
 
 - [x] **As quatro linhas pendentes do S11 refeitas** — `006` e `009` (o slug `cocktails-bar-food`
@@ -365,33 +390,25 @@ Nothing running.
 
 ## ⏭️ Next action
 
-**Apply two migrations, in this order, in a session where the Supabase MCP actually loads.** Check
-for `mcp__supabase__*` tools **before anything else** — they were absent in S09, S12 and S13.
+**Nothing is blocked. Both migrations are applied and the database now holds the research.**
 
-**If they are absent again, do not re-investigate the config: `OP-06` already did, end to end, and
-everything on the project side is verified working** — valid `.mcp.json`, working token, approval in
-place, and the server itself completes the MCP handshake in 2.0s returning all 20 tools when launched
-by hand with the exact configured command. **Run `/mcp` instead.** That reports each server as
-connected, failed or never attempted, which is the one piece of information the investigation could
-not get from outside the client.
+The critical path is human again, and for the first time it is moving: **the curator confirmed 131
+tags during S14** (5 → 136) while the migrations were being applied. The public guide went from one
+cuisine option to **ten**, and from 5 published places with a visible cuisine to **39 of 58**.
 
-**Also from `OP-06`: the migration below is no longer unverified.** S13 reached the server through a
-direct stdio client and confirmed every assumption it makes against the live schema — 38 cuisine
-tags, ordering 0–37, none of the seven slugs present or assigned, and the live order identical to the
-one the rollback declares. **Applying was blocked by the permission classifier and that was correct**;
-what is left is the apply itself, not the checking.
+**What is worth doing next, in order of value:**
 
-1. **`20260810120000_extend_cuisine_vocabulary.sql`** — written in S13, **never validated against the
-   live schema**, and its header says so in capitals. Adds seven slugs: `american`, `mexican`,
-   `cajun-creole`, `georgian`, `sandwiches`, `wine-bar`, `brewery`. Gate G2 (expects exactly 45
-   cuisine tags) is the one built to catch a wrong assumption. Rollback written, and it refuses to
-   run if any of the seven already carries an assignment.
-2. **The 106 tagged places as one migration** (`BL-43`), inserting `place_tags` with
-   `source = 'suggested'`, resolving places and tags by natural key. **Order matters:** 17 of these
-   assignments reference tags that do not exist until step 1 lands.
+1. **The closure sweep over the 58 published places** (`BL-44`, `BL-48`). S13 found `009 Chez
+   L'Amour` closed **and published in the guide right now** — one in ten, the same rate as the
+   unreviewed set, which projects to roughly six of the 58. A visitor can click a restaurant that
+   does not exist. The scope is frozen and checksummed in `docs/research/facets-58-batch.csv`.
+2. **The ten closures from the 117** (`BL-44`) — `status = 'closed'` is the curator's call, not a
+   migration's.
+3. **The voice** — none of the 58 published places has `the_dish` or `curator_note`. Unchanged since
+   S08 and still the thing that separates the guide from an organised list.
 
-**RN-32 is satisfied for this batch: every one of the 106 open places carries a cuisine tag.** That
-was the point of S13 and it took the vocabulary extension to get there — before it, 17 had nothing.
+**One decision still open:** `090 Santa Catarina` was tagged `tex-mex` against its own site's claim of
+"interior Mexico". Deliberate, flagged, and one query flips it.
 
 **The ten closures do not ride along in that migration** (`BL-44`). A `status = 'closed'` is a
 statement about a real business and ten at once changes what the guide claims — that is Michael's.
