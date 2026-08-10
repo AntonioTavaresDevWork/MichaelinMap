@@ -334,6 +334,23 @@ thing anyone could do to the guide, because those are the ones a visitor can rea
 - [x] **Gate:** `npm run build` e `npm run lint` limpos. Nenhum arquivo em `src/` tocado
 - [ ] ⚠️ **O MCP do Supabase não carregou** — banco intocado, nenhuma migration escrita ou aplicada
 
+### Session 14 (fecho) — O backup do banco ✅
+
+- [x] **Backup lógico das 8 tabelas gravado e verificado** — `C:/Users/tomme/Backups/MichaelinMap/20260809-2055/`,
+      1004 linhas, `.json` de fidelidade e `.sql` de restauração por tabela, mais um README com o
+      passo a passo e o número que prova que a restauração funcionou (`place_tags` curador = 345)
+- [x] **Verificado campo a campo, não por contagem** — reli as 8 tabelas do banco e comparei os
+      objetos inteiros. Contagem igual com conteúdo diferente passaria numa checagem de linhas
+- [x] **Gravado FORA do OneDrive de propósito.** O repositório vive dentro dele, e o dump carrega a
+      lista inteira do Michael e o e-mail — gravar ao lado do projeto o publicaria por acidente
+- [x] **`OP-05` passou a parcial.** O que falta são trinta segundos seus: confirmar no painel se
+      este projeto tem backup automático. Ninguém nunca checou e o plano gratuito historicamente
+      não tem — a resposta decide de quanto em quanto tempo este dump precisa ser repetido
+- [ ] ⚠️ **Não é `pg_dump`** — o MCP não tem ferramenta de dump e não há connection string no
+      `.env.local`. Cobre o que importa (o julgamento); não cobre `auth.users`
+
+---
+
 ### Session 14 (continuação) — A varredura de fechamento e a aprovação em lote ✅
 
 - [x] **Varredura de fechamento sobre os 58 publicados, completa** — 54 abertos, **3 fechados**,
