@@ -113,6 +113,23 @@ supabase/  migrations/  rollbacks/
 - Signup disabled in Supabase. Writing is only for whoever is in `curators`.
 - Soft delete through `status`, not `deleted_at` (ADR-03).
 
+## Reading evidence — the mirror of the rule above
+
+The security rule says anything that can succeed quietly must be made to prove it. The same failure
+shape exists on the reading side, and S12 hit it twice.
+
+- **An omission is only evidence after you open the page that would contain it.** A brand's locations
+  list that does not show our address looks identical in both directions: at Dos Olivos it was a real
+  closure, at Meat & Bread the page it *did* list turned out to be our address under a house name.
+  One is a finding, the other is a false report, and only opening the page tells them apart.
+- **When the primary source blocks you, say so in the artifact.** A row that leans on a weaker source
+  because the restaurant's own site returned 403 must record that, in itself, where the next reader
+  will see it. S12 recorded `El Naranjo` as open on the strength of a year-old article after two
+  fetches failed, and never ran the check the task called for. Nothing marked the row as thin, so
+  nothing invited a second look. Four later rows named their blocked sources for exactly this reason.
+- **A successor beats a directory.** When listings contradict each other about whether a place is
+  gone, a different business operating at that address settles it and nothing else does.
+
 ## The judgment layer — the highest rule
 
 `tier`, `starred`, `the_dish`, `curator_note`, `story`, `last_visited` and the assignments in `place_tags` are the **only irreplaceable data in the system**. No automated routine writes to them without explicit authorization from Edu. In any trade-off, the judgment is protected.

@@ -8,10 +8,10 @@
 ## 🗓️ Last update
 
 **Date:** 2026-08-09
-**Session:** S11 — a primeira tag do curador, a escrita silenciosa que o RLS engolia, e a pesquisa dos 117
-**Version:** `0.1.0` — kept by Edu's decision; bump only when the product goes live
+**Session:** S12 — a pesquisa dos 117 fechada, dez restaurantes fechados, e o erro que o próprio método não pegou
+**Version:** `0.1.0` — unchanged. The session produced no product code, schema or feature; docs and research artifacts only
 **Updated by:** Claude Code (orchestrator)
-**Last commit:** `d9e49cd`
+**Last commit:** `4b207dd` (S11's close, still the tip — S12's commit hash goes here when it lands)
 
 ---
 
@@ -39,6 +39,17 @@ a company organization; `README.md` documents what travels and what does not.
 the bulk-confirm bar, end to end. What is still unseen is `/admin/codes`, open since F-05 — and it
 is the likely explanation for a divergence recorded below: the `DEMO` code is gone from the database
 and no session recorded deleting it.
+
+**S12 finished the research pass and changed what the queue in front of Michael looks like.** All 117
+unreviewed Austin restaurants are researched: **91 taggable, 15 with no honest slug, 10 closed, 1
+uncertain.** None of it is in the database — the Supabase MCP did not load in S12, so no SQL was
+written, by the project's own first rule.
+
+**The finding that outranks the tags: 10 of 117 places are closed and 1 more cannot be established.**
+Four closed during 2026 and three of those were Michelin-distinguished, including one that closed
+*holding a star*. That is ~9% of a backlog assembled from map albums over years, and it is the
+evidence `DP-10` was missing — the same sweep over the **58 published** places is now the highest-value
+thing anyone could do to the guide, because those are the ones a visitor can reach.
 
 ---
 
@@ -300,6 +311,27 @@ and no session recorded deleting it.
 - [ ] ⚠️ **As 5 tags de curador só existem no banco vivo.** Nenhuma migration as reproduz, por
       princípio — `OP-05` deixou de ser hipotético
 
+### Session 12 — A pesquisa dos 117 fechada, e dez restaurantes que não existem mais ✅
+
+- [x] **Os 117 restaurantes pesquisados** — 10 vieram do S11, os **107 restantes rodados nesta
+      sessão**, dez por vez, pelo próprio CLI com WebSearch/WebFetch em vez de um modelo externo
+- [x] **91 tagueáveis · 15 sem slug honesto · 10 fechados · 1 incerto.** Evidência em 103 Tier A,
+      37 Tier B, 13 Tier C. 28 dos 38 slugs usados
+- [x] **Dez fechamentos, quatro deles em 2026 e três com distinção Michelin** — `BL-44`
+- [x] **Erro meu, encontrado e corrigido:** `033 El Naranjo` registrado como aberto com confiança
+      alta; fechou em 18/07/2026. Corrigido por script que verifica byte a byte todas as outras linhas
+- [x] **Método endurecido depois disso:** toda busca seguinte incluiu termos de fechamento, e toda
+      linha apoiada em fonte bloqueada passou a declarar isso nas próprias notas
+- [x] **Validação por script em cada leva** — 117 objetos, ids em ordem e presentes no CSV, nomes
+      byte a byte iguais ao CSV, todo slug no vocabulário, todo slug com evidência. **Reprovou duas
+      vezes e nas duas estava certa**
+- [x] **`BL-41` fechado.** Novos: `BL-43` (a migration das 91), `BL-44` (os fechamentos),
+      `BL-45` (falta `american`), `BL-46` (falta `cajun-creole`), `BL-47` (dois endereços errados)
+- [x] **`BL-42`, `DP-10` e `DP-11` reforçados com evidência**, nenhum deles fechado — são do Michael
+- [x] **`docs/research/README.md` reescrito como registro final** da pesquisa, não como diário
+- [x] **Gate:** `npm run build` e `npm run lint` limpos. Nenhum arquivo em `src/` tocado
+- [ ] ⚠️ **O MCP do Supabase não carregou** — banco intocado, nenhuma migration escrita ou aplicada
+
 ---
 
 ## 🔄 In progress
@@ -310,16 +342,33 @@ Nothing running.
 
 ## ⏭️ Next action
 
-**Resume the cuisine research pass — 10 of 117 done.** Everything needed is in `docs/research/`,
-which is written to be picked up with no context from S11: paste `cuisine-117-prompt.md` (revision 2)
-into the research model, attach the next ten rows of `cuisine-117-batch.csv`, append the JSON to
-`cuisine-117-results.json`. **Do not regenerate the CSV** — its `id` is the join key and re-cutting
-it silently re-points every result at the wrong restaurant. Ten per response is deliberate. `BL-41`.
+**Apply the 91 researched cuisine suggestions as one migration (`BL-43`) — in a session where the
+Supabase MCP actually loads.** It has the shape of `20260809120000_suggest_researched_tags.sql`:
+insert `place_tags` with `source = 'suggested'`, resolving places and tags by natural key. Everything
+enters invisible to visitors under RN-31. **First check whether `mcp__supabase__*` tools exist in the
+session** — they did not in S09 or S12, and without live introspection SQL is off the table.
 
-Three items from the first ten need handling before the next migration, all listed in the research
-README: **004 Alpine Haus** is taggable now that `german` exists; **006 Anthem and 009 Bar Toti**
-need re-running, because `cocktails-bar-food` was used as a crossed-kitchen fallback; **008 Aris**
-cites an OpenTable page for a different business (*Iris*) and just needs that evidence row dropped.
+Four rows need handling before that migration, all from the S11 batch and all listed in
+`docs/research/README.md`: **006 Anthem and 009 Bar Toti** must be re-run (both used
+`cocktails-bar-food` as a crossed-kitchen fallback — new context: Bar Toti and 034 Este are sister
+restaurants sharing 2113 Manor Rd, which explains the crossed menu); **008 Aris** needs its second
+evidence row dropped, since it cites an OpenTable page for *Iris*; **012 Bellissima** is the weakest
+row of the 117 and deserves one look from a normal browser.
+
+**The ten closures do not ride along in that migration** (`BL-44`). A `status = 'closed'` is a
+statement about a real business and ten at once changes what the guide claims — that is Michael's.
+
+**Three vocabulary questions are now Michael's, and all three are better documented than they were:**
+
+1. **`BL-46` — `cajun-creole`.** One self-described Cajun restaurant with nothing to take, and the
+   gap surfaced twice. Exactly the case `german` already answered on three instances.
+2. **`BL-45` — there is no plain `american`.** Five ordinary American places had no honest slug while
+   `new-american` was used 18 times in 117, more than any other slug.
+3. **`DP-11` — `interior-mexican`**, now documented from four directions and down to **one**
+   defensible instance in 117 places.
+
+**`BL-42` can be closed by example rather than by argument** — S12 produced four correct uses of
+`cocktails-bar-food` and one that coexists with a cuisine, against the two known misuses.
 
 **`OP-05` stopped being hypothetical.** Until today the migrations rebuilt everything; as of the 5
 curator tags, they do not. Every confirmation from here widens the gap between the repository and the
@@ -452,6 +501,97 @@ of the content.
 ---
 
 ## 📝 Session log
+
+### 2026-08-09 — S12: A pesquisa dos 117 fechada, e dez restaurantes que não existem mais
+
+**O que foi feito:** os 107 restaurantes que faltavam foram pesquisados, dez por vez, fechando a
+pesquisa em 117 de 117. Zero código de produto, zero migration, banco intocado. Dois arquivos
+alterados, os dois em `docs/research/`.
+
+**O boot encontrou o que não podia fazer.** O MCP do Supabase não carregou — `.mcp.json` declara o
+servidor, mas nenhuma ferramenta `mcp__supabase__*` apareceu na sessão. Mesma coisa do S09. Isso
+tirou migration e SQL da mesa pela primeira regra do projeto (*live schema first*) e definiu o que a
+sessão podia ser: trabalho de arquivo.
+
+**Quem rodou a pesquisa mudou, e valeu registrar.** O prompt tinha sido escrito para você colar num
+modelo de pesquisa externo. Edu autorizou o CLI a rodar aqui mesmo, com busca e fetch. As regras não
+mudaram — evidência com URL e citação verbatim, nunca inferir do nome, o endereço manda — e ficou
+provado que quem executa não altera o que a pesquisa precisa provar. **O que mudou foi que a
+validação passou a ser um script**, e não um olho.
+
+**Esse script reprovou duas vezes e nas duas estava certo.** Ele confere ids em ordem e presentes no
+CSV, nomes **byte a byte** contra o CSV, todo slug dentro do vocabulário, todo slug com evidência, e
+`no_slug_fits` nunca convivendo com slug. A primeira reprovação foi `Cafe Blue` escrito onde o CSV
+tem `Café Blue` — um caractere, e o join por nome na migration teria falhado calado. É a mesma
+família dos apóstrofos que o checksum pegou no S11.
+
+**O erro que o método não pegou, e que é o aprendizado da sessão.** Registrei o `033 El Naranjo` como
+aberto, `interior-mexican`, confiança alta. **Ele fechou em 18 de julho de 2026** — quinze anos,
+quatro veículos cobriram, o restaurante publicou carta de despedida. O que aconteceu: o site deles e
+a Texas Highways bloquearam o fetch, a linha se apoiou numa matéria da Resy de maio de 2025 para a
+cozinha, e **nenhuma busca de fechamento foi rodada naquele registro**. O prompt trata fechamento
+como saída de primeira classe; aquela linha tratou como subproduto da pesquisa de cardápio. Apareceu
+por acidente, numa matéria da KUT sobre o Olamaie que listava o El Naranjo entre os fechamentos de
+2026. Corrigi com script que verifica que todas as outras 116 linhas ficam idênticas.
+
+**Duas coisas mudaram na hora e ficaram até o fim:** toda busca seguinte incluiu termos de
+fechamento explicitamente, e **toda linha apoiada em fonte bloqueada passou a declarar o bloqueio nas
+próprias notas** (`012`, `050`, `084`, `097`). Uma linha fraca que se declara fraca convida uma
+segunda olhada; foi a ausência disso que deixou o `033` passar.
+
+**O quase-erro simétrico, no mesmo dia.** O `065 Meat & Bread` esteve a um passo de ser registrado
+como fechado: a lista de unidades da marca mostra Vancouver, Calgary e **uma** entrada em Austin
+chamada só "North Shore", sem o nosso endereço — exatamente a forma que provou o fechamento do Dos
+Olivos. Abri a página do North Shore e o endereço dela **é** o nosso, sob um apelido. Virou regra no
+`CLAUDE.md`: **uma omissão só é evidência depois que você abre a página que a conteria.** No Dos
+Olivos eu abri; ali quase não abri.
+
+**O achado que vale mais que as tags: dez lugares fecharam e um não dá para estabelecer.** Quatro em
+2026, e três deles tinham distinção Michelin — o Olamaie fechou **com a estrela na mão**, o Otoko
+depois de dez anos de omakase, o PastaBar em fevereiro. O Chapulín e o Vespaio são dois registros do
+mesmo evento, restaurantes irmãos na South Congress cujos prédios foram comprados no fim de 2025.
+São ~9% de um backlog montado a partir de álbuns de anos, e é a evidência que faltava para a `DP-10`:
+**a mesma varredura sobre os 58 publicados passou a ser a coisa de maior valor que alguém pode fazer
+no guia**, porque naqueles o visitante chega.
+
+**Dois fechamentos foram resolvidos por um sucessor, não por ausência** — o Stumpy's no lugar do
+Shack 512, o Phoebe's Diner assumindo a sala do The Local. Onde os diretórios se contradiziam, um
+negócio diferente operando no endereço resolveu na hora e mais nada resolveria. Virou regra também.
+
+**O vocabulário tem três buracos e eles se agrupam, o que é a segunda entrega da sessão.**
+
+1. **Não existe `american` comum** (`BL-45`). Cinco lugares perfeitamente ordinários ficaram sem tag
+   honesta — um bar num bangalô dos anos 40, um balcão de rotisserie, dois restaurantes do Lake
+   Travis. E pela outra ponta o mesmo fato: **`new-american` foi usado 18 vezes em 117**, mais que
+   qualquer outro slug e 60% mais que o segundo. O controle é o `067 Muck & Fuss` — também bar com
+   cozinha, e `burgers` encaixa limpo porque a comida dele tem identidade. **A lacuna não é "bar", é
+   "americano comum".**
+2. **O lado mexicano está tão quebrado quanto** (`DP-11`, agora com evidência de quatro direções).
+   `interior-mexican` teria sido *ativamente errado* três vezes — Este é costeiro, Veracruz é do
+   Golfo, Ma'CoCo é Baja — salvos só porque outro slug coube. Três registros ficaram sem slug
+   nenhum. E o `090 Santa Catarina` **anuncia "interior Mexico" servindo fajita**, que é o mecanismo
+   visto por dentro. O slug termina a pesquisa com **uma** instância defensável em 117.
+3. **`cajun-creole` é o caso do `german` de novo** (`BL-46`). Recusei `southern-comfort` por
+   princípio: o vocabulário já separa `tex-mex` de `interior-mexican`, então ele se importa com
+   precisão regional, e dobrar a Louisiana dentro do Sul americano joga fora exatamente essa
+   distinção. O `german` foi adicionado por três instâncias e resolveu as três.
+
+**E o `BL-42` pode ser fechado por exemplo em vez de por argumento.** A pesquisa produziu quatro usos
+corretos de `cocktails-bar-food` — Murray's, Péché, Sidecar e Tiki Tatsu-Ya, todos drinks-first pela
+descrição do próprio lugar — mais o Uchibā, que carrega `japanese` **e** `cocktails-bar-food` e
+prova que o slug convive com uma cozinha em vez de substituí-la. Contra os dois usos errados do S11.
+
+**Duas coisas erradas nos nossos próprios dados** (`BL-47`), achadas de raspão: o Mattie's está com
+901 W Live Oak quando o endereço é 811, e o The Kimberly diverge entre a W 6th e a W 7th. Inofensivas
+hoje porque a migration junta por nome. Junto delas, uma armadilha que não é defeito: o par Ma'coco
+tem apóstrofo reto num registro e curvo no outro, e um `grep` por um não acha o outro.
+
+**O que deliberadamente não foi feito:** nenhuma tag aplicada, nenhum `status = 'closed'` escrito,
+nenhum slug inventado. As 91 sugestões são uma migration que precisa de MCP; os dez fechamentos são
+afirmação sobre negócios reais e mudam o que o guia diz, então são do Michael; e vocabulário é dele
+por RN-13.
+
+**Gate:** build e lint limpos. Nenhum arquivo em `src/` tocado, versão mantida em `0.1.0`.
 
 ### 2026-08-08 — S10: O redesign do frontend, e o filtro que destrava a fila
 

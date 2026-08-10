@@ -206,5 +206,2236 @@
     "suggested_label": null,
     "confidence": "high",
     "notes": null
+  },
+  {
+    "id": "011",
+    "name": "Batch - Craft Beer and Kolaches",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["bakery-pastry"],
+    "evidence": [
+      {
+        "slug": "bakery-pastry",
+        "tier": "A",
+        "url": "https://www.batchatx.com/",
+        "quote": "Batch Craft Beer and Kolaches is a family-owned and operated kolache bakery and brewery in Austin, TX."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Also a brewery/taproom and a full coffee and espresso program in partnership with Greater Goods Roasting, but the kolache bakery is the food identity and the one filterable thing here. Official site shows current hours (Mon-Thu 8AM-10PM), so open."
+  },
+  {
+    "id": "012",
+    "name": "Bellissima",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["italian"],
+    "evidence": [
+      {
+        "slug": "italian",
+        "tier": "B",
+        "url": "https://communityimpact.com/austin/cedar-park-far-northwest-austin/dining/2024/06/27/bellissima-now-serving-italian-mediterranean-food-in-four-points/",
+        "quote": "Bellissima now serving Italian-Mediterranean food in Four Points"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "Weakest evidence of the ten and the reason is mechanical: the official site (bellissimatx.com) returns 403 to every fetch, so no Tier A quote could be captured. The quote above is the Community Impact headline, not body text I read on the page. Same article lists the menu as bruschetta, Greek salad, fresh pasta, risotto, veal, seafood and wood-fired pizza. The brand's own name carries 'Mediterranean' and rule 1 says a name is not evidence, so no second slug was taken. Yelp files it under Pizza (tier C). Address 8300 N FM 620 Bldg K confirmed."
+  },
+  {
+    "id": "013",
+    "name": "Blue Dahlia Bistro",
+    "address_city": "San Marcos",
+    "status": "open",
+    "cuisine": ["modern-european"],
+    "evidence": [
+      {
+        "slug": "modern-european",
+        "tier": "A",
+        "url": "https://bluedahliabistro.com/",
+        "quote": "Blue Dahlia Bistro is a European-style restaurant nestled in the heart of San Marcos, Texas."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "The San Marcos address 107 E Hopkins St is confirmed on the brand's own location page with hours (Mon-Sat 9am-9pm, Sun 9am-3pm). A second slug of french was considered and dropped: the menu leans French (Goat Cheese Tartine, Coq au Vin Blan) but also carries a frittata and a hummus and tabbouleh platter, and their own words are European-style. Michael may want french as a second tag; it was not taken here."
+  },
+  {
+    "id": "014",
+    "name": "Bread Boat",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://www.breadboattx.com/",
+        "quote": "Georgia's national dish, in the heart of Texas"
+      }
+    ],
+    "no_slug_fits": true,
+    "suggested_label": "georgian",
+    "confidence": "none",
+    "notes": "Georgian (the country) cuisine: khachapuri, kubdari stuffed with spiced beef from Svaneti, lobiani with kidney beans. Nothing in the 38-slug vocabulary covers it. bakery-pastry was considered because the business calls itself a bakery, and rejected: this is a sit-down Georgian restaurant with stews, salads and Georgian wine, and the bakery slug would send a visitor filtering for a pastry counter to the wrong place. Same shape as Alpine Haus before german was added. Note breadboatatx.com 301-redirects to breadboattx.com; the second is the live host. Address 1912 E 7th St Suite D confirmed."
+  },
+  {
+    "id": "015",
+    "name": "Bufalina",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["pizza", "italian"],
+    "evidence": [
+      {
+        "slug": "pizza",
+        "tier": "A",
+        "url": "https://www.bufalinapizza.com/",
+        "quote": "Neapolitan pizza. Each pie is approximately 12\" in diameter and baked in a Stefano Ferrara wood-burning oven at over 900F for about 90 seconds."
+      },
+      {
+        "slug": "italian",
+        "tier": "A",
+        "url": "https://www.bufalinapizza.com/",
+        "quote": "specializing in Neapolitan pizza and seasonal Italian food"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "2215 E Cesar Chavez is listed open on the brand's own site (Sun-Wed 4pm-10pm, Thu-Sat 4pm-11pm). History worth knowing so an old closure report is not misread: Bufalina closed temporarily in 2021 and reopened in late 2022 in a different East Austin space, which is this address. The italian second slug rests on the handmade pastas, three to four on the menu, not on the pizza."
+  },
+  {
+    "id": "016",
+    "name": "Bufalina Due",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["pizza", "italian"],
+    "evidence": [
+      {
+        "slug": "pizza",
+        "tier": "A",
+        "url": "https://www.bufalinapizza.com/",
+        "quote": "specializing in Neapolitan pizza and seasonal Italian food"
+      },
+      {
+        "slug": "italian",
+        "tier": "A",
+        "url": "https://www.bufalinapizza.com/locations/",
+        "quote": "Bufalina Due"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "One of the seven two-location brands, researched per address as rule 4 requires. The brand site lists 6555 Burnet Road with its own distinct hours (Mon-Fri 4pm-10pm; Sat-Sun 11am-3pm lunch and 4pm-10pm dinner), which is how it was confirmed open. Delivery aggregators disagree and should be ignored here: Favor shows Currently closed and Uber Eats shows closed as of Dec 7 2022, both of which describe delivery availability, not the restaurant. The italian evidence row is the locations listing and is thin on its own; the substantive quote is the shared brand description in the first row."
+  },
+  {
+    "id": "017",
+    "name": "Café Blue",
+    "address_city": "Bee Cave",
+    "status": "open",
+    "cuisine": ["seafood"],
+    "evidence": [
+      {
+        "slug": "seafood",
+        "tier": "A",
+        "url": "https://cafebluetx.com/info/",
+        "quote": "Our award-winning menu is a celebration of coastal cuisine from around the world, with grilled fresh fish, Cajun creations, oysters, salads, steaks, and fresh seafood flown in daily."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Two-location brand and the other location is closed, which is the trap on this row: Yelp lists Cafe Blue Downtown at 340 E 2nd St as CLOSED. Ours is the Hill Country Galleria address, 12800 Hill Country Blvd Suite G-115, which the official site still lists with its own phone and email. A closure signal found by searching the brand name alone would be about the wrong restaurant."
+  },
+  {
+    "id": "018",
+    "name": "Captain Pete's Boathouse",
+    "address_city": "Point Venture",
+    "status": "open",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://www.captainpetesboathouse.com/about",
+        "quote": "If you love seafood, burgers, tacos, foot long hot dogs and fun drinks, then you're going to love our menus."
+      }
+    ],
+    "no_slug_fits": true,
+    "suggested_label": "waterfront-bar-grill",
+    "confidence": "none",
+    "notes": "Their own one sentence names four unrelated food categories, so no single slug is honest. Open and operating: 'We're now open 7-days a week for lunch and dinner', Sun-Sat 11am-10pm, at 18200 Lakepoint Cove. Yelp files it under Seafood (tier C) and seafood was rejected on that basis alone. The live question for the curator is whether cocktails-bar-food fits: this is a gigantic floating restaurant and bar on Lake Travis and the draw is plausibly the lake and the drinks, but their own words are 'restaurant and bar' in that order, and revision 2 forbids reaching for that slug as a crossed-kitchen fallback. Left to Michael rather than decided here. Relevant to BL-42."
+  },
+  {
+    "id": "019",
+    "name": "Casa Bianca",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["italian"],
+    "evidence": [
+      {
+        "slug": "italian",
+        "tier": "B",
+        "url": "https://www.theinfatuation.com/austin/reviews/casa-bianca",
+        "quote": "Casa Bianca likes to be different, starting with the self-proclaimed title of 'weirdo Italian restaurant.'"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Contemporary Italian-American under chef-owner Joseph Zoccoli; mostly snacks and small plates with a seafood and handmade-pasta emphasis. The Italian claim deliberately rests on the Infatuation review quoting the restaurant's own self-description, not on the name, which rule 1 would forbid. Address 1510 E Cesar Chavez St confirmed; open Tue-Sat 4pm-10:30pm, Sun 4pm-10pm. Yelp files it under Wine Bars (tier C); cocktails-bar-food was not taken, since the kitchen is the point."
+  },
+  {
+    "id": "020",
+    "name": "Casa De Luz",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["vegetarian-forward"],
+    "evidence": [
+      {
+        "slug": "vegetarian-forward",
+        "tier": "A",
+        "url": "https://www.casadeluz.org/",
+        "quote": "We serve whole plant cuisine with reverence for its natural state, protecting the integrity and vitality of each ingredient."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "100% organic, 100% vegan and 100% gluten-free, and structurally unusual: a single set macrobiotic menu that changes daily, where the only choice is full plate or dessert. Address 1701 Toomey Road confirmed on their own site; open daily 7am-8:30pm. Yelp files it under Vegan (tier C corroboration). A second location, Casa de Luz Este, has opened in East Austin and is a different address from this record."
+  },
+  {
+    "id": "021",
+    "name": "Chapulín Cantina",
+    "address_city": "Austin",
+    "status": "likely_closed",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "B",
+        "url": "https://austin.culturemap.com/news/restaurants-bars/vespaio-ristorante-chapulin-cantina-closing/",
+        "quote": "will close for good February 28, taking Oaxacan sister restaurant Chapulín Cantina with it"
+      },
+      {
+        "slug": null,
+        "tier": "B",
+        "url": "https://www.kxan.com/news/local/vespaio-ristorante-and-chapulin-cantina-to-close-after-years-on-south-congress/",
+        "quote": "Vespaio Ristorante and Chapulin Cantina to close after years on South Congress"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "none",
+    "notes": "Closed February 28 2026 together with its sister restaurant Vespaio; the properties at 1610 and 1612 S. Congress were bought at the end of 2025 by Fortum Ventures. Signals: two independent local outlets (CultureMap, KXAN), Yelp marks the listing CLOSED, and chapulincantina.com no longer resolves (DNS timeout). No counter-signal — the reservation hours still circulating in search summaries are stale cache. The KXAN quote is its headline; the article body returned 403 to fetch. Had it been open the candidate slug was interior-mexican for an Oaxacan kitchen, which is exactly the DP-11 dump problem, so nothing is lost by it not being taggable."
+  },
+  {
+    "id": "022",
+    "name": "Chez Zee American Bistro",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["new-american"],
+    "evidence": [
+      {
+        "slug": "new-american",
+        "tier": "A",
+        "url": "https://www.chez-zee.com/",
+        "quote": "Chez Zee serves a wide range of American fare with southern regional influences and plenty of locally sourced ingredients."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Open since 1989 and still running full service: lunch Tue-Fri, dinner Tue-Sat, weekend brunch 9am-3pm, closed Mondays. Two second slugs were considered and dropped. southern-comfort: their own words say southern regional influences, an influence and not the identity. bakery-pastry: they are highly acclaimed for desserts and Yelp files them under Desserts, but this is a full-service bistro, not a bakery counter, and the slug would mislead. Address 5406 Balcones Dr confirmed."
+  },
+  {
+    "id": "023",
+    "name": "Cipollina",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["italian"],
+    "evidence": [
+      {
+        "slug": "italian",
+        "tier": "A",
+        "url": "https://www.cipollina-austin.com/dinner",
+        "quote": "Tagliatelle Alfredo"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "The evidence is the menu itself rather than a self-description, because the site carries no sentence naming the cuisine — its homepage says only 'Hand made quality. Made fresh daily'. The dinner menu runs Tagliatelle Alfredo, Margherita Pizza, Caprese Sandwich, Calamari, Tiramisu. Yelp files it under Italian (tier C corroboration). pizza was considered as a second slug and dropped: wood-fired pizza is one menu section here, and someone filtering pizza in Austin is looking for a pizza place. Address 1213 W Lynn confirmed; Mon-Sat 11am-9pm, closed Sundays."
+  },
+  {
+    "id": "024",
+    "name": "Cody's Restaurant Bar & Patio",
+    "address_city": "San Marcos",
+    "status": "open",
+    "cuisine": ["new-american"],
+    "evidence": [
+      {
+        "slug": "new-american",
+        "tier": "A",
+        "url": "https://www.codyssmtx.com/",
+        "quote": "Modern American Cuisine & Craft Bar"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Their own tagline names the category, which is the strongest form this slug's evidence takes. Menu corroborates: Tuna Tartare, Coconut Fried Shrimp, Duck Sandwich, Beef Wellington. Address 690 Centerpoint Rd Ste 209 confirmed on their own location page; lunch Thu-Sat, dinner Tue-Sat. Yelp files it under Lounges and OpenTable lists it as Cody's Bistro & Lounge, which is the same business under an older name."
+  },
+  {
+    "id": "025",
+    "name": "Corinne Austin",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["new-american"],
+    "evidence": [
+      {
+        "slug": "new-american",
+        "tier": "A",
+        "url": "https://www.corinneatx.com/",
+        "quote": "signature dishes like our chicken rotisserie or our perfectly prepared ora king salmon"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "Marked medium deliberately. Their own copy is marketing that never names a cuisine — 'We're serving up feel-good food', 'honest food + drink ranging from hearty to healthy' — so the Tier A quote above is a dish list, not a category claim. The category comes from Yelp, which files it under New American (tier C), plus a menu of rotisserie chicken, ora king salmon with beluga lentils and soubise, and a chicken club. Restaurant of the Austin Marriott Downtown at 304 E Cesar Chavez St Unit 100; open daily."
+  },
+  {
+    "id": "026",
+    "name": "Craft Omakase",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["sushi"],
+    "evidence": [
+      {
+        "slug": "sushi",
+        "tier": "B",
+        "url": "https://www.theinfatuation.com/austin/reviews/craft-omakase",
+        "quote": "The menu changes seasonally, but generally consists of about 22 courses. It's mostly nigiri—with warm and well-seasoned rice."
+      },
+      {
+        "slug": "sushi",
+        "tier": "A",
+        "url": "https://craftomakase.com/",
+        "quote": "Our food is a testament to Japanese culinary craftsmanship, blending modern techniques and flavors with traditional preparation methods."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "22-course omakase at a 12-seat counter, $175. japanese was not added as a second slug: rule 6 says sushi alone suffices unless the place is meaningfully both, and here the format is a sushi counter. Awarded a Michelin star in the inaugural Texas guide (2024) within 11 months of opening — worth flagging to the curator independently of the tag, since a starred restaurant sitting unreviewed in the backlog is a judgment question, not a tagging one. Address 4400 N Lamar Blvd Unit 102 confirmed; open daily, evenings only."
+  },
+  {
+    "id": "027",
+    "name": "Creekhouse",
+    "address_city": "Wimberley",
+    "status": "open",
+    "cuisine": ["new-american"],
+    "evidence": [
+      {
+        "slug": "new-american",
+        "tier": "A",
+        "url": "https://creekhousewtx.com/",
+        "quote": "Beneath the trees and overlooking Cypress Creek, we serve classic Texas fare with a sophisticated twist."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "The weakest of the five new-american calls in this slice and the reason is a real disagreement, not thin sourcing: their own sentence says Texas fare, and the menu does not read that way — pan-seared trout with fried caper remoulade, roasted pickled beets with goat cheese, a brie-and-bacon chicken sandwich, one burger. southern-comfort was considered and rejected because nothing on the menu is Southern comfort food. Trading as Creekhouse Kitchen & Bar (with a Silo Bar); the record's name is the shorter form. Address 14015 Ranch Rd 12 confirmed; open 7 days."
+  },
+  {
+    "id": "028",
+    "name": "District Kitchen + Cocktails",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["new-american"],
+    "evidence": [
+      {
+        "slug": "new-american",
+        "tier": "A",
+        "url": "https://districtaustin.com/",
+        "quote": "Menus shift with the farms and the Gulf, each dish balancing comfort and craft. From bacon beignets to Gulf-caught trout, it's chef-driven food you don't need a translator for."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "North Austin location. One of the seven two-location brands; unlike Bufalina, the brand publishes a single concept and a single menu for both addresses, with hours that differ per location — so the tag is the same for ids 028 and 029 by the brand's own account, not by my assumption. 7858 Shoal Creek Blvd Bldg B is listed live on their own locations page. Some directories call this one the Anderson Lane location, which is the same address described by the nearer cross street. Yelp files the brand under New American, OpenTable under Contemporary American."
+  },
+  {
+    "id": "029",
+    "name": "District Kitchen+Cocktails",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["new-american"],
+    "evidence": [
+      {
+        "slug": "new-american",
+        "tier": "A",
+        "url": "https://districtaustin.com/",
+        "quote": "Comfort Classics. Austin Soul."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "South Austin location, 5900 W Slaughter Lane, listed live on the brand's own locations page with its own hours (Mon-Thu opens 3:30pm, unlike the north location). Same concept and menu as id 028 — see that record's note. The two rows differ in the CSV only by a space in the name ('District Kitchen + Cocktails' vs 'District Kitchen+Cocktails'), which is worth knowing before anything joins on name."
+  },
+  {
+    "id": "030",
+    "name": "Dos Olivos Market",
+    "address_city": "Austin",
+    "status": "likely_closed",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "B",
+        "url": "https://communityimpact.com/austin/southwest-austin-dripping-springs/business/2026/04/14/dos-olivos-market-closes-dripping-springs-location/",
+        "quote": "Dos Olivos Market closes Dripping Springs location"
+      },
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://dosolivosmarkets.com/",
+        "quote": "Old World Tradition and Texas Charm meet"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "none",
+    "notes": "The Dripping Springs outpost at 12680 Hwy 290 closed April 5 2026 after four years. Two independent signals: Community Impact reported it, and the brand's own site now lists only Buda and Harlingen — the Tier A quote is from that page, cited for what it omits. The company said it is refocusing on those two. **This is the two-location trap working in the opposite direction from Café Blue:** id 031 is the Buda address, 306 S Main St, and that one remains open. Do not let this closure propagate to 031. Yelp still shows the Dripping Springs listing as active and updated April 2026, which is the stale side of the contradiction."
+  },
+  {
+    "id": "031",
+    "name": "Dos Olivos Market",
+    "address_city": "Buda",
+    "status": "open",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://dosolivosmarkets.com/pages/buda-tx",
+        "quote": "306 S Main St Suite 104, Buda, TX 78610"
+      },
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://dosolivosmarkets.com/",
+        "quote": "Old World Tradition and Texas Charm meet"
+      }
+    ],
+    "no_slug_fits": true,
+    "suggested_label": "spanish-texan-market",
+    "confidence": "none",
+    "notes": "**Open — this is the surviving half of the pair whose other half closed (see id 030).** The brand's own site lists Buda with current hours (Mon-Thu 11am-10pm, Fri-Sat to 11pm, Sun to 9pm), which is the same page whose omission of Dripping Springs was the closure evidence there. No slug because the kitchen is genuinely crossed, which is the condition the prompt names: brisket burgers and fried chicken sandwiches next to squid ink carbonara, Iberico pork steak, and roasted cauliflower with chermoula and labneh. spanish has real backing — the retail side is Spanish jamon, olive oils and paella, and AAA files it under Spanish — but it would misdescribe what a visitor eats. Yelp calls it Specialty Food, which is closer to the truth: a marketplace, butchery and eatery in one."
+  },
+  {
+    "id": "032",
+    "name": "El Chile Café Y Cantina",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["tex-mex"],
+    "evidence": [
+      {
+        "slug": "tex-mex",
+        "tier": "B",
+        "url": "https://austin.culturemap.com/news/restaurants-bars/09-10-21-el-chile-manor-road-moving-new-location/",
+        "quote": "Longtime East Austin Tex-Mex favorite moves the whole enchilada to new location"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "Medium because the category comes from a headline, not from the restaurant. Their own site names no cuisine at all — the closest it gets is 'We make our corn tortillas in-house daily, our sauces from scratch, and our famous margaritas from hand-squeezed limes' — and Yelp files it under the useless-here label Mexican. The same CultureMap piece is what confirms the address: El Chile moved from 1809 to 1900 Manor Rd, and 1900 is the record we hold. Open Mon-Fri 11am-10pm, weekends from 10am."
+  },
+  {
+    "id": "033",
+    "name": "El Naranjo",
+    "address_city": "Austin",
+    "status": "likely_closed",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "B",
+        "url": "https://austin.culturemap.com/news/restaurants-bars/naranjo-closing-chef-la-vega/",
+        "quote": "Austin Mexican restaurant El Naranjo to close after 15 years"
+      },
+      {
+        "slug": null,
+        "tier": "B",
+        "url": "https://communityimpact.com/austin/central-austin/dining/2026/06/17/south-austin-mexican-restaurant-el-naranjo-announces-summer-closure/",
+        "quote": "South Austin Mexican restaurant El Naranjo announces summer closure"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "none",
+    "notes": "**CORRECTED IN S12 AFTER THIS ROW WAS FIRST WRITTEN. It originally said `open`, `interior-mexican`, confidence high — that was wrong.** El Naranjo closed July 18 2026 after more than 15 years; chef Iliana de la Vega and co-owner Ernesto Torrealba chose not to renew the lease in order to partially retire, citing an oversaturated market alongside rent, goods and labour costs. Covered by CultureMap, Community Impact, KVUE and Texas Monthly, with a farewell letter published by the restaurant itself. **How the error happened, because it is the useful part:** the row leaned on a May 2025 Resy piece for the cuisine after the restaurant's own site and Texas Highways both blocked fetches, and no closure search was run for this record specifically — the prompt makes closure a first-class output and this row treated it as a by-product. It surfaced only because a KUT article about id 077 Olamaie listed El Naranjo among 2026 closures. **What is lost with it is worth stating:** this was the pass's cleanest use of `interior-mexican` — genuine regional Oaxacan cooking by a James Beard Best Chef: Texas, the opposite of the catch-all DP-11 warns about. The slug is now down to id 063 Manuels for a defensible instance."
+  },
+  {
+    "id": "034",
+    "name": "Este",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["seafood"],
+    "evidence": [
+      {
+        "slug": "seafood",
+        "tier": "A",
+        "url": "https://www.esteatx.com/",
+        "quote": "mariscos con onda"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "**A concrete counter-example for DP-11.** Este is coastal Mexican — aguachiles, ceviches, oysters, whole bluefin broken down in house, from the Suerte team — so interior-mexican would be not merely imprecise but the opposite of true, exactly the error DP-11 records against Nomade. seafood is honest and filterable and is the restaurant's own framing; the Mexican half of the identity simply has no slug, and coastal-mexican is the label that would carry it. **Same street address as id 009 Bar Toti** — they are sister restaurants next door to each other sharing the Este Garden, which is worth knowing before 009 is re-run, since Bar Toti calls itself an East Austin neighborhood bistro and Yelp files it under Wine Bars."
+  },
+  {
+    "id": "035",
+    "name": "Finley's",
+    "address_city": "Round Rock",
+    "status": "open",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://goroundrock.com/dining/finleys-round-rock/",
+        "quote": "A casual hangout in a 1940s style bungalow, our bar and restaurant in Round Rock, TX, offers shareable size portions of appetizers and entrees made with two things in mind: simplicity and maximum flavor."
+      }
+    ],
+    "no_slug_fits": true,
+    "suggested_label": "bar-and-grill",
+    "confidence": "none",
+    "notes": "Trading as Finley's Kitchen+Bar. The menu is plain American bar food — wings, deviled eggs, tater tots, burgers, chicken sandwiches, chicken and waffles — with live music, sports and craft beer. **The reason there is no slug is structural, not local to this place: the vocabulary has no plain american.** The only American entries are new-american, which is a chef-driven category this is not, and southern-comfort, which the menu is not either. cocktails-bar-food was rejected under BL-42: this is a craft-beer and sports bar, and the slug promises a cocktail-led place. Yelp files it under Bars. Their own site publishes the menu only as images, so the quote is the city tourism listing, which reproduces their copy. 410 W Main St confirmed."
+  },
+  {
+    "id": "036",
+    "name": "Flo's Wine Bar & Bottle Shop",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "B",
+        "url": "https://communityimpact.com/austin/central-austin/dining/2023/03/07/flos-wine-bar-bottle-shop-brings-over-190-hand-selected-wines-to-tarrytown/",
+        "quote": "Flo's Wine Bar & Bottle Shop brings over 190 hand-selected wines to Tarrytown"
+      },
+      {
+        "slug": null,
+        "tier": "B",
+        "url": "https://www.axios.com/local/austin/2023/08/15/flos-wine-bar-tarrytown-austin",
+        "quote": "Flo's brings wine and pizza to Tarrytown"
+      }
+    ],
+    "no_slug_fits": true,
+    "suggested_label": "wine-bar",
+    "confidence": "none",
+    "notes": "A wine bar and bottle shop, women-owned, ~190 bottles and 15-20 by the glass. **pizza was the tempting call and was rejected on a fact, not a preference:** the pizza is Allday's, a separate operation sharing the room, and per Axios customers order from it separately. Allday is already in this list as id 003 at its own address on Speedway, so tagging Flo's pizza would put one kitchen's tag on two records, one of which does not own it. The curator may well decide that is the right thing for a guide — someone who goes to Flo's does eat pizza — but that is his call. There is no wine-bar slug; cocktails-bar-food promises cocktails. Open Tue-Sun, closed Mondays. 3111 W 35th St confirmed."
+  },
+  {
+    "id": "037",
+    "name": "Foreign & Domestic",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["new-american"],
+    "evidence": [
+      {
+        "slug": "new-american",
+        "tier": "A",
+        "url": "https://www.fndaustin.com/",
+        "quote": "one of Austins first and longest operating Farm To Table, chef driven, restaurants"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "The one unarguable new-american in this slice: their own tagline is 'Nose to Tail. Farm to Table. Root to Fruit.' and the quote above names chef-driven and farm-to-table explicitly, which is the slug's definition rather than a fallback. Yelp agrees. Open Tue-Sun 5-9pm, closed Mondays; 306 E 53rd St in North Loop confirmed. Nothing here suggests closure despite several directories showing it 'currently closed', which reflects its evenings-only hours."
+  },
+  {
+    "id": "038",
+    "name": "Friedhelm's Bavarian Inn",
+    "address_city": "Fredericksburg",
+    "status": "open",
+    "cuisine": ["german"],
+    "evidence": [
+      {
+        "slug": "german",
+        "tier": "A",
+        "url": "https://www.friedhelmsbavarianinn.com/",
+        "quote": "authentic German Recipes served in genuine 'Gasthaus' dining rooms for a true Bavarian dining experience"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "**This is one of the three places that made the case for adding german in S11, and it is now taggable.** Nine variations on the schnitzel, a sausage sampler, cabbage soup. Open Wed-Sun, closed 3-4pm for shift change. One detail worth catching before anything joins on address: their own site prints the zip as 78724, while the CSV, Yelp and every directory have 78624 — 78724 is an Austin zip, so the site is the one that is wrong."
+  },
+  {
+    "id": "039",
+    "name": "Fukumoto",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["sushi", "japanese"],
+    "evidence": [
+      {
+        "slug": "sushi",
+        "tier": "A",
+        "url": "https://www.fukumotoaustin.com/",
+        "quote": "Fukumoto is an izakaya, a Japanese restaurant specializing in yakitori (skewers grilled over Japanese charcoal), sushi/sashimi, and classic Japanese comfort food."
+      },
+      {
+        "slug": "japanese",
+        "tier": "A",
+        "url": "https://www.fukumotoaustin.com/",
+        "quote": "Fukumoto is an izakaya, a Japanese restaurant specializing in yakitori (skewers grilled over Japanese charcoal), sushi/sashimi, and classic Japanese comfort food."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "The rule-6 exception, cited under rule 7 from a single sentence: sushi alone would normally suffice, but this place is meaningfully both — a yakitori izakaya that also runs a sushi bar, and someone filtering for either would be right to find it. Contrast id 026 Craft Omakase, which is a sushi counter and got one slug. Trading as Fukumoto Sushi & Yakitori Izakaya; 514 Medina St at the Corazon confirmed; open since 2015."
+  },
+  {
+    "id": "040",
+    "name": "Garrison",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["steakhouse", "new-american"],
+    "evidence": [
+      {
+        "slug": "steakhouse",
+        "tier": "A",
+        "url": "https://www.fairmont.com/en/hotels/austin/fairmont-austin/dining/garrison.restaurant.html",
+        "quote": "Garrison - Michelin Recommended Steakhouse in Austin"
+      },
+      {
+        "slug": "new-american",
+        "tier": "A",
+        "url": "https://www.fairmont.com/en/hotels/austin/fairmont-austin/dining/garrison.restaurant.html",
+        "quote": "an elevated New American restaurant with global flavors and local ingredients touched by fire and smoke paired with an award-winning wine list"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Restaurant of the Fairmont Austin at 101 Red River St. Both slugs come from the hotel's own page, which is why they are taken together despite new-american being over-represented in this pass — the operator calls it both, and Akaushi wagyu ribeye over live fire backs the steakhouse half. Also trades as Garrison Steak & Seafood, so seafood was a third candidate and was dropped at the two-slug limit. MICHELIN Guide recommended (2025), Forbes Four Star, AAA Four Diamond — like id 026, a decorated restaurant sitting unreviewed in the backlog, which is a judgment question rather than a tagging one. Open Tue-Sat, evenings only."
+  },
+  {
+    "id": "041",
+    "name": "Grizzelda's",
+    "address_city": "Austin",
+    "status": "likely_closed",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "C",
+        "url": "https://www.yelp.com/biz/grizzeldas-austin",
+        "quote": "GRIZZELDA'S - CLOSED"
+      },
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://grizzeldas.com/",
+        "quote": "under construction"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "none",
+    "notes": "Weaker sourcing than the other two closures in this pass and recorded as such — no news outlet covered it. Two signals: Yelp marks the listing CLOSED as of June 2026, and **grizzeldas.com is now a DreamHost placeholder page**, meaning the site was taken down rather than merely going stale, which is the stronger of the two. **The counter-signal:** a personal Austin food blog published a Grizzelda's post in March 2026, so the closure is recent and the exact date is unestablished. Worth a curator's eye rather than a migration. Second project of the Jacoby Restaurant Group, across the street from its sister restaurant — which is **id 048 in this same slice and is open**, so the closure must not propagate."
+  },
+  {
+    "id": "042",
+    "name": "Hattie B's Hot Chicken",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["southern-comfort"],
+    "evidence": [
+      {
+        "slug": "southern-comfort",
+        "tier": "C",
+        "url": "https://www.yelp.com/biz/hattie-bs-hot-chicken-austin-2",
+        "quote": "Nashville hot chicken with 6 heat levels, jumbo tenders, wings, Southern sides & craft cocktails"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "Tier C and medium despite this being a place nobody doubts, which is exactly why the tier field exists. hattieb.com renders its menu and copy through JavaScript — the fetched pages come back as navigation and lorem ipsum — so no Tier A quote could be captured, and rule 1 forbids reading the cuisine off a name that happens to contain 'Hot Chicken'. Nashville hot chicken, chicken and waffles, fried pickles, peach cobbler, pimento mac. There is no fried-chicken slug; southern-comfort is the honest home for it. 2529 S Lamar Blvd; open daily from 10:45am. A second Austin location exists at Domain Northside and is not this record."
+  },
+  {
+    "id": "043",
+    "name": "Hopfields",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["french"],
+    "evidence": [
+      {
+        "slug": "french",
+        "tier": "B",
+        "url": "https://austin.culturemap.com/news/restaurants-bars/07-07-21-9-austin-neighborhood-restaurants-that-feed-our-souls/",
+        "quote": "There's only one proper response when offered to dine at Hopfields, a French-style gastropub serving up modern and classic dishes with panache"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Steak tartare, duck-leg confit, ratatouille, salade nicoise, pommes frites; on Eater's 38 Essential Austin Restaurants. **burgers was seriously considered as a second slug and dropped:** the Pascal Burger is the signature dish and has won best-burger honours, but someone filtering burgers is looking for a burger place and this is a French gastropub. Michael may disagree and he would not be wrong. Open, verified through directories updated August 2026 — hopfieldsaustin.com refuses connections to this fetcher, which is a WAF and not a closure signal given the fresh listings. 3110 Guadalupe St Unit 400; open daily 11am-midnight."
+  },
+  {
+    "id": "044",
+    "name": "Huisache Grill",
+    "address_city": "New Braunfels",
+    "status": "open",
+    "cuisine": ["new-american"],
+    "evidence": [
+      {
+        "slug": "new-american",
+        "tier": "A",
+        "url": "https://huisachegrill.com/",
+        "quote": "serving creative contemporary cuisine with fresh regional ingredients"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "Medium, and the reason is the pattern rather than this restaurant: their own sentence names a *style* — creative, contemporary, regional — which is the definition of new-american, but the menu is a broad Texas grill (quail, shrimp, steak, burgers, crab cakes, tortilla soup) that a visitor would not recognise from the tag. Another entry in the gap this pass keeps finding: there is no plain american slug, so contemporary-anything lands here. Yelp files it under Wine Bars, OpenTable under American. 303 W San Antonio St in historic downtown New Braunfels; open Tue-Sun, closed Mondays."
+  },
+  {
+    "id": "045",
+    "name": "Intero",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["italian"],
+    "evidence": [
+      {
+        "slug": "italian",
+        "tier": "B",
+        "url": "https://www.theinfatuation.com/austin/reviews/intero-restaurant",
+        "quote": "Handmade noodles steal the show, so start by figuring out how many pastas you'll be ordering"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Contemporary farm-to-table Italian from chef Ian Thurwachter and chocolatier Krystal Craig, with in-house butchery of whole local animals. Their own site carries no sentence naming the cuisine, so the evidence is the Infatuation review, whose headline calls it a contender for Austin's pasta throne. pizza was not taken as a second slug — the review notes the pies are occasionally overloaded, and the pasta is the identity. 2612 E Cesar Chavez St; open Tue-Sun evenings, closed Mondays."
+  },
+  {
+    "id": "046",
+    "name": "Jack Allen's Kitchen",
+    "address_city": "Cedar Park",
+    "status": "open",
+    "cuisine": ["southern-comfort"],
+    "evidence": [
+      {
+        "slug": "southern-comfort",
+        "tier": "A",
+        "url": "https://jackallenskitchen.com/",
+        "quote": "Southern comfort food with a Texas twist"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Cedar Park location. One of the seven two-location brands in rule 4 — in fact the brand runs six, and both of the addresses we hold appear on its own locations page: 1345 E Whitestone Blvd (this record, listed as Cedar Park) and 7720 Highway 71 West (id 047, listed as Oak Hill). The brand publishes one concept and one self-description for all six, so the tag is identical for both by its own account. Chicken fried steak; the tagline above is their own words, which is the cleanest form this slug's evidence takes."
+  },
+  {
+    "id": "047",
+    "name": "Jack Allen's Kitchen",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["southern-comfort"],
+    "evidence": [
+      {
+        "slug": "southern-comfort",
+        "tier": "A",
+        "url": "https://jackallenskitchen.com/location/",
+        "quote": "Oak Hill - 7720 Highway 71 West, Austin, TX 78735"
+      },
+      {
+        "slug": "southern-comfort",
+        "tier": "A",
+        "url": "https://jackallenskitchen.com/",
+        "quote": "Southern comfort food with a Texas twist"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Oak Hill location — the address the brand's own locations page carries for 7720 Highway 71 West, which is what distinguishes it from id 046. First evidence row is the address match, second is the cuisine claim. See id 046 for why both rows get the same tag."
+  },
+  {
+    "id": "048",
+    "name": "Jacoby's Restaurant & Mercantile",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["southern-comfort"],
+    "evidence": [
+      {
+        "slug": "southern-comfort",
+        "tier": "A",
+        "url": "https://www.jacobysaustin.com/",
+        "quote": "Scratch-made Southern favorites blend Hill Country hospitality with down-home cooking"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "**Open, and it is the sister restaurant of id 041 Grizzelda's, which just closed** — same owner, across the street on the East Side. The closure belongs to Grizzelda's alone. Ranch-to-table and vertically integrated: beef, lamb and goat from the family's West Texas ranch, hand-cut and dry-aged 21-28 days. **steakhouse was considered as a second slug and dropped** — the beef program is real and a rotating selection of Jacoby Brand steaks is on the menu, but the restaurant is not structured as a steakhouse and its own words lead with Southern. Yelp files it under New American, which this pass has learned to read as 'no better idea'. On the banks of the Colorado River at 3235 E Cesar Chavez; open Wed-Sun."
+  },
+  {
+    "id": "049",
+    "name": "Jeffrey's",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["steakhouse", "french"],
+    "evidence": [
+      {
+        "slug": "steakhouse",
+        "tier": "A",
+        "url": "https://jeffreysofaustin.com/",
+        "quote": "The menu highlights wood-fired dry-aged steaks, French-American classics, and signature seasonal specialties."
+      },
+      {
+        "slug": "french",
+        "tier": "A",
+        "url": "https://jeffreysofaustin.com/",
+        "quote": "The menu highlights wood-fired dry-aged steaks, French-American classics, and signature seasonal specialties."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Rule 7 in its cleanest form: one sentence from the restaurant establishes both slugs, so it is cited twice rather than hunting a weaker second source. Austin fine dining since 1975; steaks grilled over local live oak and finished in a 1200-degree broiler. Listed in the MICHELIN Guide — the third decorated restaurant this pass has found sitting unreviewed, after ids 026 and 040. 1204 West Lynn St, open daily 4:30-11pm. Neighbour of id 023 Cipollina at 1213 W Lynn, which is a different address and a different business."
+  },
+  {
+    "id": "050",
+    "name": "Knotty Deck and Bar",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://www.knottydeckkitchenbar.com/about-us",
+        "quote": "Executive Chef Kent Hargrove's farm-to-table approach highlights fresh, local ingredients drawing inspiration from the great diversity of the Lone Star State."
+      }
+    ],
+    "no_slug_fits": true,
+    "suggested_label": "hotel-bar-grill",
+    "confidence": "none",
+    "notes": "Restaurant of the Renaissance Austin Hotel at the Arboretum, trading as Knotty Deck Kitchen & Bar. **A crossed kitchen by the prompt's own test:** Korea-style tacos, brisket nachos, a house-smoked-brisket burger, double smash burgers, heirloom tomato burrata, seasonal pastas, grilled fish. new-american was the easy call and was refused deliberately — a farm-to-table claim and a named chef would have justified it on paper, and taking it would be precisely the catch-all behaviour this pass has been flagging. Yelp files it under Bars. **Evidence caveat:** both knottydeckkitchenbar.com and the Marriott dining page return 403 to direct fetch, so the quote above reaches me through the search index rather than from the page itself — same limitation as id 012 Bellissima."
+  },
+  {
+    "id": "051",
+    "name": "Krause's Cafe",
+    "address_city": "New Braunfels",
+    "status": "open",
+    "cuisine": ["german"],
+    "evidence": [
+      {
+        "slug": "german",
+        "tier": "A",
+        "url": "https://krausescafe.com/",
+        "quote": "classic Deutsche meals with a Texas flair. From schnitzel and bratwurst with sauerkraut and spicy mustard, to pretzels and potato soup, our menu offers a taste of Germany deep in the heart of the Lone Star State."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "**The third and last of the three places that made the case for adding german in S11, and it is now tagged.** Alpine Haus (004) and Friedhelm's (038) were the other two; all three are now resolved by that one migration, which is as clean a return as a vocabulary decision gets. Established 1938, biergarten with the largest tap wall in New Braunfels, sauerbraten and strudel on the menu. 148 S Castell Ave; site shows events scheduled for August 2026."
+  },
+  {
+    "id": "052",
+    "name": "Lenoir",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["new-american"],
+    "evidence": [
+      {
+        "slug": "new-american",
+        "tier": "A",
+        "url": "https://www.lenoirrestaurant.com/",
+        "quote": "we celebrate seasonal Texas ingredients, we cook for the season (and the weather - hot!) and we serve it with fantastic beer and wine from great grower-producers all over the world"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "A legitimate new-american alongside id 037 Foreign & Domestic, not a fallback: farm-to-table menu rewritten every six weeks, available a la carte or as a chef's tasting, opened 2012 by Jessica Maher and Todd Duplechan, listed in the MICHELIN Guide. **mediterranean was considered and dropped** — the kitchen is described as Mediterranean- and Indian-influenced, but those are influences on a Texas seasonal menu, not the cuisine, and taking the slug would send a visitor looking for something this is not. Fourth decorated restaurant found unreviewed in this pass. 1807 S 1st St; closed Tuesdays."
+  },
+  {
+    "id": "053",
+    "name": "Ling Kitchen",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["chinese"],
+    "evidence": [
+      {
+        "slug": "chinese",
+        "tier": "B",
+        "url": "https://www.theinfatuation.com/austin/reviews/ling-kitchen",
+        "quote": "Ling Kitchen is a super creative Chinese tasting menu"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "A 10-course Chinese tasting menu by chef Ling Qi Wu, one seating a night at 6:30 around a single long table beside the open kitchen, $150 per person, reservations required, Michelin-recognised. **Yelp files it under Diners** — the single most useful illustration this pass has produced of why a Tier C category string is not evidence. Same chef as ids 054 and 055 but a separate restaurant at its own address, 8423 Research Blvd."
+  },
+  {
+    "id": "054",
+    "name": "Ling Wu Asian Restaurant at Lantana Place",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["chinese"],
+    "evidence": [
+      {
+        "slug": "chinese",
+        "tier": "A",
+        "url": "https://lingwulantana.com/",
+        "quote": "7415 Southwest Parkway Bldg 3-400, Austin TX 78735"
+      },
+      {
+        "slug": "chinese",
+        "tier": "A",
+        "url": "https://lingwugrove.com/dinner/",
+        "quote": "Ling's Soup Dumpling"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Lantana Place location, and one of the seven two-location brands named in rule 4. Confirmed by its own site with hours that differ from the sibling's only in closing time, including a Dim Sum Brunch Sat-Sun 10:30am-3pm. Neither Ling Wu site carries a sentence naming the cuisine, so the evidence is the address on one and the shared dinner menu on the other: soup dumplings, har kaw, scallop caviar sui mai, Peking duck, roasted duck pancakes — Cantonese dim sum and banquet cooking. Yelp files this one under Dim Sum and id 055 under Chinese, which is the same restaurant described two ways."
+  },
+  {
+    "id": "055",
+    "name": "Ling Wu Asian Restaurant at The Grove",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["chinese"],
+    "evidence": [
+      {
+        "slug": "chinese",
+        "tier": "A",
+        "url": "https://lingwugrove.com/dinner/",
+        "quote": "Peking Duck"
+      },
+      {
+        "slug": "chinese",
+        "tier": "A",
+        "url": "https://lingwugrove.com/",
+        "quote": "2625 Perseverance dr, Austin tx 78731"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "The Grove location, opened 2024, at 2625 Perseverance Dr — the address confirmed on its own site, which is what separates it from id 054. Same menu and same operator (Lin Restaurants, chef Ling Qi Wu, who also runs id 053). Researched per address as rule 4 requires; the tag is identical because the published menu is."
+  },
+  {
+    "id": "056",
+    "name": "Loro",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["bbq"],
+    "evidence": [
+      {
+        "slug": "bbq",
+        "tier": "A",
+        "url": "https://www.loroeats.com/",
+        "quote": "Blending bbq and Asian fusion flavors, Loro serves up smoked meats, shareable plates, and craft drinks in a laid-back space built for good food and good company."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Asian smokehouse from Tyson Cole of Uchi and Aaron Franklin of Franklin Barbecue, both James Beard winners. Oak-smoked brisket, char siu pork belly, curry chicken over rice. **The bbq half has a slug and the Asian half does not:** the vocabulary's Asian entries are all national (japanese, chinese, thai, vietnamese, korean) plus ramen and sushi, and Loro is deliberately pan-Asian, so no second slug is honest. A different shape of the same gap this pass keeps finding — here it costs only half the description, not all of it. 2115 S Lamar; South Lamar is the location we hold, and the brand also runs Domain North Side."
+  },
+  {
+    "id": "057",
+    "name": "Lou's",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://www.lousaustin.com/eastside",
+        "quote": "1900 E. Cesar Chavez St. Austin, TX 78702"
+      }
+    ],
+    "no_slug_fits": true,
+    "suggested_label": "all-day-american",
+    "confidence": "none",
+    "notes": "Trading as Lou's Eastside, formerly Lou's Bodega. Rotisserie meats, sandwiches, burgers and salads all day, breakfast tacos and old-fashioned donuts in the morning, frozen custard, cold beer. **The same hole as id 035 Finley's:** the vocabulary has no plain american, so an ordinary all-day American place has nothing honest to take — new-american is chef-driven and this is not, burgers would name one item on a broad menu, breakfast-diner would be false since the identity is the rotisserie. Their own site carries no descriptive sentence at all, only hours and specials, so the evidence row is the address. Yelp files it under New American."
+  },
+  {
+    "id": "058",
+    "name": "Love Supreme",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["pizza"],
+    "evidence": [
+      {
+        "slug": "pizza",
+        "tier": "A",
+        "url": "https://www.lovesupremepizzabar.com/",
+        "quote": "Your neighborhood pizza bar serving handcrafted pizzas, great drinks, and warm hospitality."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Trading as Love Supreme Pizza Bar; the record's name is the shorter form. Neapolitan-inspired round pies and Detroit/Sicilian-influenced square pies, jumbo wings, salads. **A useful contrast with id 036 Flo's:** both are bar-and-pizza, but here the pizza is the house's own and the name says so, so the slug lands cleanly, whereas at Flo's the pizza belongs to a separate operator. 2805 Manor Rd; open daily, evenings on weekdays."
+  },
+  {
+    "id": "059",
+    "name": "Lucky Robot",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["sushi", "japanese"],
+    "evidence": [
+      {
+        "slug": "sushi",
+        "tier": "A",
+        "url": "https://luckyrobotatx.com/",
+        "quote": "dry-aged sushi, Japanese-Peruvian fusion cuisine, ramen, brunch, and handcrafted cocktails"
+      },
+      {
+        "slug": "japanese",
+        "tier": "A",
+        "url": "https://luckyrobotatx.com/",
+        "quote": "Modern Nikkei cuisine that blends traditional Japanese techniques with bold Peruvian and Latin American flavors"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Trading as Lucky Robot Japanese Kitchen. Meaningfully both, like id 039 Fukumoto and unlike id 026 Craft Omakase. **Two further slugs were live and were dropped at the two-slug limit, which is worth recording because both were defensible:** ramen (TripAdvisor rated it #1 ramen in Austin) and peruvian (Nikkei is by definition Japanese-Peruvian, and their own sentence says so). sushi and japanese were chosen as the pair a visitor is most likely to filter by. First sustainable sushi restaurant in Texas; recognised by the James Beard Foundation's Smart Catch program. 1303 S Congress Ave."
+  },
+  {
+    "id": "060",
+    "name": "Ma'coco",
+    "address_city": "Austin",
+    "status": "uncertain",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "C",
+        "url": "https://www.yelp.com/biz/ma-coco-austin",
+        "quote": "MA'COCO - CLOSED"
+      },
+      {
+        "slug": null,
+        "tier": "B",
+        "url": "https://communityimpact.com/austin/central-austin/impacts/2021/09/30/california-style-mexican-restaurant-macoco-opens-plus-more-business-news-from-east-austin/",
+        "quote": "California-style Mexican restaurant Ma'Coco opens, plus more business news from East Austin"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "none",
+    "notes": "**uncertain, and the contradiction is the finding.** Yelp marks 501 Comal St CLOSED as of August 2026; the brand's own site still lists both this location and Buda with reservations open, and an OpenTable review records a meal here in March 2025. No outlet covered a closure either way, and macocoatx.com returned HTTP 530 to direct fetch so the site could not be read first-hand. Same shape as DP-10 (Gina's on Congress): signals against a live official presence, settled by a phone call and not by more searching. No cuisine returned — researching the menu of a restaurant whose existence is in doubt is what rule 5 of the closure section forbids. **If it is open, the tagging question is itself a DP-11 case:** the concept is described as Baja *and* interior Mexican, and Baja is coastal, so interior-mexican would repeat the Nomade error. **Name-join hazard:** id 061 is the Buda location and the CSV spells it `Ma'CoCo` with a curly apostrophe and different casing, against this row's straight apostrophe. Two records, two different strings, one brand."
+  },
+  {
+    "id": "061",
+    "name": "Ma’CoCo",
+    "address_city": "Buda",
+    "status": "open",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://order.toasttab.com/online/ma-coco-buda-302-s-main-st-ste101",
+        "quote": "Ma'Coco - Buda 302 S Main St Ste101"
+      },
+      {
+        "slug": null,
+        "tier": "B",
+        "url": "https://communityimpact.com/austin/central-austin/impacts/2021/09/30/california-style-mexican-restaurant-macoco-opens-plus-more-business-news-from-east-austin/",
+        "quote": "California-style Mexican restaurant Ma'Coco opens, plus more business news from East Austin"
+      }
+    ],
+    "no_slug_fits": true,
+    "suggested_label": "baja-mexican",
+    "confidence": "none",
+    "notes": "**Open — the surviving side of the pair whose East Austin sibling (id 060) is uncertain.** Live online ordering at this exact address and suite, Yelp updated May 2026 with no closure marker, hours published per service. No slug, and the reason is precisely the DP-11 question rather than ignorance: the concept is stated as Baja *and* interior Mexican, and **Baja is coastal**, so interior-mexican would repeat the Nomade error the backlog already records. tacos was considered and dropped — the menu is burritos, flautas, quesadillas and enchiladas alongside tacos, which is a full Mexican restaurant, not a taqueria. There is no plain mexican slug either. **Name-join hazard:** this row is `Ma’CoCo` with a curly apostrophe and mixed casing; id 060 is `Ma'coco` with a straight one. A grep for one will not find the other."
+  },
+  {
+    "id": "062",
+    "name": "Manny's",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["caribbean"],
+    "evidence": [
+      {
+        "slug": "caribbean",
+        "tier": "A",
+        "url": "https://www.loboshospitality.com/Mannys.asp",
+        "quote": "a fully functioning, flavor-forward Cuban bistro"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "Cuban by their own words, and caribbean is the vocabulary's nearest home for it — honest, since Cuba is Caribbean, but broader than the truth, which is why this is medium rather than high. The menu backs the Cuban read: Cubano, Pan con Bistec, Ropa Empanada, Pan con Lechon, El Pollo Frito. It also carries a Croque Madame and a French onion sandwich, so a deli streak runs through it. Yelp files it under American. Their own page prints the zip as 70781, a transposition of 78701 — worth knowing before anything trusts an address scraped from that page. 301 W 5th St."
+  },
+  {
+    "id": "063",
+    "name": "Manuels",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["interior-mexican"],
+    "evidence": [
+      {
+        "slug": "interior-mexican",
+        "tier": "A",
+        "url": "https://www.manuels.com/",
+        "quote": "Regional Mexican Cuisine"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Serving regional Mexican in Austin since 1984 — the second unarguable interior-mexican of this pass, after id 033 El Naranjo, and for the same reason: the restaurant claims the category itself rather than having it assigned as a residue. **A closure that is not ours:** the original Manuel's on Congress Avenue is closed, and the brand's own site now lists only this Jollyville address, which is the record we hold. The Great Hills lease was renegotiated through 2025 during a redevelopment scare; it is still open, Sun-Thu 11am-9pm. Note the CSV spells the name `Manuels` without the apostrophe the restaurant uses."
+  },
+  {
+    "id": "064",
+    "name": "Mattie's",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["new-american"],
+    "evidence": [
+      {
+        "slug": "new-american",
+        "tier": "A",
+        "url": "https://www.mattiesaustin.com/",
+        "quote": "nourishing, farm fresh food made from the best seasonal produce and products available"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "Trading as Mattie's at Green Pastures, in the 1894 mansion. Seasonal farm-to-table with a Southern streak — andouille and duck gumbo, pimento cheese, chicken liver pate, alongside grilled Spanish octopus and chermoula carrots — so southern-comfort was a live second call and was dropped as an accent rather than the identity. **Address discrepancy worth catching: our record says 901 W Live Oak St, and every source including the restaurant's own site says 811 W Live Oak St.** Same business, and the migration joins by name, but the record's address is wrong."
+  },
+  {
+    "id": "065",
+    "name": "Meat & Bread",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://www.meatandbread.com/northshore",
+        "quote": "360 Nueces Street, suite 20, Austin, texas"
+      },
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://www.meatandbread.com/",
+        "quote": "a small menu of chef made sandwiches, scratch cooking served fast"
+      }
+    ],
+    "no_slug_fits": true,
+    "suggested_label": "sandwich-shop",
+    "confidence": "none",
+    "notes": "**Nearly recorded as closed, and the correction is worth reading.** The brand's locations list shows Vancouver, Calgary and one Austin entry named only 'North Shore', with 360 Nueces nowhere on it — the exact shape that established the Dos Olivos closure (id 030). Opening that page shows its address *is* 360 Nueces Street suite 20: North Shore is this location's house name, not a different address. **An omission is only evidence after you open the page that would contain it.** Open, then. No slug: a Vancouver-born porchetta sandwich shop, and the vocabulary has no sandwich or deli entry — bakery-pastry would name the bread and miss the point."
+  },
+  {
+    "id": "066",
+    "name": "Millie’s On Main",
+    "address_city": "Elgin",
+    "status": "open",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://www.milliesonmain.com/lunch-menu/",
+        "quote": "NORTHERN MICHIGAN FAVORITES"
+      }
+    ],
+    "no_slug_fits": true,
+    "suggested_label": "northern-michigan",
+    "confidence": "none",
+    "notes": "**The most unexpected find of the pass: a Northern Michigan restaurant in Elgin, Texas.** Its menu carries a section under that exact heading — Fresh Fried Whitefish Basket, Yooper Beef Pastie, Millie's Homemade Meatloaf — plus Fresh Whitefish Chowder, Smoked Whitefish Dip and an Ultimate Olive Burger, which is a Michigan dish. Upper Peninsula cooking is a real regional American cuisine and nothing in the 38 slugs comes near it. burgers was rejected: the Pub Fare section exists, but the identity is on the menu in capital letters. Also a live-music bar and food-truck venue, which is a second reason nothing fits cleanly. 212 N Main St."
+  },
+  {
+    "id": "067",
+    "name": "Muck & Fuss",
+    "address_city": "New Braunfels",
+    "status": "open",
+    "cuisine": ["burgers"],
+    "evidence": [
+      {
+        "slug": "burgers",
+        "tier": "A",
+        "url": "https://muckandfuss.com/",
+        "quote": "From indulgent favorites like crispy onion rings, bison and Wagyu burgers, and mac n cheese, to lighter options like fresh salads and gluten-free, vegetarian, or vegan choices, there's something here for every craving and every guest."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Trades as Muck & Fuss Craft Beer and Burgers — the category is in the business's own name and on the plate: bison and Wagyu patties, the Street Cred, the Great Southern with fried green tomato and pimento cheese. **A clean contrast with ids 035 Finley's and 066 Millie's**, which are also bars with kitchens: when a bar's food has an actual identity, the slug lands, and the gap those two fall into is not 'bars' but 'ordinary American'. 38 taps at 29 degrees; 295 E San Antonio St, downtown New Braunfels."
+  },
+  {
+    "id": "068",
+    "name": "Murray's Tavern",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["cocktails-bar-food"],
+    "evidence": [
+      {
+        "slug": "cocktails-bar-food",
+        "tier": "A",
+        "url": "https://murraysaustin.com/",
+        "quote": "We provide traditional cocktails, delicious pub food, and excellent service in a newly designed cocktail tavern."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "**The reference case for BL-42, and the first genuinely correct use of this slug in the pass.** The place calls itself a cocktail tavern, leads with the drinks, and its menu is explicitly framed around two of the owner's grandmother's cocktails; the food is pub fare that comes along — oysters Rockefeller, beef tartare, prime rib, fish and chips, a Reuben. That is the slug's definition met head-on, and it is exactly what ids 006 Anthem and 009 Bar Toti were *not* when they reached for it as a crossed-kitchen fallback. If BL-42 is ever settled by writing the meaning down, this row is the example to write it from. 2316 Webberville Rd."
+  },
+  {
+    "id": "069",
+    "name": "New Braunfels Tortilleria",
+    "address_city": "New Braunfels",
+    "status": "open",
+    "cuisine": ["tacos"],
+    "evidence": [
+      {
+        "slug": "tacos",
+        "tier": "A",
+        "url": "https://newbraunfelstortilleria.gotoeat.net/",
+        "quote": "known for its flavorful barbacoa and chicharrón tacos"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "A tortilleria first — large flour tortillas made fresh — with a taqueria counter attached, serving since 1999 and open 6am-2pm, which is the barbacoa-and-menudo schedule rather than a dinner one. tacos is the honest slug and it is one of the few in this vocabulary that was clearly designed for a place like this. breakfast-diner was considered given the hours and rejected: the identity is the tortilla and the taco, not breakfast service. Drive-through, takeout and dine-in; 1681 Spur St."
+  },
+  {
+    "id": "070",
+    "name": "Nightcap",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["new-american"],
+    "evidence": [
+      {
+        "slug": "new-american",
+        "tier": "C",
+        "url": "https://6street.com/listing/nightcap/",
+        "quote": "A new American cuisine-style menu"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "**Placed opposite id 068 Murray's on purpose, because the pair is where the cocktails-bar-food line actually gets drawn from evidence.** Yelp files Nightcap under Cocktail Bars and the name points the same way, but it runs a chef's tasting menu and a multi-course 'Austin Seasonal Trip' built on local vegetables, Gulf fish and ranch protein — that is food-first, whatever the sign says. Murray's calls itself a cocktail tavern; Nightcap calls itself an evening for dining enthusiasts. Medium and Tier C because the quote is a West 6th district listing reproducing the venue's copy, not the venue's own page. 1401 W 6th St; closed Sun-Mon."
+  },
+  {
+    "id": "071",
+    "name": "No 28",
+    "address_city": "Bastrop",
+    "status": "open",
+    "cuisine": ["pizza", "italian"],
+    "evidence": [
+      {
+        "slug": "pizza",
+        "tier": "A",
+        "url": "https://numero28bastrop.com/",
+        "quote": "Handmade pasta, Cacio e Pepe in the Pecorino Wheel, pizza from authentic Italian ovens"
+      },
+      {
+        "slug": "italian",
+        "tier": "B",
+        "url": "https://communityimpact.com/austin/bastrop-cedar-creek/dining/2025/09/15/numero-28-heads-to-bastrop-with-southern-italian-food/",
+        "quote": "Numero 28 heads to Bastrop with Southern Italian food"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Trades as Numero 28 Bastrop; the record's name is the shortened form. **An eighth two-location case rule 4 does not name:** id 073 is the Austin Numero28, and the relationship is looser than the others — numero28.com lists seven locations across New York, New Jersey, Miami Beach and Austin and **does not list Bastrop at all**, which runs its own site instead. Affiliate rather than branch, so the two were researched independently. Neapolitan wood-fired pizza and handmade pasta; cacio e pepe finished tableside in a pecorino wheel. 1006 Main St confirmed on its own site."
+  },
+  {
+    "id": "072",
+    "name": "North Street",
+    "address_city": "San Marcos",
+    "status": "open",
+    "cuisine": ["indian"],
+    "evidence": [
+      {
+        "slug": "indian",
+        "tier": "A",
+        "url": "https://www.northsmtx.com/",
+        "quote": "Butter Chicken"
+      },
+      {
+        "slug": "indian",
+        "tier": "A",
+        "url": "https://www.northsmtx.com/",
+        "quote": "Paneer Tikka Masala Taco (V)"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Also known as North Street Curry Shop, and its own site brands it North Street Beer Bar — three names for one address, which is why the evidence is menu items rather than a self-description. Indian classics (butter chicken, paneer tikka masala, samosas with chana masala) sit beside a deliberate Texas-Indian line: curry tacos in paratha, chicken curry nachos, curry queso. **The fusion did not push this to no_slug_fits** — unlike the crossed kitchens elsewhere in this pass, one cuisine is clearly the base and the Texan half is applied to it. 24 rotating taps; open daily 11am-10pm; 216 North St."
+  },
+  {
+    "id": "073",
+    "name": "Numero28",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["pizza", "italian"],
+    "evidence": [
+      {
+        "slug": "pizza",
+        "tier": "A",
+        "url": "https://numero28.com/",
+        "quote": "We are specialized in authentic Neapolitan pizza, baked hot and fast in a brick oven to achieve a not-too-thick, not-to-thin chewy, smoky crust"
+      },
+      {
+        "slug": "italian",
+        "tier": "A",
+        "url": "https://numero28.com/",
+        "quote": "We only select Italian ingredients which have obtained both the D.o.c. and the D.o.p. certification"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "The Austin branch of the New York group, at 452 West 2nd St — the address is on the corporate locations list, which is what confirms this one and, by its absence there, separates it from id 071 Bastrop. Southern Italian with a Sicilian accent; fresh pasta, oven-fired pizza, arancina, cacio e pepe. Both slugs come from the same page under rule 7."
+  },
+  {
+    "id": "074",
+    "name": "Oasthouse Kitchen + Bar",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["modern-european"],
+    "evidence": [
+      {
+        "slug": "modern-european",
+        "tier": "A",
+        "url": "https://oasthouseaustin.com/",
+        "quote": "European technique, Texas flavor, and everyday ease all sharing the same table."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "Their tagline is 'European Soul. Texan Heart', and the menu is British and German at once — bangers and mash, shepherd's pie, fish & chips, mussels, chicken schnitzel, Wagyu burger. **british and german are each half-true and neither covers it**, so modern-european was taken as the only slug the restaurant's own claim supports. Medium because that claim is broad. **Their north location at 8300 N FM 620 is closed** (Yelp), and the site now lists only 5701 W Slaughter Ln Suite B, which is our record — the closure does not touch it. Incidentally 8300 N FM 620 is also id 012 Bellissima's address, a different unit in the same complex."
+  },
+  {
+    "id": "075",
+    "name": "Odd Duck",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["new-american"],
+    "evidence": [
+      {
+        "slug": "new-american",
+        "tier": "A",
+        "url": "https://www.oddduckaustin.com/about",
+        "quote": "an eatery serving only food with ingredients from local Austin farms"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Chef Bryce Gilmore, a 2009 food trailer that became a restaurant, whole-hog butchery, wood-fired oven, seasonal menu built entirely on local farms, listed in the MICHELIN Guide. A legitimate new-american alongside ids 037 and 052 rather than a residue: Southern dishes with global inflections, ceviche to chicken-heart satay to quail with dirty rice. 1201 S Lamar Blvd."
+  },
+  {
+    "id": "076",
+    "name": "Oh K-Dog",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["korean"],
+    "evidence": [
+      {
+        "slug": "korean",
+        "tier": "A",
+        "url": "https://www.ohkdog.com/",
+        "quote": "KOREAN RICE HOTDOGS HAVE BECOME A CRAZE IN KOREA, QUICKLY BECOMING ONE OF THE MOST POPULAR STREET FOODS."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Trading as Oh!K-Dog & Egg Toast. Korean street-style rice-batter corn dogs — filled with mozzarella, squid ink, rice cake or potato, sauced with gochu — plus Korean egg toasts. A single-item specialist, which is rare in this list and makes the slug unambiguous. Yelp files it under Hot Dogs, which is true and useless. 6929 Airport Blvd Unit 133."
+  },
+  {
+    "id": "077",
+    "name": "Olamaie",
+    "address_city": "Austin",
+    "status": "likely_closed",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "B",
+        "url": "https://austin.culturemap.com/news/restaurants-bars/olamaie-closing/",
+        "quote": "Olamaie's final day will be July 19."
+      },
+      {
+        "slug": null,
+        "tier": "B",
+        "url": "https://www.kut.org/austin/2026-07-09/austin-tx-olamaie-restaurant-closing-michelin-star",
+        "quote": "Austin Michelin-starred restaurant Olamaie closes this month"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "none",
+    "notes": "**Closed July 19 2026, and it held a Michelin star at the time.** Twelve years, opened 2014, one of the seven Austin restaurants starred in the inaugural 2024 Texas guide and starred again in 2025. Chef Michael Fojtasek cited slow summers, rent and labour costs, and an absent late-night trade; the Michelin bump lasted a few months. Covered by KUT, CultureMap, Texas Monthly and WhatNow, and Yelp marks it CLOSED — no counter-signal at all, the best-sourced closure in this pass. Refined Southern, four-course prix fixe, famous for a biscuit; had it been open the slug was southern-comfort."
+  },
+  {
+    "id": "078",
+    "name": "Old Gregg Brewing Company",
+    "address_city": "Pflugerville",
+    "status": "open",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "B",
+        "url": "https://communityimpact.com/austin/round-rock/business/2024/12/12/old-gregg-brewing-company-combines-best-of-worlds-in-pflugerville/",
+        "quote": "Old Gregg Brewing Company combines best of worlds in Pflugerville"
+      }
+    ],
+    "no_slug_fits": true,
+    "suggested_label": "brewery-taproom",
+    "confidence": "none",
+    "notes": "A brewery and full-service bar whose kitchen is **two separate guest operations**: Deft Pies serving Chicago tavern-style thin-crust pizza daily, and Yellow Bell Texas Tacos as a weekend truck — both concepts of Michelin-starred chef John Bates, neither the brewery's own. **Exactly the id 036 Flo's situation**, and refused for the same reason: pizza or tacos would put another kitchen's tag on this record. The vocabulary has no brewery or taproom entry, and cocktails-bar-food would be wrong twice over — this is beer, and the food belongs to somebody else. 1900 E Howard Ln Building H."
+  },
+  {
+    "id": "079",
+    "name": "Oseyo",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["korean"],
+    "evidence": [
+      {
+        "slug": "korean",
+        "tier": "A",
+        "url": "https://www.oseyoaustin.com/",
+        "quote": "A MODERN KOREAN-AMERICAN RESTAURANT INSPIRED BY MOM'S RECIPES"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Oseyo means welcome to my home; the menu is owner Lynn Miller's mother's recipes — banchan, pa jeon, kimchi fried rice, sweet potato noodles, wood-grilled plates. The Korean-American framing is theirs and does not weaken the slug: this is Korean cooking, not a fusion. Second korean in this slice after id 076, from opposite ends of the register. 1628 E Cesar Chavez St."
+  },
+  {
+    "id": "080",
+    "name": "Otoko",
+    "address_city": "Austin",
+    "status": "likely_closed",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "C",
+        "url": "https://www.yelp.com/biz/otoko-austin",
+        "quote": "OTOKO - CLOSED"
+      },
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://www.exploretock.com/otoko/",
+        "quote": "otoko x watertrade"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "none",
+    "notes": "**Closed after ten years of omakase**; the attached cocktail bar Watertrade served its last on 5/30/26. A 12-seat counter at the South Congress Hotel under chef Yoshi Okai, blending Tokyo-style sushi with Kyoto kaiseki at $125-$295. Weaker evidence than id 077 — no news outlet in these results covered it, and otokoaustin.com is still up with the full omakase description, which is the counter-signal. It could not be read first-hand: both that site and the hotel's dining page failed TLS verification from here. Second decorated Austin restaurant in this one slice to close, and it makes three in 2026 counting id 033 — see the correction note on that record."
+  },
+  {
+    "id": "081",
+    "name": "PastaBar",
+    "address_city": "Austin",
+    "status": "likely_closed",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "B",
+        "url": "https://austin.culturemap.com/news/restaurants-bars/pasta-bar-closing/",
+        "quote": "Austin fine dining restaurant Pasta|Bar closing for new concept"
+      },
+      {
+        "slug": null,
+        "tier": "B",
+        "url": "https://hoodline.com/2026/01/east-sixth-shake-up-pasta-bar-to-shutter-as-star-chef-duo-plots-secret-successor/",
+        "quote": "East Sixth Shake-Up: Pasta|Bar to Shutter as Star Chef Duo Plots Secret Successor"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "none",
+    "notes": "**Closed February 28 2026** — trades as Pasta|Bar, a $195 tasting-menu counter listed in the MICHELIN Guide. Owners Phillip Frankland Lee and Margarita Kallas-Lee announced a new concept for the same address later in the year, so **1017 E 6th St is likely to be occupied by something else that is not this record**. Two outlets covered it and Yelp agrees. Third 2026 closure of a Michelin-listed restaurant in this pass, after ids 077 Olamaie and 080 Otoko."
+  },
+  {
+    "id": "082",
+    "name": "Patio Dolcetto",
+    "address_city": "San Marcos",
+    "status": "open",
+    "cuisine": ["pizza"],
+    "evidence": [
+      {
+        "slug": "pizza",
+        "tier": "A",
+        "url": "https://patiodolcetto.com/",
+        "quote": "Small Plates & Pizzas"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "Their own site says almost nothing beyond menu category labels — 'Small Plates & Pizzas', tapas-style — which is where the single slug comes from and why this is medium. **italian was not taken:** directories describe handmade pizzas and pasta, and the name is Italian, but rule 1 forbids reading cuisine off a name and no first-hand source states it. Yelp files it under Wine Bars. Open Mon-Sun, evenings, kitchen closing 30 minutes before the bar; 322 Cheatham St."
+  },
+  {
+    "id": "083",
+    "name": "Péché",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["french", "cocktails-bar-food"],
+    "evidence": [
+      {
+        "slug": "french",
+        "tier": "B",
+        "url": "https://cbsaustin.com/news/local/peche-stands-out-as-one-of-austins-few-absinthe-bars-on-west-4th-street",
+        "quote": "one of Austin's rare absinthe bars, pairing classic cocktails with French bistro-style food."
+      },
+      {
+        "slug": "cocktails-bar-food",
+        "tier": "B",
+        "url": "https://cbsaustin.com/news/local/peche-stands-out-as-one-of-austins-few-absinthe-bars-on-west-4th-street",
+        "quote": "one of Austin's rare absinthe bars, pairing classic cocktails with French bistro-style food."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "**The second correct cocktails-bar-food of the pass, after id 068 Murray's, and the pair now defines the slug from two sides.** Austin's first absinthe bar: the owner's own account is that they set out to be a classic cocktail bar and chose absinthe to differentiate, with the chef describing bistro food as the intent. Drinks-first with a real kitchen — which is why it takes both slugs from one sentence under rule 7, rather than either alone. Their own site carries no descriptive text at all. Note the Uber Eats listing shows closed since May 2026; that is delivery, not the restaurant, which is open 7 days. 208 W 4th St."
+  },
+  {
+    "id": "084",
+    "name": "Pieous",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["pizza"],
+    "evidence": [
+      {
+        "slug": "pizza",
+        "tier": "C",
+        "url": "https://www.yelp.com/biz/pieous-austin",
+        "quote": "specializes in Neapolitan Pizza, Pastrami, Sourdough Bread, Desserts, French Pastry, and Coffee"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "Tier C and medium for a mechanical reason: Pieous appears to have no live site of its own, and Texas Monthly and Texas Highways both returned 403 — the same block that produced the id 033 error, so it is named here rather than glossed. What is not in doubt: a wood-fired oven imported from Italy, sourdough crusts off a 20-year-old starter, and pastrami cured 20 days and smoked in house, which is as much the signature as the pizza. **The pastrami has no slug** and bakery-pastry was considered for the sourdough, French pastry and coffee side and dropped at one slug. Opened 2013, moved to Belterra Village in 2018; 166 Hargraves Dr Bldg H, open Tue-Sun."
+  },
+  {
+    "id": "085",
+    "name": "Poeta",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["italian"],
+    "evidence": [
+      {
+        "slug": "italian",
+        "tier": "B",
+        "url": "https://austin.culturemap.com/news/restaurants-bars/poeta-east-austin-hotel-opening/",
+        "quote": "Italian restaurant Poeta moves into East Austin Hotel"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "**Same chefs as id 045 Intero** — Ian Thurwachter and Krystal Craig — which is worth flagging because the two records will read alike and are genuinely different restaurants at different addresses. Contemporary Italian in the East Austin Hotel, MICHELIN Guide recognised, daily hand-rolled pasta, Italian treatments of Texas ingredients. Opened 2026, so this is one of the few records in the batch that is newer than the album it came from. 1108 E 6th St."
+  },
+  {
+    "id": "086",
+    "name": "Qi Austin",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["chinese"],
+    "evidence": [
+      {
+        "slug": "chinese",
+        "tier": "A",
+        "url": "https://qiaustin.com/",
+        "quote": "We aim to provide traditional Chinese cuisine by using fresh and healthy ingredients, through cooperating with local farm to grow our own vegetables."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Trades as Qi Austin: Modern Asian Kitchen, and despite the pan-Asian name its own copy claims traditional Chinese specifically — dim sum brunch, Peking duck, soup dumplings, scallop caviar sui mai. **An unverified but suggestive detail:** one of their own blog post URLs contains the slug `lin-asian-bar`, which points to a rename and possibly to the same operator as ids 053-055 (Lin Restaurants, chef Ling Qi Wu); the menus rhyme closely. Not asserted — nothing on the site confirms it. 835 W 6th St Unit 114."
+  },
+  {
+    "id": "087",
+    "name": "Red Ash",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["italian"],
+    "evidence": [
+      {
+        "slug": "italian",
+        "tier": "A",
+        "url": "https://www.redashgrill.com/",
+        "quote": "Influenced by the culinary traditions of Northern and Southern Italy, Red Ash features craft Italian cuisine expertly prepared by Owner and Executive Chef John Carver."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Trades as Red Ash Italia. Named for the red ash thrown by its live wood fires, which drive a custom grill, oven and plancha; handmade pasta, seafood, locally sourced prime meats. steakhouse was considered on the strength of the wood-fired meats and dropped — the fire is a technique here, not the format. 303 Colorado St; open daily 5-10pm, reservations hard to get."
+  },
+  {
+    "id": "088",
+    "name": "Restaurant Francois",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["french"],
+    "evidence": [
+      {
+        "slug": "french",
+        "tier": "A",
+        "url": "https://www.restaurantfrancois.com/",
+        "quote": "Restaurant François features a French-American menu that combines classical French technique with a modern culinary sensibility."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Opened December 2025 under chef Harold Marmulstein — newer than the album this list came from, like id 085. Lobster Thermidor, Wagyu short ribs bourguignon, dry-aged steaks, pasta finished tableside in French sauces, with an adjoining cocktail lounge called Bar Rouge. **steakhouse was the second slug considered and dropped**, unlike id 049 Jeffrey's where the restaurant's own sentence named the steaks first; here the sentence names the technique. The CSV omits the cedilla the restaurant uses in François. 401 W 3rd St Ste 100."
+  },
+  {
+    "id": "089",
+    "name": "Root Cellar Cafe",
+    "address_city": "San Marcos",
+    "status": "open",
+    "cuisine": ["breakfast-diner"],
+    "evidence": [
+      {
+        "slug": "breakfast-diner",
+        "tier": "A",
+        "url": "https://rootcellarcafe.com/san-marcos/smhome.html",
+        "quote": "voted best breakfast in Hays County 5 years in a row"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "**One of the few clean breakfast-diner calls this vocabulary was actually designed for**, and it passes the test the prompt sets: the primary identity really is breakfast service, not a restaurant that happens to open early. Hours settle it — 7am to 3pm weekdays, 7am to 4pm weekends, and the kitchen closes with the day. Chicken and waffles, biscuits and gravy, from-scratch. A speakeasy called UpRoot operates above it Thu-Sat evenings and is a separate room, not this record. 215 N LBJ Dr."
+  },
+  {
+    "id": "090",
+    "name": "Santa Catarina",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["tex-mex"],
+    "evidence": [
+      {
+        "slug": "tex-mex",
+        "tier": "B",
+        "url": "https://www.theinfatuation.com/austin/reviews/santa-catarina",
+        "quote": "the menu mostly features Tex-Mex staples, plus a large selection of tequilas and margaritas made with fresh juices."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "**A direct conflict between the restaurant's own claim and an independent read of its menu, and it is a concrete case for DP-11.** Their site opens 'Discover the vibrant flavors of interior Mexico at Santa Catarina' and offers 'interior and coastal favorites'; the Infatuation says the menu is mostly Tex-Mex staples, and fajitas, house tortillas and margarita programs point the same way. **tex-mex was taken over the Tier A self-description on purpose** — DP-11 records interior-mexican becoming false precision worn as a badge, and a restaurant claiming it while serving fajitas is exactly that mechanism seen from the inside. Marked medium so the curator can flip it; the disagreement, not the tag, is the finding. Cherrywood location of three (also Cedar Park and Lakeway, neither in this list); 2901 Manor Rd Unit 100 confirmed on their own locations page."
+  },
+  {
+    "id": "091",
+    "name": "Sazan",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["ramen"],
+    "evidence": [
+      {
+        "slug": "ramen",
+        "tier": "A",
+        "url": "https://sazanramen.com/",
+        "quote": "At Sazan Ramen, we believe great ramen is more than a meal — it's an experience built on comfort, flavor, and tradition."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Trades as Sazan Ramen; the record holds the short name. Signature creamy paitan broth, plus Japanese homestyle plates — dumplings, wings, takoyaki — and a deep Japanese whisky list. **japanese was considered as a second slug and dropped**: unlike ids 039 Fukumoto and 100 TenTen, which run two formats at once, this is a ramen shop with side dishes, which is what rule 6 means by not needing the broader slug. Opened mid-2020. **Same address as id 076 Oh K-Dog** — 6929 Airport Blvd, different units (146 and 133), which is a food hall rather than a coincidence."
+  },
+  {
+    "id": "092",
+    "name": "Shack 512",
+    "address_city": "Volente",
+    "status": "likely_closed",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "C",
+        "url": "https://www.yelp.com/biz/shack-512-volente-2",
+        "quote": "SHACK 512 - CLOSED"
+      },
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://sandycreekyachtclub.com/shack-512/",
+        "quote": "Shack 512"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "none",
+    "notes": "**The decisive signal is a successor, not an absence:** Stumpy's Lakeside Grill now operates at Sandy Creek Marina, the same lakeside spot, serving the same kind of lake food. Yelp marks Shack 512 CLOSED as of July 2026 and several directories say temporarily closed, which is the ambiguity a seasonal lake restaurant always produces — this one has flooded and reopened before, in 2019. The successor is what settles it. 8714 Lime Creek Rd."
+  },
+  {
+    "id": "093",
+    "name": "Shore Raw Bar & Grill",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["seafood"],
+    "evidence": [
+      {
+        "slug": "seafood",
+        "tier": "A",
+        "url": "https://shoreatx.com/",
+        "quote": "Shore Raw Bar & Grill celebrates regional coastal cuisine with an emphasis on the freshest sustainable seafood."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Oysters, crawfish, sushi and grilled fish, with the kitchen drawing on Texas, Louisiana and Mexico by its own account. The Gulf-coast framing makes seafood unambiguous; the Louisiana half has no slug and Cajun is not in the vocabulary, but unlike the crossed kitchens elsewhere in this pass, here one slug carries the identity honestly. 8665 W Highway 71 Suite 100; open daily with weekend brunch."
+  },
+  {
+    "id": "094",
+    "name": "Sidecar at Prince Solms Inn",
+    "address_city": "New Braunfels",
+    "status": "open",
+    "cuisine": ["cocktails-bar-food"],
+    "evidence": [
+      {
+        "slug": "cocktails-bar-food",
+        "tier": "B",
+        "url": "https://www.texasmonthly.com/food/recipes-from-the-sidecar-at-the-prince-solms-inn-in-new-braunfels/",
+        "quote": "This genteel club in the inn's basement specializes in top-notch cocktails, served with a side of jazz."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "**Third correct cocktails-bar-food of the pass**, after ids 068 Murray's and 083 Péché, and the least ambiguous of the three: a basement cocktail club in a historic inn, open evenings only Tue-Sat, with a deliberately short food menu that expands to a ribeye on Friday and Saturday steak nights. The food follows the drinks by design. Yelp files it under Cocktail Bars and agrees. **Same street address as id 067 Muck & Fuss** — 295 E San Antonio St in downtown New Braunfels; Muck & Fuss is Unit 101 and this is the inn's basement, two different businesses at one number."
+  },
+  {
+    "id": "095",
+    "name": "Sour Duck Market",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["bakery-pastry"],
+    "evidence": [
+      {
+        "slug": "bakery-pastry",
+        "tier": "A",
+        "url": "https://www.sourduckmarket.com/",
+        "quote": "Austin Eastside Neighborhood Bakery, Café, Bar, and Beer Garden"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Their own words put Bakery first among four things, which is what settles the slug for a place that is genuinely several — café, bar and beer garden as well. Flour milled locally, meats smoked daily in a 1,000-gallon pit, smoked mushroom danish and ham-and-cheese croissants next to a smash burger. **bbq was considered on the strength of that smoker and dropped:** the smoke feeds sandwiches here, it is not the format. Yelp files it under Bakeries. 1814 E MLK Jr Blvd."
+  },
+  {
+    "id": "096",
+    "name": "Spud Ranch",
+    "address_city": "New Braunfels",
+    "status": "open",
+    "cuisine": ["southern-comfort"],
+    "evidence": [
+      {
+        "slug": "southern-comfort",
+        "tier": "B",
+        "url": "https://communityimpact.com/austin/new-braunfels/2021/05/06/spud-ranch-in-new-braunfels-has-built-a-loaded-potato-menu/",
+        "quote": "Spud Ranch in New Braunfels has built a loaded potato menu"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "**The format has no slug and the food does, so the food won — the same call made for id 042 Hattie B's**, where there is no fried-chicken entry either. This is a baked-potato counter: 22 loaded Texas-sized potatoes, chicken fried chicken, brisket, hot wing, plus burgers and sandwiches on Texas toast. southern-comfort is incomplete rather than wrong, and Yelp files it the same way. Marked medium because a visitor filtering that slug will not picture this. Family owned since 2003, this location since 2011; 118 Common St, closed Sundays."
+  },
+  {
+    "id": "097",
+    "name": "Summer on Music Lane",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["new-american"],
+    "evidence": [
+      {
+        "slug": "new-american",
+        "tier": "A",
+        "url": "https://www.bunkhousehotels.com/summer-on-music-lane",
+        "quote": "seasonal, honest cooking with local ingredients and live-fire cooking techniques, offering hearty proteins, house made pastas, and elevated snacks"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "Restaurant of Hotel Magdalena on South Congress, a Bunkhouse property, open 7am to late. Ora King salmon crudo, squid ink orecchiette, 44 Farms strip steak, sweet potato papas bravas — Italian and Spanish accents on a live-fire seasonal menu, which is why this is new-american rather than either. **Evidence caveat, stated rather than glossed:** bunkhousehotels.com returns 403 to direct fetch, so the quote reaches me through the search index. Same limitation as ids 012 and 050, and the reason it is named is id 033."
+  },
+  {
+    "id": "098",
+    "name": "Sundancer Grill",
+    "address_city": "Lakeway",
+    "status": "open",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "http://www.sundancergrill.com/",
+        "quote": "Sundancer Grill is the premier restaurant on Lake Travis in Lakeway, Texas featuring a bistro dining experience with a casual lakeside atmosphere."
+      }
+    ],
+    "no_slug_fits": true,
+    "suggested_label": "waterfront-bar-grill",
+    "confidence": "none",
+    "notes": "**The same suggested label as id 018 Captain Pete's, reused on purpose so the gap is countable rather than described twice.** Two Lake Travis restaurants, both open, both with menus that name no cuisine — here 'chef crafted salads, sandwiches, steak and seafood', which is a description of a bistro's structure and not of a kitchen. seafood was the near miss and was refused: it is one of four categories in their own sentence, not the identity. At the Sail & Ski Yacht Club, 16410 Stewart Rd; open daily with Sunday brunch."
+  },
+  {
+    "id": "099",
+    "name": "Taverna",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["italian"],
+    "evidence": [
+      {
+        "slug": "italian",
+        "tier": "C",
+        "url": "https://www.2ndstreetdistrict.com/taverna",
+        "quote": "Taverna is a warm and inviting neighborhood restaurant that offers a truly Italian experience without having to go far."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "High despite Tier C, because the claim is not in doubt from any direction: Yelp, OpenTable and Tripadvisor all file it Italian, the menu is house-made pasta, risotto and pan-seared sea bass, and the district listing above reproduces the venue's own copy. Northern Italian, farm-to-table. **A two-location brand:** the other Taverna is at 3120 Palm Way in Domain Northside and is not in this list — 258 W 2nd St downtown is the record we hold, and the address on the listing matches it."
+  },
+  {
+    "id": "100",
+    "name": "TenTen",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["japanese", "sushi"],
+    "evidence": [
+      {
+        "slug": "japanese",
+        "tier": "A",
+        "url": "https://www.tentenaustin.com/",
+        "quote": "MODERN JAPANESE, Thoughtfully Sourced"
+      },
+      {
+        "slug": "sushi",
+        "tier": "A",
+        "url": "https://www.tentenaustin.com/",
+        "quote": "sushi, robata, and grass-fed wagyu crafted without seed oils or refined sugars"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Meaningfully both, on the id 039 Fukumoto pattern: a sushi counter and a robata grill running together, so neither slug alone describes what you would go for. **Third Japanese record in this slice and each took a different shape** — id 091 Sazan is ramen alone, this is japanese plus sushi, and id 080 Otoko was an omakase counter that has now closed. Grass-fed Texas wagyu, full sake list. 501 W 6th St; evenings only."
+  },
+  {
+    "id": "101",
+    "name": "The Grove Wine Bar & Kitchen",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["new-american"],
+    "evidence": [
+      {
+        "slug": "new-american",
+        "tier": "A",
+        "url": "https://www.grovewinebar.com/",
+        "quote": "We're serving up New American fare, crafted with fresh, locally sourced ingredients."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Westlake location. **The record's address needs decoding before it matches anything:** the CSV says 6317 RM-2244 and the brand says 6317 Bee Cave Road — the same street under its two names, RM 2244 being Bee Cave Road's designation. One of the seven two-location brands in rule 4; the brand runs four, and both of ours appear on its own list. **Their downtown location at 800 W 6th St is closed** (Yelp) and is not in this batch. Unlike id 036 Flo's, a wine bar with a slug: the kitchen is theirs and names its own cuisine."
+  },
+  {
+    "id": "102",
+    "name": "The Grove Wine Bar & Kitchen",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["new-american"],
+    "evidence": [
+      {
+        "slug": "new-american",
+        "tier": "A",
+        "url": "https://www.grovewinebar.com/",
+        "quote": "We're serving up New American fare, crafted with fresh, locally sourced ingredients."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Lakeway location, 3001 Ranch Road 620 South, confirmed on the brand's own locations page — which is what distinguishes it from id 101. Same concept and menu across all four locations by the brand's account, so the tag is identical. Yelp files this one under Wine Bars and id 101 under Pizza, which is the same restaurant categorised two ways by the same directory."
+  },
+  {
+    "id": "103",
+    "name": "The Kimberly",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["new-american"],
+    "evidence": [
+      {
+        "slug": "new-american",
+        "tier": "A",
+        "url": "https://thekimberly.com/about",
+        "quote": "From the first taste of an impeccable cocktail to a menu of sumptuous American classics laced with global influence, every detail stirs the senses and invites you to indulge."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "**Chef John Carver, the same chef as id 087 Red Ash** — two very different restaurants under one name, which is worth knowing before the rows are read side by side. Fine dining: USDA Prime dry-aged steaks over a wood-burning grill, seafood flown in daily, house-made pastas. **steakhouse was considered and dropped**, the same call made at Red Ash for the same chef — the fire is technique, not format, and their own sentence leads with American classics. **Address discrepancy:** our record says 200 W 7th St, the restaurant says 200 W 6th St Suite 100 with entrance and valet on W 7th. Both describe one building."
+  },
+  {
+    "id": "104",
+    "name": "The Local",
+    "address_city": "Austin",
+    "status": "likely_closed",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "B",
+        "url": "https://communityimpact.com/austin/southwest-austin-dripping-springs/dining/2026/01/22/restaurant-the-local-closes-in-southwest-austins-shady-hollow-village/",
+        "quote": "Restaurant The Local closes in Southwest Austin's Shady Hollow Village"
+      },
+      {
+        "slug": null,
+        "tier": "C",
+        "url": "https://www.yelp.com/biz/the-local-austin",
+        "quote": "THE LOCAL - CLOSED"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "none",
+    "notes": "**Closed January 2026** after roughly two years, and a successor is already named: a new Phoebe's Diner is opening in the same suite at 9901 Brodie Lane #120. Second closure in this pass settled by a successor rather than an absence, after id 092 Shack 512. A New American tavern with craft cocktails; had it been open the slug would have been the crowded one."
+  },
+  {
+    "id": "105",
+    "name": "Tiki Tatsu-Ya",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["cocktails-bar-food"],
+    "evidence": [
+      {
+        "slug": "cocktails-bar-food",
+        "tier": "A",
+        "url": "https://www.tiki-tatsuya.com/",
+        "quote": "Tiki Tatsu-Ya | Immersive Tiki Bar | South Lamar Austin"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "**Fourth correct cocktails-bar-food.** A 21-and-over immersive tiki bar from the Tatsu-Ya group: tropical cocktails are the entire proposition and the food is pupu platters, spam musubi, kalua pork and taro tots meant to be shared over them. Drinks-first by construction, not by fallback. **The food's Polynesian and Hawaiian character has no slug** — Yelp files it under Polynesian, which the vocabulary cannot express. Note the corporate address on their site (507 Pressler St) is the group's office; the venue is 1300 S Lamar, which is our record."
+  },
+  {
+    "id": "106",
+    "name": "Tsuke Edomae",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["sushi"],
+    "evidence": [
+      {
+        "slug": "sushi",
+        "tier": "A",
+        "url": "https://www.tsukeedo.com/",
+        "quote": "You will feel my story through nigiri sushi, you will feel my Pain, Suffering, Happiness, and Bliss."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "An eight-seat Edomae omakase counter, 21 courses, doors locked until service begins, booked through mid-2026 with reservations released in blocks. Edomae is the Tokyo technique of aging, curing and marinating, so this is sushi in its narrowest sense — japanese was not added, on the id 026 Craft Omakase precedent. 4600 Mueller Blvd Suite 1035."
+  },
+  {
+    "id": "107",
+    "name": "Tumble 22",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["southern-comfort"],
+    "evidence": [
+      {
+        "slug": "southern-comfort",
+        "tier": "A",
+        "url": "https://tumble22.com/",
+        "quote": "all-natural, Texas-raised chicken that's hand-breaded and tumbled precisely twenty two times for the perfect crunch"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Trades as Tumble 22 Chicken Joint. Nashville-style hot chicken, housemade pie, cold beer — **the same call as id 042 Hattie B's and for the same reason: there is no fried-chicken slug and southern-comfort is its honest home.** Higher confidence than Hattie B's only because this site actually renders its own copy. Seven locations; 7211 Burnet Rd is ours."
+  },
+  {
+    "id": "108",
+    "name": "Uchi",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["japanese", "sushi"],
+    "evidence": [
+      {
+        "slug": "japanese",
+        "tier": "A",
+        "url": "https://uchi.uchirestaurants.com/",
+        "quote": "Elevated Japanese Cuisine from Chef Tyson Cole"
+      },
+      {
+        "slug": "sushi",
+        "tier": "C",
+        "url": "https://www.yelp.com/biz/uchi-austin-austin",
+        "quote": "Sushi Bars"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "The original, from James Beard winner Tyson Cole; uchi means house. Signature tastings, sushi and seasonal omakase, described by the group as blending Japanese tradition with modern creativity — meaningfully both, on the id 039 Fukumoto pattern. The second evidence row is only a category string because the group's site is brand-level and does not repeat the address or the sushi claim per location; the first row carries the weight. **Same chef as id 056 Loro**, the Asian smokehouse he built with Aaron Franklin. 801 S Lamar Blvd."
+  },
+  {
+    "id": "109",
+    "name": "Uchibā Austin",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["japanese", "cocktails-bar-food"],
+    "evidence": [
+      {
+        "slug": "japanese",
+        "tier": "A",
+        "url": "https://uchiba.uchirestaurants.com/",
+        "quote": "Uchibā is a cocktail bar and restaurant inspired by the casual energy of a Japanese izakaya."
+      },
+      {
+        "slug": "cocktails-bar-food",
+        "tier": "A",
+        "url": "https://uchiba.uchirestaurants.com/",
+        "quote": "Uchibā is a cocktail bar and restaurant inspired by the casual energy of a Japanese izakaya."
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "**Fifth cocktails-bar-food, and the one that shows the slug can coexist with a cuisine rather than replace it.** Uchibā is loosely Uchi Bar: yakitori, small plates and Uchi classics against a long list of Japanese whiskies and craft cocktails, and their own sentence puts cocktail bar first. Yelp files it under Cocktail Bars, OpenTable as a restaurant — both right. Companion to id 108. 601 W 2nd St."
+  },
+  {
+    "id": "110",
+    "name": "Uroko",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["sushi"],
+    "evidence": [
+      {
+        "slug": "sushi",
+        "tier": "A",
+        "url": "https://www.urokoaustin.com/",
+        "quote": "12 courses of nigiri sushi created by owner/chefs Masa and Také, with the best ingredients from all over the world that we can get at the moment"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "Three concepts in one small storefront: a counter-service temaki hand-roll bar on weekdays, sushi classes, and a 45-minute 12-course omakase at weekends. All three are sushi, so the unusual structure does not complicate the tag. **Address detail:** the CSV says Bldg 1 Unit 1 and their own site says bldg 1 #c — same building, different unit label. 1023 Springdale Rd."
+  },
+  {
+    "id": "111",
+    "name": "Veracruz Fonda & Bar",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["tacos"],
+    "evidence": [
+      {
+        "slug": "tacos",
+        "tier": "A",
+        "url": "https://www.veracruzfonda.com/",
+        "quote": "modern Mexican cuisine rooted in the flavors of our childhood and our hometown of Veracruz"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "**The one Mexican record in this slice that the vocabulary handles**, and it is worth seeing why: the menu spotlights tacos, so a real slug applies. Note what would have happened otherwise — **Veracruz is a Gulf state, so interior-mexican would have been the opposite of true**, the same error DP-11 records against Nomade and that id 034 Este avoided by taking seafood. Antojitos, larger plates, conchas in pecan and lime; MICHELIN Guide listed. 1905 Aldrich St Unit 125 in Mueller."
+  },
+  {
+    "id": "112",
+    "name": "VERDAD True Modern Mexican",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://www.verdadtruemodernmexican.com/",
+        "quote": "Traditions cultivated throughout Mexican history are woven through our menu."
+      }
+    ],
+    "no_slug_fits": true,
+    "suggested_label": "modern-mexican",
+    "confidence": "none",
+    "notes": "**The third Mexican restaurant in this pass with no honest slug, after ids 060 and 061.** The menu crosses the country deliberately — Oaxaca filet with cherry mole is interior, hamachi ceviche and grilled oysters are coastal — and the vocabulary offers only tex-mex, tacos and interior-mexican. Taking interior-mexican here would be the exact mechanism DP-11 describes, so it was refused. From the group behind Perry's Steakhouse and Carve American Grill; in the Grove development at 2701 Perseverance Dr, **the same development as id 055 Ling Wu at The Grove**."
+  },
+  {
+    "id": "113",
+    "name": "Vespaio",
+    "address_city": "Austin",
+    "status": "likely_closed",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "B",
+        "url": "https://austin.culturemap.com/news/restaurants-bars/vespaio-ristorante-chapulin-cantina-closing/",
+        "quote": "will close for good February 28, taking Oaxacan sister restaurant Chapulín Cantina with it"
+      },
+      {
+        "slug": null,
+        "tier": "B",
+        "url": "https://www.kxan.com/news/local/vespaio-ristorante-and-chapulin-cantina-to-close-after-years-on-south-congress/",
+        "quote": "Vespaio Ristorante and Chapulin Cantina to close after years on South Congress"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "none",
+    "notes": "**Closed February 28 2026 after thirty years**, and it is the same closure as id 021 Chapulín Cantina — sister restaurants at 1610 and 1612 S Congress, whose properties were bought at the end of 2025 by Fortum Ventures. **Two records in this batch, one event.** The owners' own statement: as South Congress continues to evolve, this was the right moment to close the chapter on their own terms. An Italian restaurant; had it been open the slug was italian, uncontroversially."
+  },
+  {
+    "id": "114",
+    "name": "Vic & Al's",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": [],
+    "evidence": [
+      {
+        "slug": null,
+        "tier": "A",
+        "url": "https://www.vicandals.com/",
+        "quote": "Our menu is inspired by the bold, comforting flavors of Cajun and Louisiana cooking, with dishes meant to be shared, enjoyed, and talked about."
+      }
+    ],
+    "no_slug_fits": true,
+    "suggested_label": "cajun-creole",
+    "confidence": "none",
+    "notes": "**The clearest single-cuisine gap the pass has found, and the best candidate to be answered the way german was.** A self-described family-style Cajun restaurant: gumbo, crawfish étouffée, po'boys, oysters, seafood towers. Cajun and Creole are a distinct regional cuisine and the vocabulary has no entry. **southern-comfort was refused deliberately** — the vocabulary already distinguishes tex-mex from interior-mexican, so it plainly cares about regional precision, and folding Louisiana into the American South would throw away exactly the distinction it makes elsewhere. **This gap appeared twice:** id 093 Shore Raw Bar also draws on Louisiana and was only saved by seafood carrying its identity. 2406 Manor Rd Suite D."
+  },
+  {
+    "id": "115",
+    "name": "Vinaigrette",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["vegetarian-forward"],
+    "evidence": [
+      {
+        "slug": "vegetarian-forward",
+        "tier": "A",
+        "url": "https://www.vinaigretteonline.com/",
+        "quote": "perfectly-dressed entrée salads with locally-sourced proteins"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "medium",
+    "notes": "A farm-to-table salad restaurant — entrée salads are the format, with soups, sandwiches and sides around them. **There is no salads slug**, and vegetarian-forward is the closest honest fit: the vegetables are the centre and the proteins are add-ons, which is what the slug means, even though the menu is not vegetarian (duck confit is on it). Medium for that reason. A visitor filtering vegetarian-forward would be well served here, which is the test that decided it. 2201 College Ave; open daily 11am-9pm."
+  },
+  {
+    "id": "116",
+    "name": "Winston’s",
+    "address_city": "Spicewood",
+    "status": "open",
+    "cuisine": ["pizza", "coffee"],
+    "evidence": [
+      {
+        "slug": "pizza",
+        "tier": "A",
+        "url": "https://www.winstonsatx.com/",
+        "quote": "coffee + provisions + pizza"
+      },
+      {
+        "slug": "coffee",
+        "tier": "B",
+        "url": "https://communityimpact.com/austin/lake-travis-westlake/dining/2026/01/12/winstons-serves-wood-fired-pizza-and-more-in-spicewood-bee-cave/",
+        "quote": "Winston's serves wood-fired pizza and more in Spicewood, Bee Cave"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "**The rare place whose own name is the tag**, which is not a rule-1 violation because the name is a menu, not a claim: coffee + provisions + pizza. Wood-fired pizzas from 7:30am alongside breakfast tacos, sourdough toasts, cinnamon rolls, nitro cold brew and gelato. Both slugs are real and a visitor would use either. **Location discrepancy:** the CSV says Spicewood and their own site says Lakeway, both with zip 78669, which is Spicewood — the site is the looser of the two. 4900 Bee Creek Rd Suite 205."
+  },
+  {
+    "id": "117",
+    "name": "Yamas",
+    "address_city": "Austin",
+    "status": "open",
+    "cuisine": ["greek"],
+    "evidence": [
+      {
+        "slug": "greek",
+        "tier": "B",
+        "url": "https://www.austinchronicle.com/food/2023-10-20/restaurant-review-yamas-greek-kitchen-bar/",
+        "quote": "Restaurant Review: Yamas Greek Kitchen + Bar"
+      }
+    ],
+    "no_slug_fits": false,
+    "suggested_label": null,
+    "confidence": "high",
+    "notes": "**The last record of the pass, and the only greek in 117 places** — souvlaki, moussaka, grilled octopus, giouvetsi, lamb chops. Trades as Yamas Greek Kitchen + Bar. A fitting close: the vocabulary carries greek, turkish, portuguese, brazilian and peruvian, each of which turned up either once or never in this batch, while it lacks cajun-creole, an ordinary american, and a way to describe Mexican food that is neither Tex-Mex nor interior. 5308 Balcones Dr; open daily 4-11pm."
   }
 ]
