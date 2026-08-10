@@ -211,8 +211,66 @@ A rollback of data that may have been curated carries a warning and a verificati
 DELETE FROM public.place_tags WHERE source = 'suggested';   -- machine guesses only
 ```
 
+A rollback that would delete a tag, a tier or any other vocabulary row **guards on use and refuses
+loudly**, rather than warning in a comment:
+
+```sql
+DO $GUARD$
+DECLARE v_count integer; v_used text;
+BEGIN
+  SELECT count(*), string_agg(DISTINCT t.slug, ', ') INTO v_count, v_used
+  FROM public.place_tags pt JOIN public.tags t ON t.id = pt.tag_id
+  WHERE t.facet = 'cuisine' AND t.slug IN (…);
+  IF v_count > 0 THEN
+    RAISE EXCEPTION 'ROLLBACK REFUSED: % assignment(s) exist on slug(s) %', v_count, v_used;
+  END IF;
+END $GUARD$;
+```
+
+A comment asks the operator to check; an exception makes the database check. Deleting a tag a place
+carries deletes judgment, and §1.1 does not allow a rollback that convenient.
+
+## Ordering a vocabulary: declare the end state, never shift twice
+
+`20260809130000_add_german_cuisine` inserted **one** slug by shifting the tail
+(`sort_order = sort_order + 1`) behind a `NOT EXISTS` guard. That is correct for one, and it does
+**not** compose: seven cascading shifts are seven chances to shift twice, and the guard cannot tell a
+partial run from a fresh one.
+
+For more than one insertion, **rewrite the whole ordering from a declared list**:
+
+```sql
+UPDATE public.tags t
+SET sort_order = v.ord
+FROM (VALUES ('bbq', 0), ('tex-mex', 1), … ) AS v(slug, ord)
+WHERE t.facet = 'cuisine' AND t.slug = v.slug
+  AND t.sort_order IS DISTINCT FROM v.ord;
+```
+
+This is **idempotent by end state**: run it twice and the second run updates zero rows. It also fails
+usefully — pair it with a gate asserting the expected total and one that catches any row the list did
+not cover:
+
+```sql
+SELECT string_agg(slug, ', ') INTO v_missing
+FROM public.tags WHERE facet = 'cuisine' AND (sort_order IS NULL OR sort_order > 44);
+IF v_missing IS NOT NULL THEN RAISE EXCEPTION '… outside the declared ordering: %', v_missing; END IF;
+```
+
+Without that second gate, a slug the migration's author did not know about keeps a stale position and
+nothing complains. Add a gate asserting the existing relative order too, so an insertion cannot
+silently become a rearrangement of the facet a visitor sees.
+
 ## Before writing any SQL
 
 **Live schema first.** `list_tables` + `list_migrations` through MCP. Convention is not a substitute
 for introspection — an "obvious" column may not exist. This project uses `status`, not `deleted_at`
 (ADR-03), and has no `company_id` (ADR-01).
+
+**If the MCP server is not loaded, do not quietly write SQL anyway.** It failed to load in S09, S12
+and S13. When a migration genuinely has to be drafted blind — because the research behind it is done
+and the next session should only have to verify — say so **in the migration's own header**, in
+capitals: that it was written without introspection, which applied migration it is modelled on, and
+which gate is the one built to catch a wrong assumption. A file that looks like every other migration
+but was never checked against the schema is the same failure shape as a write that reports success it
+did not have.

@@ -1,0 +1,233 @@
+[
+  {
+    "id": "001",
+    "name": "24 Diner",
+    "city": "Austin",
+    "status": "open",
+    "format": ["sit-down-restaurant"],
+    "logistics": [],
+    "dietary": [],
+    "evidence": [
+      {
+        "facet": "format",
+        "slug": "sit-down-restaurant",
+        "tier": "A",
+        "url": "https://www.24diner.com/",
+        "quote": "open 24 hours Thursday through Sunday and late into the night on Wednesdays"
+      }
+    ],
+    "hours": "Mon-Tue 7am-11pm; Wed 7am-late; Thu-Sat 24 hours; Sun to 11pm",
+    "confidence": "medium",
+    "notes": "Open. The format quote is thin — it establishes a full-service restaurant operating around the clock rather than naming the shape directly — and nothing on their own site addresses reservations or dietary options. Yelp files it under Diners. **The 24-hour schedule is exactly the raw material the four derived logistics tags need**, which is why it is in `hours` rather than tagged. 600 N Lamar Blvd Ste 200."
+  },
+  {
+    "id": "002",
+    "name": "Aba",
+    "city": "Austin",
+    "status": "open",
+    "format": ["sit-down-restaurant"],
+    "logistics": [],
+    "dietary": [],
+    "evidence": [
+      {
+        "facet": "format",
+        "slug": "sit-down-restaurant",
+        "tier": "C",
+        "url": "https://www.yelp.com/biz/aba-austin-4",
+        "quote": "Mediterranean"
+      }
+    ],
+    "hours": "Mon-Thu 11am-10pm; Fri 11am-11pm; Sat 10am-11pm; Sun 10am-9pm",
+    "confidence": "medium",
+    "notes": "Open, from the Chicago group, chef CJ Jacobson. **dietary was refused despite two aggregators flagging vegetarian and vegan options** — this pass's rule 6 says a delivery-app or directory attribute flag is not evidence, and no menu page could be read. **logistics was refused too:** sources say reservations are highly recommended and bar seating is first come first served, which is neither `reservations-essential` nor `walk-in-only`. Both facets are gaps in the sourcing, not in the restaurant."
+  },
+  {
+    "id": "003",
+    "name": "ALC Steaks",
+    "city": "Austin",
+    "status": "open",
+    "format": ["sit-down-restaurant"],
+    "logistics": [],
+    "dietary": [],
+    "evidence": [
+      {
+        "facet": "format",
+        "slug": "sit-down-restaurant",
+        "tier": "A",
+        "url": "https://alcsteaks.com/",
+        "quote": "relaxed Austin-style setting"
+      }
+    ],
+    "hours": "Mon-Thu 4-10pm; Fri-Sat 4-11pm; closed Sun",
+    "confidence": "high",
+    "notes": "Trading as Austin Land & Cattle. **fine-dining was considered and refused on the restaurant's own words** — it calls its setting relaxed and Austin-style with rustic decor, which is the opposite of the claim, and this pass's rule says fine dining is not a synonym for expensive. Reservations go through OpenTable, which establishes that it takes them, not that they are essential. Closed Sundays; 1205 N Lamar Blvd."
+  },
+  {
+    "id": "004",
+    "name": "Arlo Grey",
+    "city": "Austin",
+    "status": "open",
+    "format": ["sit-down-restaurant"],
+    "logistics": [],
+    "dietary": [],
+    "evidence": [
+      {
+        "facet": "format",
+        "slug": "sit-down-restaurant",
+        "tier": "A",
+        "url": "https://www.thelinehotel.com/austin/restaurants-bars/arlo-grey/",
+        "quote": "Arlo Grey is the LINE's lakeside restaurant by Top Chef winner, host and cookbook author Kristen Kish."
+      }
+    ],
+    "hours": "Dining room Wed-Sun 5-10pm; bar Wed-Sun 4-11pm; closed Mon-Tue",
+    "confidence": "medium",
+    "notes": "Open, restaurant of the LINE hotel. **fine-dining is very likely true and was still refused**, which is the honest position: a Top Chef winner's hotel restaurant reads that way, but nothing found establishes a tasting menu, a dress code or captained service, and inferring the tag from the chef's reputation is exactly what rule 3 forbids. The site has a Reserve button — that is not `reservations-essential`. 111 E Cesar Chavez St."
+  },
+  {
+    "id": "005",
+    "name": "BOA Steakhouse",
+    "city": "Austin",
+    "status": "open",
+    "format": ["sit-down-restaurant"],
+    "logistics": [],
+    "dietary": [],
+    "evidence": [
+      {
+        "facet": "format",
+        "slug": "sit-down-restaurant",
+        "tier": "C",
+        "url": "https://www.yelp.com/biz/boa-steakhouse-austin-2",
+        "quote": "Steakhouses"
+      }
+    ],
+    "hours": "Sun-Thu 5-10pm; Fri-Sat 5-11pm",
+    "confidence": "medium",
+    "notes": "Open. **Two facts were found that the vocabulary cannot express**, and they are worth recording because they are precisely what a visitor would want to know: a dress code is enforced (no athletic wear, beachwear, sweatpants, flip flops) and parking is valet at $13 off Lavaca. There is no dress-code slug, and valet-only downtown parking is not the same claim as `parking-is-a-problem`, so tagging it would be inference. 300 W 6th St."
+  },
+  {
+    "id": "006",
+    "name": "Canje",
+    "city": "Austin",
+    "status": "open",
+    "format": ["sit-down-restaurant"],
+    "logistics": [],
+    "dietary": [],
+    "evidence": [
+      {
+        "facet": "format",
+        "slug": "sit-down-restaurant",
+        "tier": "C",
+        "url": "https://www.yelp.com/biz/canje-austin",
+        "quote": "Caribbean"
+      }
+    ],
+    "hours": "Mon-Thu 5-10pm; Fri-Sat 5-11pm; Sun 5-10pm",
+    "confidence": "medium",
+    "notes": "Open, seven nights. Starred in the guide. Reservations are accepted up to 60 days ahead and suggested for weekends — **suggested is not `reservations-essential`**, and the 60-day window is not `reservations-weeks-out` either, which needs evidence that booking actually fills weeks out rather than merely being possible. Vegan and limited vegetarian options are reported by directories only; `canjeatx.com` failed TLS verification from here, so no menu could be read. 1914 E 6th St Unit C."
+  },
+  {
+    "id": "007",
+    "name": "Cap's On The Water",
+    "city": "St. Augustine",
+    "status": "open",
+    "format": ["sit-down-restaurant"],
+    "logistics": ["walk-in-only"],
+    "dietary": [],
+    "evidence": [
+      {
+        "facet": "logistics",
+        "slug": "walk-in-only",
+        "tier": "A",
+        "url": "https://www.capsonthewater.com/",
+        "quote": "does not take standard reservations. Use their live waitlist during open hours to save your spot, then check in with the host on arrival for seating"
+      },
+      {
+        "facet": "format",
+        "slug": "sit-down-restaurant",
+        "tier": "C",
+        "url": "https://www.yelp.com/biz/caps-on-the-water-st-augustine",
+        "quote": "Seafood"
+      }
+    ],
+    "hours": "Dinner daily from 4pm; lunch Sat-Sun from 11:30am; closing varies with weather",
+    "confidence": "high",
+    "notes": "**The first clean `walk-in-only` of the pass, and it shows what good evidence for this facet looks like:** a positive, stated policy — no reservations, a live waitlist instead — rather than the absence of a booking button. Waterfront, and their own hours carry the caveat that closing varies with weather. 4325 Myrtle St."
+  },
+  {
+    "id": "008",
+    "name": "Castillo Craft Bar + Kitchen",
+    "city": "St. Augustine",
+    "status": "open",
+    "format": ["sit-down-restaurant"],
+    "logistics": [],
+    "dietary": [],
+    "evidence": [
+      {
+        "facet": "format",
+        "slug": "sit-down-restaurant",
+        "tier": "A",
+        "url": "https://castillokitchen.com/",
+        "quote": "a menu highlighting the freshest local ingredients, presenting each dish with thoughtfulness and artistry"
+      }
+    ],
+    "hours": "Breakfast 7-10:30am daily; weekend lunch 12-4pm; dinner 4-10pm; bar to 11pm",
+    "confidence": "medium",
+    "notes": "Open, inside the Renaissance St. Augustine Historic Downtown Hotel — confirmed on its own site. **bar-with-real-food was considered and refused:** the name leads with the craft bar and the bar keeps its own later hours, but the kitchen runs three services a day including daily breakfast, which is a restaurant's shape and not a bar's. Serving breakfast daily is raw material for a derived tag, so it is in `hours`. 6 W Castillo Dr."
+  },
+  {
+    "id": "009",
+    "name": "Chez L'Amour",
+    "city": "St. Augustine",
+    "status": "likely_closed",
+    "format": [],
+    "logistics": [],
+    "dietary": [],
+    "evidence": [
+      {
+        "facet": null,
+        "slug": null,
+        "tier": "B",
+        "url": "https://www.visitstaugustine.com/restaurant/chez-lamour",
+        "quote": "Chez L'Amour—Permanently Closed"
+      },
+      {
+        "facet": null,
+        "slug": null,
+        "tier": "C",
+        "url": "https://www.yelp.com/biz/chez-l-amour-st-augustine",
+        "quote": "CHEZ L'AMOUR - CLOSED"
+      }
+    ],
+    "hours": null,
+    "confidence": "none",
+    "notes": "**CLOSED — and this one is published in the guide right now.** The first closure this sweep has found inside the 58, which is the whole reason the sweep exists: a visitor opening St. Augustine today can click through to a restaurant that does not exist. The city's own tourism site titles the page 'Permanently Closed' and Yelp agrees as of March 2026. No counter-signal. It opened 1 Nov 2023 as an upscale tapas-style plant-based restaurant, so its run was under two and a half years. **This is a `status = 'closed'` decision for the curator (BL-44), not a tag.** 45 San Marco Ave."
+  },
+  {
+    "id": "010",
+    "name": "Clay Pit",
+    "city": "Austin",
+    "status": "open",
+    "format": ["sit-down-restaurant"],
+    "logistics": [],
+    "dietary": ["vegetarian-options"],
+    "evidence": [
+      {
+        "facet": "dietary",
+        "slug": "vegetarian-options",
+        "tier": "C",
+        "url": "https://www.happycow.net/reviews/clay-pit-austin-4087",
+        "quote": "There is a decently sized and marked vegetarian section with many dishes available"
+      },
+      {
+        "facet": "format",
+        "slug": "sit-down-restaurant",
+        "tier": "A",
+        "url": "https://claypit.com/",
+        "quote": "Indian Restaurant and Contemporary Dining in Austin TX"
+      }
+    ],
+    "hours": "Lunch Mon-Fri 11am-2:30pm, Sat-Sun 12-3pm; dinner Mon-Thu & Sun 5-10pm, Fri-Sat 5-11pm",
+    "confidence": "medium",
+    "notes": "Open, in the Bertram Building. **The `vegetarian-options` evidence is Tier C and it is the strongest kind of Tier C there is** — not an attribute flag but a described observation of a marked menu section, which is the fact the tag asserts. `claypit.com/menu` returns 403, so the menu itself could not be read. `vegan-options` was not taken: directories call it vegan friendly, which is the flag rule 6 excludes. 1601 Guadalupe St."
+  }
+]

@@ -8,12 +8,12 @@
 ## 🗓️ Last update
 
 **Date:** 2026-08-09
-**Session:** S12 — a pesquisa dos 117 fechada, dez restaurantes fechados, e o erro que o próprio método não pegou
+**Session:** S13 — a cobertura de gênero fechada em 106 de 106, e as sete palavras que faltavam no vocabulário
 **Version:** `0.1.0` — unchanged. The session produced no product code, schema or feature; docs and research artifacts only
 **Updated by:** Claude Code (orchestrator)
-**Last commit:** `0aa2402`, the session's substantive one, followed by a one-line commit recording
-this hash. **Pushed to `origin/main` at the close of S12**, along with S11's close (`4b207dd`), which
-had been sitting local since the previous session. `main` and `origin/main` are level.
+**Last commit:** S12 closed at `fea79fb` and was pushed. S13's hash goes here on the next boot.
+**Version unchanged at `0.1.0`:** no product code, no schema applied — the vocabulary migration is
+written and waiting for a session with MCP.
 
 ---
 
@@ -334,6 +334,27 @@ thing anyone could do to the guide, because those are the ones a visitor can rea
 - [x] **Gate:** `npm run build` e `npm run lint` limpos. Nenhum arquivo em `src/` tocado
 - [ ] ⚠️ **O MCP do Supabase não carregou** — banco intocado, nenhuma migration escrita ou aplicada
 
+### Session 13 — A cobertura de gênero fechada, e as sete palavras que faltavam ✅
+
+- [x] **As quatro linhas pendentes do S11 refeitas** — `006` e `009` (o slug `cocktails-bar-food`
+      usado como muleta), `008` (evidência de agregador trocada por Tier A do próprio restaurante),
+      `012` (reconferido e **deixado como estava**, de propósito)
+- [x] **Consequência: `cocktails-bar-food` ficou com 5 usos e todos corretos.** Os dois usos errados
+      sumiram do dado — o `BL-42` pode ser fechado por exemplo
+- [x] **Passagem de facetas sobre os 58 publicados iniciada e parada em 10, por evidência** —
+      `logistics` e `dietary` preencheram 1 de 10 cada. Não são pesquisáveis na web aberta (`BL-48`)
+- [x] **Mais um fechado, e este está PUBLICADO no guia:** `009 Chez L'Amour`, em St. Augustine
+- [x] **Sete slugs novos aprovados pelo Edu** — `american`, `mexican`, `cajun-creole`, `georgian`,
+      `sandwiches`, `wine-bar`, `brewery`. O menor conjunto que fecha a lacuna inteira
+- [x] **106 de 106 lugares abertos com tag de gênero. Zero sem.** A RN-32 satisfeita neste lote
+- [x] **`20260810120000_extend_cuisine_vocabulary.sql` escrita, com rollback que se recusa a rodar**
+      se qualquer um dos 7 já tiver atribuição
+- [x] **`BL-45` e `BL-46` respondidos · `BL-43` desbloqueado e recontado (91 → 106) · `BL-48` criado**
+- [x] **Skill `michaelinmap-migration` ganhou dois padrões** — declarar a ordenação final em vez de
+      empurrar em cascata, e o que fazer quando o MCP não carrega
+- [x] **Gate:** `npm run build` e `npm run lint` limpos
+- [ ] ⚠️ **O MCP do Supabase não carregou de novo** — terceira sessão seguida. Nada aplicado ao banco
+
 ---
 
 ## 🔄 In progress
@@ -344,18 +365,20 @@ Nothing running.
 
 ## ⏭️ Next action
 
-**Apply the 91 researched cuisine suggestions as one migration (`BL-43`) — in a session where the
-Supabase MCP actually loads.** It has the shape of `20260809120000_suggest_researched_tags.sql`:
-insert `place_tags` with `source = 'suggested'`, resolving places and tags by natural key. Everything
-enters invisible to visitors under RN-31. **First check whether `mcp__supabase__*` tools exist in the
-session** — they did not in S09 or S12, and without live introspection SQL is off the table.
+**Apply two migrations, in this order, in a session where the Supabase MCP actually loads.** Check
+for `mcp__supabase__*` tools **before anything else** — they were absent in S09, S12 and S13.
 
-Four rows need handling before that migration, all from the S11 batch and all listed in
-`docs/research/README.md`: **006 Anthem and 009 Bar Toti** must be re-run (both used
-`cocktails-bar-food` as a crossed-kitchen fallback — new context: Bar Toti and 034 Este are sister
-restaurants sharing 2113 Manor Rd, which explains the crossed menu); **008 Aris** needs its second
-evidence row dropped, since it cites an OpenTable page for *Iris*; **012 Bellissima** is the weakest
-row of the 117 and deserves one look from a normal browser.
+1. **`20260810120000_extend_cuisine_vocabulary.sql`** — written in S13, **never validated against the
+   live schema**, and its header says so in capitals. Adds seven slugs: `american`, `mexican`,
+   `cajun-creole`, `georgian`, `sandwiches`, `wine-bar`, `brewery`. Gate G2 (expects exactly 45
+   cuisine tags) is the one built to catch a wrong assumption. Rollback written, and it refuses to
+   run if any of the seven already carries an assignment.
+2. **The 106 tagged places as one migration** (`BL-43`), inserting `place_tags` with
+   `source = 'suggested'`, resolving places and tags by natural key. **Order matters:** 17 of these
+   assignments reference tags that do not exist until step 1 lands.
+
+**RN-32 is satisfied for this batch: every one of the 106 open places carries a cuisine tag.** That
+was the point of S13 and it took the vocabulary extension to get there — before it, 17 had nothing.
 
 **The ten closures do not ride along in that migration** (`BL-44`). A `status = 'closed'` is a
 statement about a real business and ten at once changes what the guide claims — that is Michael's.
@@ -503,6 +526,81 @@ of the content.
 ---
 
 ## 📝 Session log
+
+### 2026-08-09 — S13: A cobertura de gênero fechada, e as sete palavras que faltavam
+
+**O que foi feito:** as quatro linhas pendentes do S11 foram refeitas, uma segunda passagem de
+pesquisa foi iniciada e parada em 10 por evidência, e o vocabulário de cozinha ganhou sete slugs que
+levam a cobertura de gênero a 106 de 106. Zero código de produto, nada aplicado ao banco.
+
+**O MCP do Supabase não carregou pela terceira sessão seguida** — S09, S12 e S13. Isso já não é
+acidente e virou instrução na skill de migration: quando for preciso escrever SQL às cegas porque a
+pesquisa está pronta, a migration diz isso no próprio cabeçalho, em maiúsculas, com o gate que pega a
+suposição errada.
+
+**As quatro pendências fecharam, e uma delas era um alarme falso meu.** O `008 Aris` estava marcado no
+S11 como citando uma página do OpenTable de outro restaurante, o *Iris*. O Aris tem site próprio, e
+uma frase dele sustenta os dois slugs — então a linha virou Tier A duas vezes e a questão sumiu. De
+quebra: aquela URL do OpenTable é rotulada como Aris nos resultados de busca, ou seja, **é um slug
+legado, não outro negócio.** Não deu para confirmar, e ficou irrelevante.
+
+**O efeito colateral valioso:** `006 Anthem` e `009 Bar Toti` eram os dois usos errados de
+`cocktails-bar-food`. Refeitos, os dois se revelaram cozinhas cruzadas e não bares — o Bar Toti se
+descreve como *"a lively neighborhood bistro inspired by the bar cultures of Spain, France and
+Mexico"*. **O slug ficou com cinco usos e os cinco corretos**, contra dois casos errados que agora
+existem só como contraexemplo documentado. O `BL-42` pode ser fechado por exemplo, não por argumento.
+
+**A segunda passagem foi parada em 10 de 58, e a parada é o achado.** Ela mirava `format`,
+`logistics` e `dietary` — as três facetas com 1, 0 e 0 atribuições no banco inteiro — sobre os 58
+publicados. `format` preencheu 9 de 10, quase sempre com `sit-down-restaurant`, que é informação
+nenhuma. **`logistics` e `dietary` preencheram 1 de 10 cada**, e o motivo é estrutural: restaurante
+não publica "só dinheiro", "a fila é real" ou "estacionar é um problema". Isso se sabe indo — que é
+exatamente por que essas facetas estão vazias. Melhor trazer isso depois de 10 do que depois de 58.
+
+**Mas ela achou um fechado que está publicado no guia.** O `009 Chez L'Amour`, em St. Augustine: o
+site de turismo da própria cidade titula a página "Permanently Closed". Um em dez é **a mesma taxa
+dos não revisados**, o que projeta ~6 dos 58. O `BL-48` recomenda reiniciá-la como varredura de
+fechamento, com o escopo já congelado e conferido por checksum.
+
+**Aí o Edu reordenou a prioridade com uma frase:** o que importa é que todo lugar tenha pelo menos a
+tag de gênero. A pesquisa tinha otimizado o oposto — "omissão vence palpite" — e por isso 17 lugares
+abertos tinham ficado **sem tag nenhuma**. Precisão máxima produziu buracos permanentes, que é a
+RN-32 falhando no dado.
+
+**Sete slugs novos, escolhidos como o menor conjunto que fecha a lacuna inteira:** `american` (4
+lugares), `mexican` (2), `cajun-creole`, `georgian`, `sandwiches`, `wine-bar`, `brewery`. Os outros
+seis dos dezessete não precisaram de slug novo — foram afrouxados para slugs existentes, de "o mais
+preciso" para "verdadeiro porém amplo". **O raciocínio preciso ficou nas notas de cada linha**: o
+Millie's leva `american`, e a linha continua dizendo que ele é um restaurante do norte do Michigan
+com whitefish e *Yooper pastie*.
+
+**O `american` é o que mais importa, e não pelo número.** O vocabulário não tinha um americano comum
+— só `new-american`, que é categoria chef-driven, e `southern-comfort`. Então todo restaurante
+americano ordinário ou caía no vazio ou era empurrado para `new-american`, **que a pesquisa usou 18
+vezes em 117**, mais que qualquer outro slug. Um slug fazia o trabalho de uma cozinha inteira
+enquanto os lugares onde ele não cabia sumiam.
+
+**O custo honesto, aprovado com ele declarado:** três dos sete — `wine-bar`, `brewery`, `sandwiches` —
+são **formato, não cozinha**. A faceta passa a misturar dois tipos de afirmação, que é exatamente a
+objeção que o `BL-42` levanta contra `cocktails-bar-food`. Estendida de propósito, não repetida por
+acidente. E o `northern-michigan` foi deliberadamente **não** adicionado: uma instância em 117 não
+justifica um slug.
+
+**Uma decisão de engenharia na migration vale registrar.** A do `german` inseriu um slug empurrando a
+cauda com uma guarda `NOT EXISTS`. Sete empurrões em cascata seriam sete chances de empurrar duas
+vezes, e aquele truque não compõe. A nova **declara a ordenação final inteira**, idempotente por
+estado final, com um gate que confirma que a ordem relativa dos 38 antigos foi preservada e outro que
+pega qualquer slug que a lista não cobriu. Virou padrão na skill.
+
+**E o escopo dos 58 foi reconstruído offline, sem banco.** O critério `(starred OU destination) E sem
+conflito` sobre o CSV congelado devolve exatamente 58, com a divisão por cidade idêntica à do STATUS —
+e a diferença de tiers reconcilia sozinha: 307 no CSV menos os 28 conflitos documentados dá os 279 do
+banco. **O import largou o tier das linhas conflitantes**, que é a `DP-08` esperando o Michael.
+
+**Uma correção de percurso:** revisando o README achei que eu tinha escrito "nove fechados" onde a
+tabela lista dez. Corrigido.
+
+**Gate:** build e lint limpos. Versão mantida em `0.1.0` — nenhuma feature, nenhum schema aplicado.
 
 ### 2026-08-09 — S12: A pesquisa dos 117 fechada, e dez restaurantes que não existem mais
 

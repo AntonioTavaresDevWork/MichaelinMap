@@ -65,21 +65,23 @@ directories.
 
 ---
 
-## The vocabulary — 38 slugs, closed set
+## The vocabulary — 45 slugs, closed set
 
 Use these exact slugs. **Do not invent one, and do not bend a place into a slug that nearly fits.**
 
 ```
 bbq                 tex-mex             tacos               interior-mexican
-southern-comfort    burgers             pizza               italian
+mexican             southern-comfort    cajun-creole        american
+burgers             sandwiches          pizza               italian
 steakhouse          seafood             new-american        japanese
 sushi               ramen               korean              chinese
 thai                vietnamese          indian              middle-eastern
 mediterranean       ethiopian           caribbean           vegetarian-forward
 breakfast-diner     bakery-pastry       coffee              cocktails-bar-food
-british             french              german              spanish
-portuguese          greek               turkish             brazilian
-peruvian            modern-european
+wine-bar            brewery             british             french
+german              georgian            spanish             portuguese
+greek               turkish             brazilian           peruvian
+modern-european
 ```
 
 Three slugs that get misapplied, so read these carefully:

@@ -13,21 +13,27 @@ material from Claude Web; this is the record of a job.
 | File | What it is |
 |---|---|
 | `cuisine-117-batch.csv` | The scope: 117 places that are `restaurant` + `unreviewed` + `city = 'Austin'` with **no** cuisine tag. `id,name,address` |
-| `cuisine-117-prompt.md` | The prompt the pass was run against. Revision 2 |
+| `cuisine-117-prompt.md` | The prompt the pass was run against. Revision 3 — vocabulary now 45 slugs |
 | `cuisine-117-results.json` | **All 117 results**, one object per place, ids in order |
+| `facets-58-batch.csv` | Scope of a **second, paused pass**: the 58 published places. See below |
+| `facets-58-prompt.md` | Its prompt — format, logistics and dietary, plus a closure check |
+| `facets-58-results.json` | **10 of 58 done, then paused deliberately.** See *The paused facets pass* |
 
 ## Results
 
 | | |
 |---|---|
 | Places researched | **117** |
-| Taggable | **91** |
-| `no_slug_fits` — no honest slug exists | **15** |
+| Open | **106** |
+| **Open places carrying a cuisine tag** | **106 — all of them** |
+| `no_slug_fits` — no honest slug exists | **0** |
 | Closed | **10** |
 | Uncertain | **1** |
-| Evidence rows | 103 Tier A · 37 Tier B · 13 Tier C |
-| Confidence | 70 high · 21 medium · 26 none |
-| Vocabulary slugs actually used | **28 of 38** |
+| Vocabulary slugs | **45**, up from 38 |
+
+> **RN-32 is satisfied for this batch: every open place has at least one filterable cuisine tag.**
+> That took a vocabulary extension of seven slugs, approved in S13 — see *Closing the coverage gap*
+> below. Before it, 17 of the 106 had no honest tag at all.
 
 Most-used slugs: `new-american` 18 · `italian` 11 · `pizza` 9 · `southern-comfort` 7 ·
 `cocktails-bar-food` 7 · `sushi` 7 · `burgers` 5 · `japanese` 5.
@@ -50,29 +56,50 @@ a text ordering produces different hashes from identical data.
 
 ## What happens next
 
-1. **The 91 taggable places become one migration**, inserting `place_tags` with
+Two migrations, in this order, **both needing a session with the Supabase MCP loaded**:
+
+1. **`20260810120000_extend_cuisine_vocabulary.sql` — written, not applied.** Adds the seven slugs.
+   Nothing else can go first: 17 of the assignments below reference tags that do not exist yet.
+2. **The 106 tagged places become one migration**, inserting `place_tags` with
    `source = 'suggested'`, resolving places and tags by natural key. Everything enters invisible to
-   visitors under RN-31 and becomes visible only when Michael confirms it in the admin.
-2. **The 10 closures and 1 uncertain are not tags and must not ride along in that migration.**
-   They are `status` changes to the judgment layer and belong to the curator.
-3. **The vocabulary gaps are Michael's call under RN-13.** Nothing here invents a slug.
+   visitors under RN-31 and becomes visible only when the curator confirms it in the admin.
 
-### Rows that need a decision before they migrate
+And one thing that is **not** a migration:
 
-- **`012 Bellissima`** — weakest evidence of the 117; `bellissimatx.com` returns 403 to every fetch,
-  so the only quote is a Community Impact headline. One look from a normal browser resolves it.
+3. **The 10 closures and 1 uncertain must not ride along.** They are `status` changes to the judgment
+   layer and belong to the curator — `BL-44`.
+
+### The four re-runs (S13) — all resolved
+
+The S11 batch left four rows that could not migrate as written. All four were re-run:
+
+- **`006 Anthem`** was `cocktails-bar-food`. The re-run confirmed the kitchen is crossed **and found
+  the label the restaurant uses for it** — its own tagline is "A Tex-Asian Pub For The People" and
+  its own copy calls the menu borderless. No slug carries that, so it was later relaxed onto
+  `new-american` for coverage.
+- **`009 Bar Toti`** was `cocktails-bar-food`, and its own words settle it: "a lively neighborhood
+  bistro inspired by the bar cultures of Spain, France and Mexico." A bistro, not a bar, with three
+  countries at once — the exact case the slug is not for. Relaxed onto `modern-european`.
+- **`008 Aris`** rested on two aggregator category strings, one of them an OpenTable page whose URL
+  reads `iris-austin`. **The restaurant has its own site**, and one sentence there carries both slugs
+  under rule 7: "a modern Mediterranean steakhouse … dry-aged prime cuts, Mediterranean-inspired
+  dishes". Now Tier A twice. **The Iris alarm was probably false** — search results label that
+  OpenTable URL as Aris, so it looks like a legacy slug rather than another business. Unverified and
+  now moot.
+- **`012 Bellissima`** was re-checked and **deliberately left as it was.** Every route to the
+  restaurant's own words is closed to this fetcher — site, about page, menu page, Toast ordering page
+  and Yelp listing all 403. Independent sources corroborate the claim, so the slug is not in doubt;
+  only the tier is, and it stays B/medium rather than being quietly upgraded on second-hand text.
+
+### Still needing a decision before migrating
+
 - **`090 Santa Catarina`** — tagged `tex-mex` **against** its own site's claim of "interior Mexico".
   Deliberate, and flagged so it can be flipped.
-- **`006 Anthem` and `009 Bar Toti`** (from S11) still need re-running — both used
-  `cocktails-bar-food` as a crossed-kitchen fallback, which revision 2 of the prompt now forbids.
-  Useful context found in S12: **Bar Toti and `034 Este` are sister restaurants sharing 2113 Manor
-  Rd**, which explains why its menu read as crossed.
-- **`008 Aris`** (from S11) — drop the second evidence row, which cites an OpenTable page for
-  *Iris*, a different business.
+- **`012 Bellissima`** — not blocking, but one browser visit from a human settles it for good.
 
 ## The ten closures, and the one in doubt
 
-**Nine of 117 are closed and one cannot be established.** That is roughly 9% of a backlog assembled
+**Ten of 117 are closed and one cannot be established.** That is roughly 9% of a backlog assembled
 from map albums over several years.
 
 | id | Place | When | How it was established |
@@ -119,64 +146,70 @@ The row was rewritten in place by a script asserting every other row stayed byte
 cooking by a James Beard Best Chef: Texas. The slug ends the pass with **one** defensible instance in
 117 places (`063 Manuels`), which strengthens what `DP-11` already says about it.
 
-## The vocabulary gaps — 15 places, 14 distinct labels
+## Closing the coverage gap — the seven slugs of S13
 
-This is the pass's main finding and it is **not** a tagging result. Each label below is a place the
-researcher refused to guess at rather than a place it failed to identify.
+The pass was built to prefer a visible hole over a tag that reads precise and is not. That discipline
+is right for accuracy and it produced a specific failure: **17 of the 106 open places could not be
+given a single honest cuisine tag.** Not because the researcher could not identify them — because
+nothing in the 38-slug vocabulary described them.
 
-| Gap | ids | Note |
+RN-32 says every food place should carry at least one filterable cuisine tag. Seventeen permanent
+holes is that rule failing in the data, so Edu approved **seven additions**, chosen as the smallest
+set that closes the gap completely:
+
+| New slug | Unlocks | Which places |
 |---|---|---|
-| `german` ✅ | `004` | **Answered in S11.** Alpine Haus, plus `038` Friedhelm's and `051` Krause's, all now tagged |
-| `cajun-creole` | `114` | **The best candidate to answer next** — see below |
-| `waterfront-bar-grill` | `018`, `098` | Two Lake Travis restaurants, same shape |
-| `all-day-american` | `057` | |
-| `bar-and-grill` | `035` | |
-| `hotel-bar-grill` | `050` | |
-| `modern-mexican` | `112` | |
-| `baja-mexican` | `061` | |
-| `wine-bar` | `036` | |
-| `brewery-taproom` | `078` | |
-| `sandwich-shop` | `065` | |
-| `spanish-texan-market` | `031` | |
-| `georgian` | `014` | |
-| `northern-michigan` | `066` | A Northern Michigan restaurant in Elgin, Texas — whitefish, Yooper pasties |
+| **`american`** | **4** | `035` Finley's · `057` Lou's · `066` Millie's On Main · `098` Sundancer Grill |
+| **`mexican`** | **2** | `061` Ma'CoCo · `112` VERDAD |
+| `cajun-creole` | 1 | `114` Vic & Al's |
+| `georgian` | 1 | `014` Bread Boat |
+| `sandwiches` | 1 | `065` Meat & Bread |
+| `wine-bar` | 1 | `036` Flo's Wine Bar & Bottle Shop |
+| `brewery` | 1 | `078` Old Gregg Brewing Company |
 
-They cluster into three:
+**`american` matters most, and not because of the count.** The vocabulary had no plain American entry
+— only `new-american`, a chef-driven category, and `southern-comfort`. So every ordinary American
+restaurant either fell through the gap or was pushed into `new-american`, **which the pass used 18
+times in 117 places**, more than any other slug and 60% more than the next. One slug was doing duty
+for a whole cuisine while the places it did not fit vanished entirely.
 
-**1. There is no plain `american`.** Four of the fifteen (`035`, `050`, `057`, plus the two
-waterfront rows) are ordinary American places — a bar in a 1940s bungalow, a rotisserie-and-sandwich
-counter, two lake restaurants. The only American entries are `new-american`, which is a chef-driven
-category none of them is, and `southern-comfort`, which their menus are not. **The same fact from the
-other end: `new-american` was used 18 times, more than any other slug and 60% more than the next.** A
-slug meant for one style is doing duty for a whole cuisine while the places it does not fit fall
-through entirely.
+**The other six of the seventeen needed no new slug.** They were re-tagged onto existing ones by
+relaxing from "most precise" to "true but broad", which is recorded in each row:
 
-`067 Muck & Fuss` is the control: also a bar with a kitchen, and `burgers` lands cleanly because its
-food has an identity. **The gap is not "bars" — it is "ordinary American".**
+- `004 Alpine Haus` → `german`. Not a relaxation at all — the slug was added in S11 on the strength
+  of this very place and the row simply never got updated.
+- `018 Captain Pete's` → `seafood` · `031 Dos Olivos` → `spanish` · `050 Knotty Deck` and
+  `006 Anthem` → `new-american` · `009 Bar Toti` → `modern-european`
 
-**2. The Mexican side is as broken as the American side.** Three records had no honest slug
-(`060`, `061`, `112`) because the vocabulary offers only `tex-mex`, `tacos` and `interior-mexican`
-— nothing for Baja/California-style, nothing for modern pan-Mexican, and no plain `mexican`.
-Meanwhile `interior-mexican` is being claimed by places it does not describe: **`090 Santa Catarina`
-advertises "the vibrant flavors of interior Mexico" and serves Tex-Mex staples.** And it would have
-been actively *wrong* three times — `034 Este` (coastal), `111 Veracruz Fonda` (Gulf state),
-`060 Ma'coco` (Baja) — each saved only because another slug happened to fit. This is `DP-11`
-documented from four directions.
+Each is true and none is exact. The precise reading survives in the row's own notes, so nothing was
+lost — only made findable.
 
-**3. `cajun-creole` is a single missing cuisine, and it is exactly the `german` case.** `114 Vic & Al's`
-is a self-described family-style Cajun restaurant — gumbo, étouffée, po'boys — with nothing to take.
-`southern-comfort` was refused on principle: the vocabulary already separates `tex-mex` from
-`interior-mexican`, so it plainly cares about regional precision, and folding Louisiana into the
-American South throws that away. The gap surfaced twice — `093 Shore Raw Bar` also draws on Louisiana
-and was saved only because `seafood` carries its identity. **`german` was added on three instances
-and resolved all three. This is the same shape.**
+### What was deliberately not added
+
+- **`northern-michigan`**, which would have been exact for `066 Millie's On Main` — whitefish, Yooper
+  pasties, olive burger — and rests on **one instance in 117 places.** It goes to `american`, with
+  the specific truth preserved in the record.
+- **`latin-american`**, which `DP-11` records as a boundary judgment that stays Michael's.
+
+### The honest cost
+
+**Three of the seven are formats, not cuisines.** `wine-bar`, `brewery` and `sandwiches` describe
+what kind of place it is rather than where the food comes from. Those three businesses have no
+cuisine to name, and a visitor filtering the facet would still expect to find them — but it means the
+cuisine facet now mixes two kinds of claim. **That is the same objection `BL-42` raises about
+`cocktails-bar-food`, knowingly extended rather than accidentally repeated.** It was approved with
+that stated.
+
+The migration is written and **not applied**: `20260810120000_extend_cuisine_vocabulary.sql`, with a
+rollback that refuses to run if any of the seven is already in use. No MCP was available in S13, so
+it was never validated against the live schema — gate G2 is the one built to catch that.
 
 ## `BL-42` can now be closed by example
 
 The backlog records `cocktails-bar-food` as a format claim living in the cuisine facet that attracts
 whatever the vocabulary cannot describe. The pass produced enough evidence to settle it.
 
-**Four correct uses**, all drinks-first by the venue's own account:
+**Five uses in 117 places, and all five are correct** — all drinks-first by the venue's own account:
 
 - `068 Murray's Tavern` — "a newly designed cocktail tavern"; the menu is built around two of the
   owner's grandmother's cocktails
@@ -184,15 +217,66 @@ whatever the vocabulary cannot describe. The pass produced enough evidence to se
   absinthe to stand apart
 - `094 Sidecar` — a basement cocktail club in a historic inn, evenings only, deliberately short menu
 - `105 Tiki Tatsu-Ya` — a 21+ immersive tiki bar where the drinks are the entire proposition
+- `109 Uchibā` — tagged `japanese` **and** `cocktails-bar-food`, which shows the slug can coexist
+  with a cuisine instead of replacing one
 
-**One that shows it can coexist with a cuisine rather than replace one:** `109 Uchibā`, tagged
-`japanese` + `cocktails-bar-food`, whose own sentence reads "a cocktail bar and restaurant inspired
-by the casual energy of a Japanese izakaya."
-
-**Two misuses, both from S11 and both already flagged for re-running:** `006 Anthem` and
-`009 Bar Toti`, where the slug was reached for as a crossed-kitchen fallback.
+**The two known misuses are gone.** `006 Anthem` and `009 Bar Toti` were re-run in S13; both turned
+out to be crossed kitchens rather than bars, and both now carry a cuisine tag instead.
 
 If the meaning gets written down, these are the examples to write it from.
+
+
+## The paused facets pass — 10 of 58, stopped on evidence
+
+A second pass was started in S13 over **the 58 published places** — the only ones a visitor can reach
+— targeting the three facets that have 1, 0 and 0 assignments in the entire database: `format`,
+`logistics` and `dietary`. It was **paused after ten places, deliberately**, and the reason is the
+result:
+
+| Facet | Filled |
+|---|---|
+| `format` | 9 of 10 |
+| `logistics` | **1 of 10** |
+| `dietary` | **1 of 10** |
+
+**`logistics` and `dietary` are not researchable from the open web at scale**, and the reason is
+structural rather than effort: restaurants do not publish "cash only", "the line is real" or
+"parking is a problem" — those are things you learn by going, which is precisely why the facets are
+empty in the database. Aggregator dietary flags are auto-generated and frequently wrong, which is why
+the prompt excludes them as evidence in the first place.
+
+`format` filled 9 of 10, but **almost every answer was `sit-down-restaurant`.** A facet where 90% of
+the guide shares one value does not help anyone filter.
+
+### What the ten places did produce
+
+**`009 Chez L'Amour` is closed — and it is published in the guide right now.** St. Augustine's own
+tourism site titles the page "Permanently Closed"; Yelp agrees as of March 2026. A visitor opening
+St. Augustine today can click through to a restaurant that does not exist. **One closure in ten is
+the same rate as the unreviewed set** (10 in 117), which projects to roughly six of the 58.
+
+Two facts were also found that the vocabulary cannot express, both exactly what a visitor would want:
+**`005 BOA Steakhouse` enforces a dress code and is valet-only at $13**, and there is no slug for
+either.
+
+### The recommendation this leaves
+
+**Restart it as a closure sweep, not a facet pass.** Keep the 58, keep the frozen batch file, and
+collect: operating status (the part that is working), opening hours (the raw material the four
+`is_derived` logistics tags need and have never had — `places` has no hours column), and the
+publishable half of `vibe` — patio, rooftop, dog-friendly, live music, counter seating — which
+restaurants advertise, unlike logistics. `logistics` and `dietary` become opportunistic.
+
+The scope file is frozen and checksummed the same way the cuisine batch was:
+
+```
+58 rows · 5e13fc48abfcc828ee55f25b2221b57b
+```
+
+Derived offline from `docs/files/`'s master CSV as `(starred OR tier = destination) AND no conflict`,
+and it reconciles three ways: 58 total, the exact city split recorded in STATUS (Austin 52, St.
+Augustine 3, LA 1, Mountain Home 1, Oxfordshire 1), and 307 tiered rows in the CSV minus the 28
+documented tier conflicts = the 279 the database holds.
 
 ## Defects found in our own records
 
