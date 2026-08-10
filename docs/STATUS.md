@@ -375,6 +375,12 @@ by hand with the exact configured command. **Run `/mcp` instead.** That reports 
 connected, failed or never attempted, which is the one piece of information the investigation could
 not get from outside the client.
 
+**Also from `OP-06`: the migration below is no longer unverified.** S13 reached the server through a
+direct stdio client and confirmed every assumption it makes against the live schema — 38 cuisine
+tags, ordering 0–37, none of the seven slugs present or assigned, and the live order identical to the
+one the rollback declares. **Applying was blocked by the permission classifier and that was correct**;
+what is left is the apply itself, not the checking.
+
 1. **`20260810120000_extend_cuisine_vocabulary.sql`** — written in S13, **never validated against the
    live schema**, and its header says so in capitals. Adds seven slugs: `american`, `mexican`,
    `cajun-creole`, `georgian`, `sandwiches`, `wine-bar`, `brewery`. Gate G2 (expects exactly 45
