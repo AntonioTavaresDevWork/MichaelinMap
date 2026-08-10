@@ -334,6 +334,33 @@ thing anyone could do to the guide, because those are the ones a visitor can rea
 - [x] **Gate:** `npm run build` e `npm run lint` limpos. Nenhum arquivo em `src/` tocado
 - [ ] ⚠️ **O MCP do Supabase não carregou** — banco intocado, nenhuma migration escrita ou aplicada
 
+### Session 14 (continuação) — A varredura de fechamento e a aprovação em lote ✅
+
+- [x] **Varredura de fechamento sobre os 58 publicados, completa** — 54 abertos, **3 fechados**,
+      1 incerto. Registro em `docs/research/closures-58.md`
+- [x] **`DP-10` respondida: o Gina's on Congress está fechado**, e era `published` **e com estrela**.
+      O site dele sobreviveu ao restaurante por meses — sinal contrário fraco, lição registrada
+- [x] **Também fechados:** `057 Vince Young Steakhouse` (24/01/2026, após 15 anos) e
+      `009 Chez L'Amour`. **Incerto:** `020 Fabrik`, reportado como temporariamente fechado
+- [x] **Um quarto falso positivo evitado pelo endereço:** o `049 Sway` parece fechado por nome, mas
+      as unidades fechadas são outras — a nossa, em Bee Caves Rd, está aberta
+- [x] **`20260810140000_confirm_restaurant_tag_suggestions` aplicada** — 4 gates. **186 pares em 145
+      restaurantes** virados de `suggested` para `curator`, por autorização explícita do Edu
+- [x] **Rollback gerado a partir de um snapshot tirado segundos antes** — sem ele a operação seria
+      irreversível, porque depois do UPDATE nada no banco diz quais linhas eram sugestões
+- [x] **`BL-48` fechado na metade que importava** (a varredura); a metade de facetas segue parada
+- [x] **`BL-47` ganhou um terceiro defeito, o pior deles:** `055 Vaudeville` tem `city = 'Austin'`
+      com endereço em Fredericksburg, e a coluna `city` alimenta o portão de cidades do guia
+
+**O efeito no guia público, somando tudo que aconteceu na sessão:**
+
+- [x] `place_tags` de curador: **5 → 322**
+- [x] Publicados com cozinha visível: **5 → 51 de 58**
+- [x] Facetas visíveis: 1 → **4** (`cuisine`, `format`, `logistics`, `dietary`) — as três dormentes
+      do `BL-30` saíram do zero pela primeira vez
+
+---
+
 ### Session 14 — As duas migrations aplicadas, e a curadoria andando ao vivo ✅
 
 - [x] **O MCP do Supabase voltou** — o Edu rodou `/mcp` e ele reconectou. Três sessões de bloqueio
